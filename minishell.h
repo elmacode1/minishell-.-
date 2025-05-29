@@ -36,7 +36,7 @@ char **copy_env(char **env);
 void init_buildin(t_shell *shell);
 int execute_command(t_shell *shell ,t_command *cmd);
 char *get_env_var(t_shell *shell, char *name);
-int add_new_var(t_shell *shell, char *name, char *var);
+int add_new_var(t_shell *shell, char *var);
 int set_env_var(t_shell *shell, char *name, char *var);
 
 #endif

@@ -44,16 +44,14 @@ char *get_env_var(t_shell *shell, char *name)
     return NULL;
 }
 
-int add_new_var(t_shell *shell,char *name, char *var)
+int add_new_var(t_shell *shell, char *var)
 {
     char **new_env;
     int i;
-    int len;
 
     i = 0;
     while(shell->env_copy[i])
         i++;
-    len = strlen(var);
     new_env = malloc((i + 2) * sizeof(char *));
     if(!new_env)
         return -1;
@@ -95,6 +93,6 @@ int set_env_var(t_shell *shell, char *name, char *var)
         }
         i++;
     }
-    add_new_var(shell, name, var);
+    add_new_var(shell, new_var);
     return 0;
 }

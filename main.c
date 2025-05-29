@@ -21,12 +21,16 @@ int main(int ac, char **av, char **envp)
         {
             add_history(input);
             t_command  cmd;
-            char *args[] = {"cd", "~", NULL};
+            t_command  cmd1;
+            char *args[] = {"exit", "1ss", NULL};
+            char *args1[] = {"export", NULL};
+            // printf("%s\n", get_env_var(&shell ,"hey_hey"));
             cmd.args = args;
+            cmd1.args = args1;
             execute_command(&shell, &cmd);
+            //execute_command(&shell, &cmd1);
         }
         free(input);
-    
     }
     return 0;
 }
