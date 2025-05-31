@@ -14,13 +14,34 @@ int is_buildin(char *command)
     }
     return (0);
 }
+char *get_command_path(t_shell *shell, char *cmd)
+{
+    char *env;
+    char **paths;
+    char *cmd_path;
+    int i;
+
+    i = 0;
+    env = get_env_var(shell, "PATH");
+    paths = ft_split(env, ':');
+    while(paths[i])
+    {
+        cmd_path = ft_strjoin(ft_strjoin(paths[i], "/"), cmd);
+        if(access(cmd_path, X_OK) == 0)
+            return(cmd_path);
+        free(cmd_path);
+        i++;
+    }
+    return NULL;
+}
 
 int execute_external(t_shell *shell, t_command *cmd)
 {
     int pid;
-    //char *path;
+    char *path;
     int status;
 
+    path = get_command_path(shell, cmd->args[0]);
     pid = fork();
     if(pid == -1)
     {
@@ -29,8 +50,9 @@ int execute_external(t_shell *shell, t_command *cmd)
     }
     if(pid == 0)
     {
-        execve(cmd->args[0], cmd->args, shell->env_copy);
-        perror("execve\n");
+        printf("trying to execute command\n");
+        execve(path, cmd->args, shell->env_copy);
+        perror("execve failed\n");
         exit(1);
     }
     else
@@ -62,10 +84,7 @@ int execute_buildin(t_shell *shell, t_command *cmd)
     return 0;
 }
 
-char *get_command_path(t_command *cmd)
-{
 
-}
 
 int execute_command(t_shell *shell ,t_command *cmd)
 {

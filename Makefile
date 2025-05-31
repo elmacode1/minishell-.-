@@ -4,7 +4,8 @@ SRC = 	buildins.c\
 		environ.c\
 		execute.c\
 		helpers.c\
-		main.c
+		main.c\
+		pipes.c
 		
 OBJ = $(SRC:.c=.o)
 
