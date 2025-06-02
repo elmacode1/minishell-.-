@@ -5,7 +5,8 @@ SRC = 	buildins.c\
 		execute.c\
 		helpers.c\
 		main.c\
-		pipes.c
+		pipes.c\
+		redirections.c
 		
 OBJ = $(SRC:.c=.o)
 

@@ -1,0 +1,27 @@
+SHELL=/bin/bash
+COLORTERM=truecolor
+WSL2_GUI_APPS_ENABLED=1
+TERM_PROGRAM_VERSION=1.100.2
+WSL_DISTRO_NAME=Ubuntu
+NAME=Code
+PWD=/home/oukadir/minishell-.-
+LOGNAME=oukadir
+HOME=/home/oukadir
+LANG=C.UTF-8
+WSL_INTEROP=/run/WSL/478_interop
+WAYLAND_DISPLAY=wayland-0
+TERM=xterm-256color
+USER=oukadir
+DISPLAY=:0
+SHLVL=2
+XDG_RUNTIME_DIR=/run/user/1000/
+DEBUGINFOD_URLS=https://debuginfod.ubuntu.com 
+WSLENV=ELECTRON_RUN_AS_NODE/w:
+XDG_DATA_DIRS=/usr/local/share:/usr/share:/var/lib/snapd/desktop
+PATH=/home/oukadir/.vscode-server/bin/848b80aeb52026648a8ff9f7c45a9b0a80641e2e/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/oraclexe/app/oracle/product/11.2.0/server/bin:/mnt/c/Python312/Scripts/:/mnt/c/Python312/:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/iCLS/:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/iCLS/:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/IPT:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/IPT:/mnt/c/Program Files/Intel/WiFi/bin/:/mnt/c/Program Files/Common Files/Intel/WirelessCommon/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/nodejs/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Users/kadir/AppData/Roaming/npm:/mnt/c/Users/kadir/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+HOSTTYPE=x86_64
+PULSE_SERVER=unix:/mnt/wslg/PulseServer
+TERM_PROGRAM=vscode
+VSCODE_IPC_HOOK_CLI=/run/user/1000/vscode-ipc-aefe5932-7992-473c-9e11-0c6d021657ea.sock
+_=./minishell

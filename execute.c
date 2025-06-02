@@ -50,7 +50,7 @@ int execute_external(t_shell *shell, t_command *cmd)
     }
     if(pid == 0)
     {
-        printf("trying to execute command\n");
+        handle_redirections(cmd);
         execve(path, cmd->args, shell->env_copy);
         perror("execve failed\n");
         exit(1);
@@ -88,8 +88,29 @@ int execute_buildin(t_shell *shell, t_command *cmd)
 
 int execute_command(t_shell *shell ,t_command *cmd)
 {
+    int tmp_out;
+    int tmp_in;
+    int status;
     if(is_buildin(cmd->args[0]))
-        return (execute_buildin(shell, cmd));
+    { 
+
+        tmp_out = dup(STDOUT_FILENO);
+        tmp_in = dup(STDIN_FILENO);
+        if(handle_redirections(cmd) == 1)
+        {
+            dup2(tmp_out, STDOUT_FILENO);
+            dup2(tmp_in, STDIN_FILENO);
+            close(tmp_in);
+            close(tmp_out);
+            return 1;
+        }
+        status = execute_buildin(shell, cmd);
+        dup2(tmp_out, STDOUT_FILENO);
+        dup2(tmp_in, STDIN_FILENO);
+        close(tmp_in);
+        close(tmp_out);
+        return (status);
+    }
     else
         return (execute_external(shell, cmd));
 }
