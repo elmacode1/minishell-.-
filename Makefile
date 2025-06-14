@@ -1,11 +1,6 @@
 NAME = minishell
 
-SRC = 	buildins.c\
-		environ.c\
-		execute.c\
-		helpers.c\
-		main.c\
-		pipes.c
+SRC = 	lexer.c utils.c token_utils.c syntax_error.c parsin.c
 		
 OBJ = $(SRC:.c=.o)
 
@@ -16,16 +11,16 @@ CC	= gcc
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-	$(CC) $(FLAGS) $(OBJ) -o  $(NAME) $(LDFLAGS)
+	@make -C libft
+
+	$(CC) $(FLAGS) $(OBJ) libft/libft.a -o  $(NAME) $(LDFLAGS)
 
 clean : 
 	rm -f $(OBJ)
+	@make -C libft clean
 
 fclean : clean
 	rm -f $(NAME)
+	@make -C libft fclean
 
 re : fclean all
-
-
-
-

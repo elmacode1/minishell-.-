@@ -1,52 +1,57 @@
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
-
-#include <stdio.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <sys/wait.h>
+#include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "libft/libft.h"
 
-typedef struct s_shell t_shell;
+typedef enum e_token_type{
+	WORD,
+	PIPE,
+	RED_IN,
+	RED_OUT,
+	APPEND,
+	SQUOTE,
+	DQUOTE,
+	WHITESPACE,
+	HEREDOC,
+	NEW_LINE,
+	ENV,
+}t_tokentype;
 
-typedef int (*func)(struct s_shell *, char **);
-
-typedef struct s_command
+typedef struct s_free
 {
-    char **args;
-    char ***cmds;
-}       t_command;
+	void *content;
+	struct s_free *next;
+} t_free;
 
-typedef struct s_buildin
+typedef struct s_token
 {
-    char *name;
-    func cmd_func;
-}   t_buildin;
+	char *text;
+	t_tokentype type;
+	struct s_token *next;
+}t_token;
 
-
-struct s_shell
+typedef struct s_all
 {
-    char **env_copy;
-    t_buildin buildinds[8];
+	t_free *free_list;
+	t_token *tokens;
+}t_all;
 
-};
-int execute_pipes(t_shell *shell, t_command *cmds[]);
-char **copy_env(char **env);
-void init_buildin(t_shell *shell);
-int execute_command(t_shell *shell ,t_command *cmd);
-char *get_env_var(t_shell *shell, char *name);
-int add_new_var(t_shell *shell, char *var);
-int set_env_var(t_shell *shell, char *name, char *var);
-char *get_command_path(t_shell *shell, char *cmd);
-int is_buildin(char *command);
-int execute_buildin(t_shell *shell, t_command *cmd);
-
-//testing 
-char	*ft_strjoin(char const *s1, char const *s2);
-char	**ft_split(char const *s, char c);
+int is_space(char c);
+int is_special(char c);
+void	ft_lstadd_back(t_token **lst, t_token *new);
+t_token	*ft_lstlast(t_token *lst);
+t_token	*ft_lstnew(char *text, t_tokentype  type);
+int count_word(char *s);
+int check_squotes(t_token *token);
+char *ft_getword(char *s);
+char *get_env(char *s);
+void analyze();
 
 
+t_all *static_var();
 
 #endif
