@@ -55,9 +55,9 @@ int execute_pipes(t_shell *shell, t_command *cmds[])
                 close(pipes[j][1]);
                 j++;
             }
-            if(is_buildin(cmds[i]->args[0]))
+            if(is_builtin(cmds[i]->args[0]))
             {
-                execute_buildin(shell, cmds[i]);
+                execute_builtin(shell, cmds[i]);
                 exit(0);
             }
             else

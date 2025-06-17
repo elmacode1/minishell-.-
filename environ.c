@@ -68,7 +68,7 @@ int add_new_var(t_shell *shell, char *var)
     return 0;     
 }
 
-int set_env_var(t_shell *shell, char *name, char *var)
+int  set_env_var(t_shell *shell, char *name, char *var)
 {
     int len;
     int name_len;
@@ -95,4 +95,26 @@ int set_env_var(t_shell *shell, char *name, char *var)
     }
     add_new_var(shell, new_var);
     return 0;
+}
+void remove_env_var(t_shell *shell, char *name)
+{
+    int i;
+    int len;
+    i = 0;
+    len = ft_strlen(name);
+    while(shell->env_copy[i])
+    {
+        if(ft_strncmp(shell->env_copy[i], name, len) == 0 && shell->env_copy[i][len] == '=')
+        {
+            free(shell->env_copy[i]);
+            while(shell->env_copy[i + 1])
+            {
+                shell->env_copy[i] = shell->env_copy[i + 1];
+                i++;
+            }
+            shell->env_copy[i] = NULL;
+            return;
+        }
+        i++;
+    }
 }

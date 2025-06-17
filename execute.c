@@ -1,14 +1,14 @@
 #include "minishell.h"
 
-int is_buildin(char *command)
+int is_builtin(char *command)
 {
     int i;
-    char *buildins[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit", NULL};
+    char *builtins[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit", NULL};
 
     i = 0;
-    while(buildins[i])
+    while(builtins[i])
     {
-        if(strcmp(command, buildins[i]) == 0)
+        if(strcmp(command, builtins[i]) == 0)
             return (1);
         i++;
     }
@@ -62,7 +62,7 @@ int execute_external(t_shell *shell, t_command *cmd)
     }
 }
 
-int execute_buildin(t_shell *shell, t_command *cmd)
+int execute_builtin(t_shell *shell, t_command *cmd)
 {
     int i;
     char *name;
@@ -72,12 +72,12 @@ int execute_buildin(t_shell *shell, t_command *cmd)
     i = 0;
     name = cmd->args[0];
     len = strlen(name);
-    while(shell->buildinds[i].name)
+    while(shell->builtinds[i].name)
     {
-        cmd_len = strlen(shell->buildinds[i].name);
-        if(strncmp(shell->buildinds[i].name, name, len) == 0 && len == cmd_len)
+        cmd_len = strlen(shell->builtinds[i].name);
+        if(strncmp(shell->builtinds[i].name, name, len) == 0 && len == cmd_len)
         {
-            return(shell->buildinds[i].cmd_func(shell, cmd->args));
+            return(shell->builtinds[i].cmd_func(shell, cmd->args));
         }
         i++;
     }
@@ -91,7 +91,7 @@ int execute_command(t_shell *shell ,t_command *cmd)
     int tmp_out;
     int tmp_in;
     int status;
-    if(is_buildin(cmd->args[0]))
+    if(is_builtin(cmd->args[0]))
     { 
 
         tmp_out = dup(STDOUT_FILENO);
@@ -104,7 +104,7 @@ int execute_command(t_shell *shell ,t_command *cmd)
             close(tmp_out);
             return 1;
         }
-        status = execute_buildin(shell, cmd);
+        status = execute_builtin(shell, cmd);
         dup2(tmp_out, STDOUT_FILENO);
         dup2(tmp_in, STDIN_FILENO);
         close(tmp_in);

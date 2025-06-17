@@ -8,7 +8,7 @@ int main(int ac, char **av, char **envp)
     t_shell shell;
 
     shell.env_copy = copy_env(envp);
-    init_buildin(&shell);
+    init_builtin(&shell);
     
     while(1)
     {
@@ -16,23 +16,28 @@ int main(int ac, char **av, char **envp)
         if(!input)
         {
             printf("exit\n");
-            exit;
+            exit(1);
         }
         if(*input)
         {
             add_history(input);
             t_command  cmd;
             t_command  cmd1;
-            t_command  cmd2;
+            // t_command  cmd2;
         
-            char *args[] = {"echo", NULL};
+            char *args[] = {"unset", "PATH", NULL};
             cmd.outfile = NULL;
-            cmd.infile = "file.txt";
+            cmd.infile = NULL;
+            cmd.heredoc_delimiter = NULL;
             cmd.append = 0;
-            // char *args1[] = {"wc", "", NULL};
+            char *args1[] = {"env", NULL};
+            cmd1.outfile = NULL;
+            cmd1.infile = NULL;
+            cmd1.heredoc_delimiter = NULL;
+            cmd1.append = 0;
             //char *args2[] = {"uniq", NULL};
             cmd.args = args;
-            // cmd1.args = args1;
+            cmd1.args = args1;
            // cmd2.args = args2;
             // t_command *cmds[] = {&cmd, &cmd1, NULL};
             // cmds[0] = args;
@@ -44,6 +49,7 @@ int main(int ac, char **av, char **envp)
          
             // cmd1.args = args1;
             execute_command(&shell, &cmd);
+            execute_command(&shell, &cmd1);
             //execute_command(&shell, &cmd1);
         }
         free(input);

@@ -5,6 +5,8 @@ int handle_redirections(t_command *cmd)
     int fd;
     int flags;
     
+    if(cmd->heredoc_delimiter)
+        heredoc_handeler(cmd);
     if(cmd->infile) 
     {
         fd = open(cmd->infile, O_RDONLY);
@@ -16,7 +18,6 @@ int handle_redirections(t_command *cmd)
     }
     else if(cmd->outfile)
     {
-        // printf("im in loop\n");
         flags = O_CREAT | O_WRONLY;
         if(cmd->append)
             flags |= O_APPEND;
@@ -31,7 +32,7 @@ int handle_redirections(t_command *cmd)
     return 0;
 }
 
-int buildins_redirections(t_shell *shell, t_command *cmd)
+int builtins_redirections(t_command *cmd)
 {
     int tmp_out;
     int tmp_in;
