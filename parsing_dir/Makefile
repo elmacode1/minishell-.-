@@ -11,16 +11,16 @@ CC	= gcc
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-	@make -C libft
+	@make -C libft_malak
 
-	$(CC) $(FLAGS) $(OBJ) libft/libft.a -o  $(NAME) $(LDFLAGS)
+	$(CC) $(FLAGS) $(OBJ) libft_malak/libft.a -o  $(NAME) $(LDFLAGS)
 
 clean : 
 	rm -f $(OBJ)
-	@make -C libft clean
+	@make -C libft_malak clean
 
 fclean : clean
 	rm -f $(NAME)
-	@make -C libft fclean
+	@make -C libft_malak fclean
 
 re : fclean all

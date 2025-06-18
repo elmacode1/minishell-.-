@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "libft/libft.h"
+#include "libft_malak/libft.h"
 
 typedef enum e_token_type{
 	WORD,
@@ -47,6 +47,7 @@ t_token	*ft_lstlast(t_token *lst);
 t_token	*ft_lstnew(char *text, t_tokentype  type);
 int count_word(char *s);
 int check_squotes(t_token *token);
+int check_dquotes(t_token *token);
 char *ft_getword(char *s);
 char *get_env(char *s);
 void analyze();
