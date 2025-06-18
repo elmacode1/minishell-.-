@@ -4,7 +4,7 @@ t_token *lst_skip_spaces(t_token *token)
 {
 	while(token)
 	{
-			if(token->next->type == WHITESPACE)
+			if(token->type == WHITESPACE)
 				token = token->next;
 			else
 				return token;
@@ -30,12 +30,15 @@ int check_pipes(t_token *token)
 int check_squotes(t_token *token)
 {
 	int flag;
+	int c;
 
+	c = 0;
 	flag = 1;	
 	while(token)
 	{
 		if(token->type == SQUOTE && flag==1){
 			flag = 1;
+			c++;
 			token = token->next;
 		}
 		while(token && token->type != SQUOTE)
@@ -44,17 +47,22 @@ int check_squotes(t_token *token)
 			flag++;
 			token = token->next;}
 	}
+	if(c == 0)
+		return -1;
 	return flag;
 }
 int check_dquotes(t_token *token)
 {
 	int flag;
+	int c;
 
+	c = 0;
 	flag = 1;	
 	while(token)
 	{
 		if(token->type == DQUOTE && flag==1){
 			flag = 1;
+			c++;
 			token = token->next;
 		}
 		while(token && token->type != DQUOTE)
@@ -63,6 +71,8 @@ int check_dquotes(t_token *token)
 			flag++;
 			token = token->next;}
 	}
+	if(c == 0)
+		return -1;
 	return flag;
 }
 int check_red(t_token *token)
@@ -81,11 +91,5 @@ int check_red(t_token *token)
 
 int check_errors(t_token *tokens)
 {
-	//while(tokens)
-	//{
-		// if ()
-		// fd = open("", O_RDONLY);
-		// if (fd < 0)
-		// 	perror("");
-	//}
+
 }

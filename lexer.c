@@ -36,9 +36,8 @@ t_token *lexer(char *str)
 			if(str[i]=='|')
 				ft_lstadd_back(&head,ft_lstnew("|", PIPE));
 			else if(str[i] == ' ')
-			{
 				ft_lstadd_back(&head,ft_lstnew(" ", WHITESPACE));
-			}else if(str[i] == '\'')
+			else if(str[i] == '\'')
 				ft_lstadd_back(&head,ft_lstnew("\'", SQUOTE));
 			else if(str[i] == '\"')
 				ft_lstadd_back(&head,ft_lstnew("\"", DQUOTE));
@@ -69,54 +68,6 @@ t_token *lexer(char *str)
 
 	return head;
 }
-// int check_squotes(t_token *token)
-// {
-// 	int flag;
-// 	int c;
-
-// 	c = 0;
-// 	flag = 1;	
-// 	while(token)
-// 	{
-// 		if(token->type == SQUOTE && flag==1){
-// 			flag = 1;
-// 			c++;
-// 			token = token->next;
-// 		}
-// 		while(token && token->type != SQUOTE)
-// 			token = token->next;
-// 		if( token && token->type == SQUOTE){
-// 			flag++;
-// 			token = token->next;}
-// 	}
-// 	if(c == 0)
-// 	return -1;
-// 	return flag;
-// }
-// int check_dquotes(t_token *token)
-// {
-// 	int flag;
-// 	int c;
-
-// 	c = 0;
-// 	flag = 1;	
-// 	while(token)
-// 	{
-// 		if(token->type == DQUOTE && flag==1){
-// 			flag = 1;
-// 			c++;
-// 			token = token->next;
-// 		}
-// 		while(token && token->type != DQUOTE)
-// 			token = token->next;
-// 		if( token && token->type == DQUOTE){
-// 			flag++;
-// 			token = token->next;}
-// 	}
-// 	if(c == 0)
-// 	return -1;
-// 	return flag;
-// }
 
 t_all *static_var(){
 	static t_all global;
@@ -128,11 +79,11 @@ int main(int ac, char **av, char **env)
 {
 	char *str;
 	t_token *head;
-	t_all *malak;
+	t_all *global;
 	int n;
 	int x;
 
-	malak=static_var();
+	global=static_var();
 	while (1)
 	{
 		str = readline("minishell~> ");
@@ -152,7 +103,7 @@ int main(int ac, char **av, char **env)
 		else if(x > 1)
 			printf("Quotes are OK \n");
 	}
-	malak->tokens=head;
+	global->tokens=head;
 	
 
 }
