@@ -40,7 +40,7 @@ int ft_cd(t_shell *shell, char **args)
 
     if(!getcwd(cwd, sizeof(cwd)))
     {
-        perror("minishell: cd: error retreiving current directory");
+        ft_putstr_fd("minishell: cd: error retreiving current directory\n", STDERR_FILENO);
         return 1;
     }
     if(!args[1] || ft_strncmp(args[1], "~", 1) == 0)

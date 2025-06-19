@@ -4,10 +4,11 @@ SRC = 	builtins.c\
 		environ.c\
 		execute.c\
 		helpers.c\
-		main.c\
 		pipes.c\
 		redirections.c\
-		heredoc.c
+		heredoc.c\
+		export.c\
+		main.c\
 		
 OBJ = $(SRC:.c=.o)
 

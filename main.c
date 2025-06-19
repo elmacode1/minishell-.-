@@ -25,12 +25,12 @@ int main(int ac, char **av, char **envp)
             t_command  cmd1;
             // t_command  cmd2;
         
-            char *args[] = {"unset", "PATH", NULL};
+            char *args[] = {"export", "hey=heyyyyyyyy------------------------>", NULL};
             cmd.outfile = NULL;
             cmd.infile = NULL;
             cmd.heredoc_delimiter = NULL;
             cmd.append = 0;
-            char *args1[] = {"env", NULL};
+            char *args1[] = {"export", NULL};
             cmd1.outfile = NULL;
             cmd1.infile = NULL;
             cmd1.heredoc_delimiter = NULL;

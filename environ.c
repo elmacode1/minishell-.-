@@ -81,8 +81,8 @@ int  set_env_var(t_shell *shell, char *name, char *var)
     new_var = malloc(len);
     if(!new_var)
         return -1;
-    //ill replace it later with strjoin
-    snprintf(new_var, len, "%s=%s", name, var);
+    new_var = ft_strjoin(name, "=");
+    new_var = ft_strjoin(new_var, var);
     while(shell->env_copy[i])
     {
         if(strncmp(shell->env_copy[i], name, name_len) == 0 && shell->env_copy[i][name_len] == '=')

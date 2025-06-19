@@ -1,31 +1,5 @@
 #include "minishell.h"
 
-char *get_name(char *full_var)
-{
-    int i;
-    char *name;
-
-    i = 0;
-    while(full_var[i] && full_var[i] != '=')
-        i++;
-    name = malloc(i + 1);
-    name = strncpy(name, full_var, i);
-    name[i] = '\0';
-    return name;
-}
-
-char *get_value(char *full_var)
-{
-    int i;
-
-    i = 0;
-    while(full_var[i] != '=')
-        i++;
-    if(!full_var[i])
-        return NULL;
-    return strdup(&full_var[i  + 1]);
-}
-
 char **sorted_env(char **env)
 {
     int len;
@@ -42,13 +16,14 @@ char **sorted_env(char **env)
     sorted = copy_env(env);
     while(i < len - 1)
     {
+        j = 0;
         while(j < len -i - 1)
         {
-            if(ft_strncmp(env[j], env[j + 1], ft_strlen(env[j])) > 0)
+            if(ft_strncmp(sorted[j], sorted[j + 1], ft_strlen(sorted[j])) > 0)
             {
-                temp = env[j];
-                env[j] = env[i + 1];
-                env[j + 1] = temp;
+                temp = sorted[j];
+                sorted[j] = sorted[j + 1];
+                sorted[j + 1] = temp;
             }
             j++;
         }
@@ -70,12 +45,12 @@ void print_env(char **env)
         equal = ft_strchr(env[i], '=');
         if(equal)
         {
-            equal = '\0';
+            *equal = '\0';
             ft_putstr_fd(env[i], STDOUT_FILENO);
-            ft_putstr_fd("\"", STDOUT_FILENO);
+            ft_putstr_fd("=\"", STDOUT_FILENO);
             ft_putstr_fd(equal + 1, STDOUT_FILENO);
             ft_putstr_fd("\"\n", STDOUT_FILENO);
-            equal = '=';
+            *equal = '=';
         }
         else
             ft_putendl_fd(env[i], STDOUT_FILENO);
@@ -88,8 +63,7 @@ int ft_export(t_shell *shell, char **args)
 {
     int i;
     char **new_env;
-    char *new_var;
-    char *name;
+    char *equal;
     char *value;
 
     i = 1;
@@ -103,24 +77,23 @@ int ft_export(t_shell *shell, char **args)
     {
         if(!is_valid(args[i]))
         {
-            printf("unvalid identifier\n");
-            //adjust it as the bash
+            ft_putstr_fd("minishell: export: `", STDOUT_FILENO);
+            ft_putstr_fd(args[i], STDOUT_FILENO);
+            ft_putstr_fd("': not a valid identifier\n", STDOUT_FILENO);
             return 1;
         }
-        char *equal;
         equal = ft_strchr(args[i], '=');
         if(equal)
         {
-            equal = '\0';
+            equal = "\0";
             set_env_var(shell, args[i], equal + 1);
-            equal = '=';
+            equal = "=";
         }
         else
         {
-            if(get_env_var(shell, args[i]))
-            {
-                
-            }
+            value = get_env_var(shell, args[i]);
+            if(value)
+                set_env_var(shell, args[i], value);
         }
         i++;
     }
