@@ -57,6 +57,10 @@ int heredoc_handeler(t_command *cmd);
 void remove_env_var(t_shell *shell, char *name);
 int is_valid(char *var);
 int ft_export(t_shell *shell, char **args);
-
-
+int ft_cd(t_shell *shell, char **args);
+int ft_echo(t_shell *shell, char **args);
+int ft_env(t_shell *shell, char **args);
+int ft_exit(t_shell *shell, char **args);
+int ft_pwd(t_shell *shell, char **args);
+int ft_unset(t_shell *shell, char **args);
 #endif

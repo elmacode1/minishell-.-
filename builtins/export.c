@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 char **sorted_env(char **env)
 {
@@ -58,6 +58,18 @@ void print_env(char **env)
     }
 }
 
+void free_env(char **env)
+{
+    int i;
+
+    i = 0;
+    while(env[i])
+    {
+        free(env[i]);
+        i++;
+    }
+    free(env);
+}
 
 int ft_export(t_shell *shell, char **args)
 {
@@ -65,37 +77,43 @@ int ft_export(t_shell *shell, char **args)
     char **new_env;
     char *equal;
     char *value;
+    int ret;
 
     i = 1;
+    ret = 0;
     if(!args[1])
     {
         new_env = sorted_env(shell->env_copy);
         print_env(new_env);
-        //free_env(new_env);
+        free_env(new_env);
     }
     while(args[i])
     {
         if(!is_valid(args[i]))
         {
-            ft_putstr_fd("minishell: export: `", STDOUT_FILENO);
-            ft_putstr_fd(args[i], STDOUT_FILENO);
-            ft_putstr_fd("': not a valid identifier\n", STDOUT_FILENO);
-            return 1;
+            ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+            ft_putstr_fd(args[i], STDERR_FILENO);
+            ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+            ret = 1;
+            i++;
+            continue;
         }
         equal = ft_strchr(args[i], '=');
         if(equal)
         {
-            equal = "\0";
+            *equal = '\0';
             set_env_var(shell, args[i], equal + 1);
-            equal = "=";
+            *equal = '=';
         }
         else
         {
             value = get_env_var(shell, args[i]);
             if(value)
                 set_env_var(shell, args[i], value);
+            else
+                add_new_var(shell, args[i]);
         }
         i++;
     }
-    return 0;
+    return ret;
 }

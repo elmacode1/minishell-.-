@@ -1,13 +1,19 @@
 NAME = minishell
 
-SRC = 	builtins.c\
-		environ.c\
+SRC =	environ.c\
 		execute.c\
 		helpers.c\
 		pipes.c\
 		redirections.c\
 		heredoc.c\
-		export.c\
+		builtins/export.c\
+		builtins/pwd.c\
+		builtins/cd.c\
+		builtins/exit.c\
+		builtins/unset.c\
+		builtins/env.c\
+		builtins/echo.c\
+		builtins/builtins.c\
 		main.c\
 		
 OBJ = $(SRC:.c=.o)
