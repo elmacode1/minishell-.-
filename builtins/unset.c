@@ -13,7 +13,7 @@ int ft_unset(t_shell *shell, char **args)
         {
             ft_putstr_fd("minishell: unset: `", STDERR_FILENO);
             ft_putstr_fd(args[i], STDERR_FILENO);
-            ft_putstr_fd("': not a valid indentifier\n", STDERR_FILENO);
+            ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
             ret = 1;
         }
         else

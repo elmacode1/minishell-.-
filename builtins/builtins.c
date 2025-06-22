@@ -1,6 +1,5 @@
 #include "../minishell.h"
 
-
 void init_builtin(t_shell *shell)
 {
     shell->builtinds[0] = (t_builtin){"echo", &ft_echo};

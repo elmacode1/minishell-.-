@@ -22,22 +22,22 @@ int main(int ac, char **av, char **envp)
         {
             add_history(input);
             t_command  cmd;
-            // t_command  cmd1;
+            t_command  cmd1;
             // t_command  cmd2;
         
-            char *args[] = {"export", "=hey", NULL};
+            char *args[] = {"export", "hey", NULL};
             cmd.outfile = NULL;
             cmd.infile = NULL;
             cmd.heredoc_delimiter = NULL;
             cmd.append = 0;
-            // char *args1[] = {"export", NULL};
-            // cmd1.outfile = NULL;
-            // cmd1.infile = NULL;
-            // cmd1.heredoc_delimiter = NULL;
-            // cmd1.append = 0;
-            //char *args2[] = {"uniq", NULL};
+            char *args1[] = {"export", NULL};
+            cmd1.outfile = NULL;
+            cmd1.infile = NULL;
+            cmd1.heredoc_delimiter = NULL;
+            cmd1.append = 0;
+            // char *args2[] = {"uniq", NULL};
             cmd.args = args;
-            // cmd1.args = args1;
+            cmd1.args = args1;
            // cmd2.args = args2;
             // t_command *cmds[] = {&cmd, &cmd1, NULL};
             // cmds[0] = args;
@@ -49,7 +49,7 @@ int main(int ac, char **av, char **envp)
          
             // cmd1.args = args1;
             execute_command(&shell, &cmd);
-            // execute_command(&shell, &cmd1);
+            execute_command(&shell, &cmd1);
             //execute_command(&shell, &cmd1);
         }
         free(input);

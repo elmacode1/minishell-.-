@@ -63,4 +63,6 @@ int ft_env(t_shell *shell, char **args);
 int ft_exit(t_shell *shell, char **args);
 int ft_pwd(t_shell *shell, char **args);
 int ft_unset(t_shell *shell, char **args);
+int	ft_strcmp(const char *s1, const char *s2);
+
 #endif

@@ -1,25 +1,19 @@
 #include "../minishell.h"
 
-char **sorted_env(char **env)
+void bubble_sort(char **sorted, int len)
 {
-    int len;
     int i;
     int j;
     char *temp;
-    char **sorted;
 
-    len = 0;
     i = 0;
     j = 0;
-    while(env[len])
-        len++;
-    sorted = copy_env(env);
     while(i < len - 1)
     {
         j = 0;
         while(j < len -i - 1)
         {
-            if(ft_strncmp(sorted[j], sorted[j + 1], ft_strlen(sorted[j])) > 0)
+            if(ft_strcmp(sorted[j], sorted[j + 1]) > 0)
             {
                 temp = sorted[j];
                 sorted[j] = sorted[j + 1];
@@ -29,9 +23,7 @@ char **sorted_env(char **env)
         }
         i++;
     }
-    return sorted;
 }
-
 
 void print_env(char **env)
 {
@@ -71,22 +63,49 @@ void free_env(char **env)
     free(env);
 }
 
+void sort_and_print(char **env)
+{
+    int len;
+    char **sorted;
+
+    len = 0;
+
+    while(env[len])
+        len++;
+    sorted = copy_env(env);
+    bubble_sort(sorted, len);
+    print_env(sorted);
+    free_env(sorted);
+}
+
+void update_env(t_shell *shell, char *equal, char *arg)
+{
+    char *value;
+    if(equal)
+    {
+        *equal = '\0';
+        set_env_var(shell, arg, equal + 1);
+        *equal = '=';
+    }
+    else
+    {
+        value = get_env_var(shell, arg);
+        if(value)
+            set_env_var(shell, arg, value);
+        else
+            add_new_var(shell, arg);
+    }
+}
 int ft_export(t_shell *shell, char **args)
 {
     int i;
-    char **new_env;
     char *equal;
-    char *value;
     int ret;
 
     i = 1;
     ret = 0;
     if(!args[1])
-    {
-        new_env = sorted_env(shell->env_copy);
-        print_env(new_env);
-        free_env(new_env);
-    }
+        sort_and_print(shell->env_copy);
     while(args[i])
     {
         if(!is_valid(args[i]))
@@ -99,20 +118,7 @@ int ft_export(t_shell *shell, char **args)
             continue;
         }
         equal = ft_strchr(args[i], '=');
-        if(equal)
-        {
-            *equal = '\0';
-            set_env_var(shell, args[i], equal + 1);
-            *equal = '=';
-        }
-        else
-        {
-            value = get_env_var(shell, args[i]);
-            if(value)
-                set_env_var(shell, args[i], value);
-            else
-                add_new_var(shell, args[i]);
-        }
+        update_env(shell, equal, args[i]);
         i++;
     }
     return ret;

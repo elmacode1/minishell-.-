@@ -1,6 +1,5 @@
 #include "../minishell.h"
 
-
 int is_num(char *str)
 {
     int i;
@@ -36,5 +35,4 @@ int ft_exit(t_shell *shell, char **args)
     }
     exit_status = atoi(args[1]) % 256;
     exit(exit_status);
-    
 }

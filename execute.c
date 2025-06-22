@@ -14,6 +14,7 @@ int is_builtin(char *command)
     }
     return (0);
 }
+
 char *get_command_path(t_shell *shell, char *cmd)
 {
     char *env;
@@ -83,8 +84,6 @@ int execute_builtin(t_shell *shell, t_command *cmd)
     }
     return 0;
 }
-
-
 
 int execute_command(t_shell *shell ,t_command *cmd)
 {
