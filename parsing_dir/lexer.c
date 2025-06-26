@@ -69,12 +69,6 @@ t_token *lexer(char *str)
 	return head;
 }
 
-t_all *static_var(){
-	static t_all global;
-
-	return(&global);
-}
-
 int main(int ac, char **av, char **env)
 {
 	char *str;

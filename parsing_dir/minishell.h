@@ -21,6 +21,14 @@ typedef enum e_token_type{
 	ENV,
 }t_tokentype;
 
+typedef struct s_cmd {
+    char **argv;        // Command and its arguments (e.g., {"ls", "-l", NULL})
+    char *infile;       // Input file for '<' (e.g., "input.txt")
+    char *outfile;      // Output file for '>' or '>>' (e.g., "output.txt")
+    int   append;       // 1 if '>>', 0 if '>'
+    struct s_cmd *next; // Next command in a pipeline (for '|')
+} t_cmd;
+
 typedef struct s_free
 {
 	void *content;
@@ -32,7 +40,8 @@ typedef struct s_token
 	char *text;
 	t_tokentype type;
 	struct s_token *next;
-}t_token;
+}	
+t_token;
 
 typedef struct s_all
 {
@@ -50,9 +59,7 @@ int check_squotes(t_token *token);
 int check_dquotes(t_token *token);
 char *ft_getword(char *s);
 char *get_env(char *s);
-void analyze();
-
-
 t_all *static_var();
+
 
 #endif

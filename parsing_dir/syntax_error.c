@@ -91,5 +91,21 @@ int check_red(t_token *token)
 
 int check_errors(t_token *tokens)
 {
-
+	if (!check_pipes(tokens)) {
+        printf("Syntax error: invalid pipe usage\n");
+        return 0;
+    }
+    if (!check_red(tokens)) {
+        printf("Syntax error: invalid redirection\n");
+        return 0;
+    }
+    if (check_squotes(tokens) == 1) {
+        printf("Syntax error: unclosed single quote\n");
+        return 0;
+    }
+    if (check_dquotes(tokens) == 1) {
+        printf("Syntax error: unclosed double quote\n");
+        return 0;
+    }
+    return 1;
 }

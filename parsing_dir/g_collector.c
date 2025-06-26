@@ -1,5 +1,12 @@
 #include "minishell.h"
 
+
+t_all *static_var(){
+	static t_all global;
+
+	return(&global);
+}
+
 t_free *lst_new_free(void *content)
 {
 	t_free *node;
