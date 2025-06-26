@@ -1,13 +1,17 @@
 #include "minishell.h"
 
-int heredoc_handeler(t_command *cmd)
+int heredoc_handeler(t_shell *shell, t_command *cmd)
 {
     char *line;
     int fd;
-    char *tmp;
 
-    tmp = "tempfile";
-    fd = open(tmp, O_CREAT | O_APPEND | O_WRONLY, 0666);
+    shell->tempfile = "tempfile";
+    fd = open(shell->tempfile, O_CREAT | O_APPEND | O_WRONLY, 0666);
+    if(fd < 0)
+    {
+        ft_putstr_fd("minishell: heredoc\n", STDERR_FILENO);
+        return 1;
+    }
     while(1)
     {
         line = readline("> ");
@@ -20,6 +24,7 @@ int heredoc_handeler(t_command *cmd)
 
     free(line);
     close(fd);
-    cmd->infile = strdup(tmp);
+    cmd->infile = strdup(shell->tempfile);
+
     return 0;
 }

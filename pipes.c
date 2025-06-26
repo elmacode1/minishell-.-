@@ -24,7 +24,61 @@ int **create_pipes(int n_cmds)
     return pipes;
 }
 
-int execute_pipes(t_shell *shell, t_command *cmds[])
+void free_pipes(int  **pipes, int n_cmds)
+{
+    int j;
+
+    j = 0;
+    while(j < n_cmds - 1)
+    {
+        free(pipes[j]);
+        j++;
+    }
+    free(pipes);
+}
+
+void waiting_all(int n_cmds)
+{
+    int j;
+
+    j = 0;
+    while(j < n_cmds)
+    {
+        wait(NULL);
+        j++;
+    }
+}
+
+int builtin_exec_pipe(t_shell *shell, char **args)
+{
+    int i;
+    char *name;
+
+    i = 0;
+    name = args[0];
+    while(shell->builtinds[i].name)
+    {
+        if(strcmp(shell->builtinds[i].name, name) == 0)
+            return(shell->builtinds[i].cmd_func(shell, args));
+        i++;
+    }
+    return 0;
+}
+
+int count_commands(t_command *command)
+{
+    int n_cmds;
+
+    n_cmds = 0;
+    while(command)
+    {
+        n_cmds++;
+        command = command->next;
+    }
+    return n_cmds;
+}
+
+int execute_pipes(t_shell *shell, t_command *cmd)
 {
     int n_cmds;
     int i;
@@ -33,15 +87,14 @@ int execute_pipes(t_shell *shell, t_command *cmds[])
     int **pipes;
     char *path;
 
-    n_cmds = 0;
     i = 0;
-    while(cmds[n_cmds])
-        n_cmds++;
+    n_cmds = count_commands(cmd);
+    printf("%d\n", n_cmds);
     pipes = create_pipes(n_cmds);
     while(i < n_cmds)
     {
         j = 0;
-     
+        
         pid = fork();
         if(pid == 0)
         {
@@ -55,19 +108,26 @@ int execute_pipes(t_shell *shell, t_command *cmds[])
                 close(pipes[j][1]);
                 j++;
             }
-            if(is_builtin(cmds[i]->args[0]))
-            {
-                execute_builtin(shell, cmds[i]);
-                exit(0);
-            }
+            if(is_builtin(cmd->args[0]))
+                return execute_builtin(shell, cmd);
             else
             {
-                path = get_command_path(shell, cmds[i]->args[0]);
-                execve(path, cmds[i]->args, shell->env_copy);
-                perror("execve");
-                exit(1);
+                path = get_command_path(shell, cmd->args[0]);
+                if(!path)
+                {
+                    ft_putstr_fd("minishell: ", STDERR_FILENO);
+                    ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+                    ft_putstr_fd("command not found\n", STDERR_FILENO);
+                    return 127;
+                }
+                handle_redirections(shell, cmd);
+                execve(path, cmd->args, shell->env_copy);
+                free(path);
+                ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
+                return 126;
             }
         }
+        cmd = cmd->next;
         i++;
     }
     j = 0;
@@ -77,11 +137,7 @@ int execute_pipes(t_shell *shell, t_command *cmds[])
         close(pipes[j][1]);
         j++;
     }
-    j = 0;
-    while(j < n_cmds)
-    {
-        wait(NULL);
-        j++;
-    }
+    waiting_all(n_cmds);
+    free_pipes(pipes, n_cmds);
     return 0;
 }

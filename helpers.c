@@ -29,3 +29,15 @@ int	ft_strcmp(const char *s1, const char *s2)
 	}
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
+
+void free_array(char **arr)
+{
+    int i = 0;
+
+    while(arr[i])
+    {
+        free(arr[i]);
+        i++;
+    }
+    free(arr);
+}

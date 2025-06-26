@@ -1,12 +1,12 @@
 #include "minishell.h"
 
-int handle_redirections(t_command *cmd)
+int    handle_redirections(t_shell *shell, t_command *cmd)
 {
     int fd;
     int flags;
     
     if(cmd->heredoc_delimiter)
-        heredoc_handeler(cmd);
+        heredoc_handeler(shell, cmd);
     if(cmd->infile) 
     {
         fd = open(cmd->infile, O_RDONLY);
@@ -29,27 +29,9 @@ int handle_redirections(t_command *cmd)
         dup2(fd, STDOUT_FILENO);
         close(fd);
     }
+    unlink(shell->tempfile);
+    shell->tempfile = NULL;
     return 0;
 }
 
-int builtins_redirections(t_command *cmd)
-{
-    int tmp_out;
-    int tmp_in;
 
-    tmp_out = dup(STDOUT_FILENO);
-    tmp_in = dup(STDIN_FILENO);
-    if(handle_redirections(cmd) == 1)
-    {
-        dup2(tmp_out, STDOUT_FILENO);
-        dup2(tmp_in, STDIN_FILENO);
-        close(tmp_in);
-        close(tmp_out);
-        return 1;
-    }
-    dup2(tmp_out, STDOUT_FILENO);
-    dup2(tmp_in, STDIN_FILENO);
-    close(tmp_in);
-    close(tmp_out);
-    return 0;
-}

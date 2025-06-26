@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
+#include <stdbool.h>
 #include "Libft/libft.h"
 
 typedef struct s_shell t_shell;
@@ -21,11 +22,12 @@ typedef int (*func)(struct s_shell *, char **);
 typedef struct s_command
 {
     char **args;
-    char ***cmds;
+    char ***multiple_args;
     char *infile;
     char *outfile;
     int append;
     char *heredoc_delimiter;
+    struct s_command *next;
 }       t_command;
 
 typedef struct s_builtin
@@ -39,10 +41,10 @@ struct s_shell
 {
     char **env_copy;
     t_builtin builtinds[8];
-
+    char *tempfile;
 };
-int handle_redirections(t_command *cmd);
-int execute_pipes(t_shell *shell, t_command *cmds[]);
+int handle_redirections(t_shell *shell, t_command *cmd);
+int execute_pipes(t_shell *shell, t_command *cmd);
 char **copy_env(char **env);
 void init_builtin(t_shell *shell);
 int execute_command(t_shell *shell ,t_command *cmd);
@@ -52,8 +54,7 @@ int set_env_var(t_shell *shell, char *name, char *var);
 char *get_command_path(t_shell *shell, char *cmd);
 int is_builtin(char *command);
 int execute_builtin(t_shell *shell, t_command *cmd);
-int builtins_redirections(t_command *cmd);
-int heredoc_handeler(t_command *cmd);
+int heredoc_handeler(t_shell *shell, t_command *cmd);
 void remove_env_var(t_shell *shell, char *name);
 int is_valid(char *var);
 int ft_export(t_shell *shell, char **args);
@@ -64,5 +65,8 @@ int ft_exit(t_shell *shell, char **args);
 int ft_pwd(t_shell *shell, char **args);
 int ft_unset(t_shell *shell, char **args);
 int	ft_strcmp(const char *s1, const char *s2);
+void free_array(char **arr);
+int builtin_func(t_shell *shell, t_command *cmd);
+int execute(t_shell *shell, t_command *cmd);
 
 #endif

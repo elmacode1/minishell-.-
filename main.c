@@ -22,37 +22,40 @@ int main(int ac, char **av, char **envp)
         {
             add_history(input);
             t_command  cmd;
-            t_command  cmd1;
-            // t_command  cmd2;
+            // t_command cmd1;
+            // t_command cmd2;
         
-            char *args[] = {"export", "hey", NULL};
+            char *args1[] = {"echo", NULL};
+            // char *args2[] = {"export", NULL};
+
+            // char *args2[] = {"sort", NULL};
+            // char *args3[] = {"uniq", NULL};
+
+            cmd.args = args1;
             cmd.outfile = NULL;
             cmd.infile = NULL;
-            cmd.heredoc_delimiter = NULL;
+            cmd.heredoc_delimiter = "oum";
             cmd.append = 0;
-            char *args1[] = {"export", NULL};
-            cmd1.outfile = NULL;
-            cmd1.infile = NULL;
-            cmd1.heredoc_delimiter = NULL;
-            cmd1.append = 0;
-            // char *args2[] = {"uniq", NULL};
-            cmd.args = args;
-            cmd1.args = args1;
-           // cmd2.args = args2;
-            // t_command *cmds[] = {&cmd, &cmd1, NULL};
-            // cmds[0] = args;
-            // cmds[1] = args1;
-            
-            // execute_pipes(&shell, cmds);
+            cmd.next = NULL;
 
-            // printf("%s\n", get_env_var(&shell ,"hey_hey"));
-         
-            // cmd1.args = args1;
-            execute_command(&shell, &cmd);
-            execute_command(&shell, &cmd1);
-            //execute_command(&shell, &cmd1);
+            // cmd1.args = args2;
+            // cmd1.outfile = NULL;
+            // cmd1.infile = NULL;
+            // cmd1.heredoc_delimiter = 0;
+            // cmd1.append = 0;
+            // cmd1.next = &cmd2;
+
+            // cmd2.args = args3;
+            // cmd2.outfile = "test3.txt";
+            // cmd2.infile = NULL;
+            // cmd2.heredoc_delimiter = 0;
+            // cmd2.append = 0;
+            // cmd2.next = NULL;
+            execute(&shell, &cmd);
+            // execute(&shell, &cmd1);
         }
         free(input);
     }
+    free(shell.env_copy);
     return 0;
 }

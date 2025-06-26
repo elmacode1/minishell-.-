@@ -108,6 +108,8 @@ int ft_export(t_shell *shell, char **args)
         sort_and_print(shell->env_copy);
     while(args[i])
     {
+        printf("export called\n");
+
         if(!is_valid(args[i]))
         {
             ft_putstr_fd("minishell: export: `", STDERR_FILENO);
