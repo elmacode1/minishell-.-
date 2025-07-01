@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRC = 	lexer.c utils.c token_utils.c syntax_error.c parsin.c
+SRC = 	lexer.c utils.c token_utils.c syntax_error.c parser.c
 		
 OBJ = $(SRC:.c=.o)
 

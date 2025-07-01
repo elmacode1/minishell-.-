@@ -1,5 +1,11 @@
 #include "minishell.h"
-
+static void add_arg(char ***argv, int *argc, char *arg)
+{
+    *argv = realloc(*argv, sizeof(char*) * (*argc + 2)); // Reallocate argv to hold one more string (+1 for new, +1 for NULL)
+    (*argv)[*argc] = strdup(arg);
+    (*argc)++;
+    (*argv)[*argc] = NULL;
+}
 static t_cmd *new_cmd() {
     t_cmd *new;
 	new = malloc(sizeof(t_cmd));
@@ -33,33 +39,35 @@ t_cmd *parse_tokens(t_token *tokens) {
             argc = 0;
         }
         if (tok->type == WORD) {
-        //    adding the arg to the list;
+			add_arg(&argv, &argc, tok->text);//adding the arg to the list;
         } else if (tok->type == RED_IN) {
-            tok = tok->next;
+			tok = tok->next;
+			if ((tok->next) == NULL)
+				return NULL;
             if (tok && tok->type == WORD)
-                curent_cmd->infile = strdup(tok->text);
+                curent_cmd->infile = ft_strdup(tok->text);
         } else if (tok->type == RED_OUT) {
-            tok = tok->next;
+            tok = tok->next->next;
             if (tok && tok->type == WORD) {
-                curent_cmd->outfile = strdup(tok->text);
+                curent_cmd->outfile = ft_strdup(tok->text);
                 curent_cmd->append = 0;
             }
         } else if (tok->type == APPEND) {
             tok = tok->next;
             if (tok && tok->type == WORD) {
-                curent_cmd->outfile = strdup(tok->text);
+                curent_cmd->outfile = ft_strdup(tok->text);
                 curent_cmd->append = 1;
             }
-        // } else if (tok->type == PIPE) {
-        //     curent_cmd->argv = argv;
-        //     argv = NULL;
-        //     argc = 0;
-        //     if (!cmd_head)
-        //         cmd_head = curent_cmd;
-        //     else
-        //         cmd_last->next = curent_cmd;
-        //     cmd_last = curent_cmd;
-        //     curent_cmd = NULL;
+        } else if (tok->type == PIPE) {
+            curent_cmd->argv = argv;
+            argv = NULL;
+            argc = 0;
+            if (!cmd_head)
+                cmd_head = curent_cmd;
+            else
+                cmd_last->next = curent_cmd;
+            cmd_last = curent_cmd;
+            curent_cmd = NULL;
         }
         if(tok)
 			tok = tok->next;

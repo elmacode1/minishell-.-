@@ -10,12 +10,12 @@ int count_word(char *s)
 	return count;
 }
 
-t_token	*ft_lstnew(char *text, t_tokentype  type)
+t_token	*ft_lstnew(char *text,t_state state, t_tokentype  type)
 {
 	t_token	*node;
-	t_all *global;
+	// t_all *global;
 
-	global = static_var();
+	// global = static_var();
 	node = malloc(sizeof(t_token));
 	if (!node)
 		return (NULL);
@@ -23,6 +23,7 @@ t_token	*ft_lstnew(char *text, t_tokentype  type)
 
 	node->text = text;
 	node->type = type;
+	node->state = state;
 	node->next = NULL;
 	return (node);
 }

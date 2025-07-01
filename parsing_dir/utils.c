@@ -1,7 +1,7 @@
 #include "minishell.h"
 int is_space(char c)
 {
-    return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r');
+    return (c == ' ' || c == '\t' || c == '\n');
 }
 int is_special(char c)
 {
