@@ -23,31 +23,34 @@ char *get_env(char *s)
 
 void *quotes_hander(char c, t_state *state, t_token **head)
 {
-	static int flag;
-
-	flag = 0;
 	if(c == '\"'){
-		if(flag == 1 && state ==IN_DQUOTE)
+
+		
+		if(*state ==IN_DQUOTE)
 		{
-			state = GENERAL;
-			flag=0;
-		}
-		ft_lstadd_back(&head,ft_lstnew("\"", *state, DQUOTE));
-		if(state == GENERAL)
+			*state = GENERAL;
+			ft_lstadd_back(head,ft_lstnew("\"", *state, DQUOTE));
+		}else if (*state == GENERAL)
 		{
-		state = IN_DQUOTE;
-		flag = 1;
+		ft_lstadd_back(head,ft_lstnew("\"", *state, DQUOTE));
+		*state = IN_DQUOTE;
+		}else{
+			ft_lstadd_back(head,ft_lstnew("\"", *state, DQUOTE));
 		}
 	}
 	else if(c == '\''){
-		if(flag == 1 && state==IN_SQUOTE){
-			state = GENERAL;
-			flag=0;
+		if(*state ==IN_SQUOTE)
+		{
+			*state = GENERAL;
+			ft_lstadd_back(head,ft_lstnew("\'", *state, SQUOTE));
+		}else if (*state == GENERAL)
+		{
+		ft_lstadd_back(head,ft_lstnew("\'", *state, SQUOTE));
+		*state = IN_SQUOTE;
 		}
-		ft_lstadd_back(&head, ft_lstnew("\'", *state, SQUOTE));
-		if(state == GENERAL && flag ==0)
-		state = IN_SQUOTE;
-		flag = 1;
+		else{
+			ft_lstadd_back(head,ft_lstnew("\'", *state, SQUOTE));
+		}
 	}
 }
 
@@ -62,15 +65,17 @@ t_token *lexer(char *str)
 	head = NULL;
 	i = 0;
 	while(str[i])
-	{
+	{	
 		if(is_special(str[i]))
 		{
 			if(str[i]=='|')
 				ft_lstadd_back(&head,ft_lstnew("|",state ,PIPE));
-			else if(is_space(str[i]))
+			else if(is_space(str[i])){
 				ft_lstadd_back(&head,ft_lstnew(" ",state ,WHITESPACE));
+			}
 			else if(str[i] == '\'' || str[i] == '\"')
 				quotes_hander(str[i], &state, &head);
+
 			else if(str[i] == '>' && str[i + 1] && str[i+1] == '>')
 			{
 				ft_lstadd_back(&head,ft_lstnew(">>",state, APPEND));
@@ -87,14 +92,17 @@ t_token *lexer(char *str)
 				i++;
 				i+=count_word(str+i)-1;
 			}
+		}
 			else
 			{
+		
+	
 				ft_lstadd_back (&head,ft_lstnew(ft_getword(str+i),state,WORD));
 				i+=count_word(str+i)-1;
 			}
 			i++;
 		}
-	}
+	
 	return head;
 }
 
@@ -110,12 +118,19 @@ int main(int ac, char **av, char **env)
 	while (1)
 	{
 		str = readline("minishell~> ");
+		printf("%s\n",str);
 		if (!str)
 			return (0);
 
 		head = lexer(str);
 		// head = lst_skip_spaces(head);
 		check_errors(head);
+		while(head)
+		{
+			printf("text:%s , state:%d\n",head->text,head->state);
+			head=head->next;
+		}
+		exit(0);
 		command = parse_tokens(head);
 		args = command->argv;
 		int i = 0;
