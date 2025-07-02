@@ -30,11 +30,14 @@ void *quotes_hander(char c, t_state *state, t_token **head)
 		{
 			*state = GENERAL;
 			ft_lstadd_back(head,ft_lstnew("\"", *state, DQUOTE));
-		}else if (*state == GENERAL)
+		}
+		else if (*state == GENERAL)
 		{
-		ft_lstadd_back(head,ft_lstnew("\"", *state, DQUOTE));
-		*state = IN_DQUOTE;
-		}else{
+			ft_lstadd_back(head,ft_lstnew("\"", *state, DQUOTE));
+			*state = IN_DQUOTE;
+		}
+		else
+		{
 			ft_lstadd_back(head,ft_lstnew("\"", *state, DQUOTE));
 		}
 	}
@@ -43,12 +46,14 @@ void *quotes_hander(char c, t_state *state, t_token **head)
 		{
 			*state = GENERAL;
 			ft_lstadd_back(head,ft_lstnew("\'", *state, SQUOTE));
-		}else if (*state == GENERAL)
-		{
-		ft_lstadd_back(head,ft_lstnew("\'", *state, SQUOTE));
-		*state = IN_SQUOTE;
 		}
-		else{
+		else if (*state == GENERAL)
+		{
+			ft_lstadd_back(head,ft_lstnew("\'", *state, SQUOTE));
+			*state = IN_SQUOTE;
+		}
+		else
+		{
 			ft_lstadd_back(head,ft_lstnew("\'", *state, SQUOTE));
 		}
 	}
@@ -118,19 +123,19 @@ int main(int ac, char **av, char **env)
 	while (1)
 	{
 		str = readline("minishell~> ");
-		printf("%s\n",str);
+		// printf("%s\n",str);
 		if (!str)
 			return (0);
 
 		head = lexer(str);
-		// head = lst_skip_spaces(head);
 		check_errors(head);
-		while(head)
-		{
-			printf("text:%s , state:%d\n",head->text,head->state);
-			head=head->next;
-		}
-		exit(0);
+		// while(head)
+		// {
+		// 	printf("text:%s , state:%d\n",head->text,head->state);
+		// 	head=head->next;
+		// }
+		// exit(0);
+		head = lst_skip_spaces(head);
 		command = parse_tokens(head);
 		args = command->argv;
 		int i = 0;

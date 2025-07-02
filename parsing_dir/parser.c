@@ -1,10 +1,30 @@
 #include "minishell.h"
 static void add_arg(char ***argv, int *argc, char *arg)
 {
-    *argv = realloc(*argv, sizeof(char*) * (*argc + 2)); // Reallocate argv to hold one more string (+1 for new, +1 for NULL)
-    (*argv)[*argc] = strdup(arg);
+    char **new_argv;
+    int i;
+
+    new_argv = malloc(sizeof(char*) * (*argc + 2)); // +1 for new arg, +1 for NULL
+    if (!new_argv)
+        return;
+    
+    // Copy old arguments
+    i = 0;
+    while (i < *argc)
+    {
+        new_argv[i] = (*argv)[i];
+        i++;
+    }
+    
+    // Add new argument
+    new_argv[*argc] = ft_strdup(arg);
+    new_argv[*argc + 1] = NULL;
+    
+    // Free old array and update
+    if (*argv)
+        free(*argv);
+    *argv = new_argv;
     (*argc)++;
-    (*argv)[*argc] = NULL;
 }
 static t_cmd *new_cmd() {
     t_cmd *new;
@@ -39,21 +59,19 @@ t_cmd *parse_tokens(t_token *tokens) {
             argc = 0;
         }
         if (tok->type == WORD) {
-			add_arg(&argv, &argc, tok->text);//adding the arg to the list;
+			add_arg(&argv, &argc, tok->text);
         } else if (tok->type == RED_IN) {
-			tok = tok->next;
-			if ((tok->next) == NULL)
-				return NULL;
+            tok = lst_skip_spaces(tok->next);
             if (tok && tok->type == WORD)
                 curent_cmd->infile = ft_strdup(tok->text);
         } else if (tok->type == RED_OUT) {
-            tok = tok->next->next;
+            tok = lst_skip_spaces(tok->next);
             if (tok && tok->type == WORD) {
                 curent_cmd->outfile = ft_strdup(tok->text);
                 curent_cmd->append = 0;
             }
         } else if (tok->type == APPEND) {
-            tok = tok->next;
+            tok = lst_skip_spaces(tok->next);
             if (tok && tok->type == WORD) {
                 curent_cmd->outfile = ft_strdup(tok->text);
                 curent_cmd->append = 1;
