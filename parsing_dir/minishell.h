@@ -27,13 +27,17 @@ typedef	enum s_state{
 	IN_SQUOTE,
 } t_state;
 
+typedef struct s_redirect {
+    char *filename;
+    int type;              // RED_IN, RED_OUT, APPEND, HEREDOC
+    struct s_redirect *next;
+} t_redirect;
+
 typedef struct s_cmd {
-    char **argv;        // Command and its arguments (e.g., {"ls", "-l", NULL})
-    char *infile;       // Input file for '<' (e.g., "input.txt")
-    char *outfile;      // Output file for '>' or '>>' (e.g., "output.txt")
-    int   append;       // 1 if '>>', 0 if '>'
-    struct s_cmd *next; // Next command in a pipeline (for '|')
-} t_cmd; 
+    char **argv;
+    t_redirect *redirections;  // Linked list of ALL redirections
+    struct s_cmd *next;
+} t_cmd;
 
 typedef struct s_free
 {
@@ -69,5 +73,9 @@ int check_errors(t_token *tokens);
 t_token *lst_skip_spaces(t_token *token);
 t_cmd *parse_tokens(t_token *tokens);
 
+void	add_arg(char ***argv, int *argc, char *arg);
+t_cmd	*new_cmd();
+void	add_redirection(t_cmd *cmd, char *filename, int type);
+t_cmd *parse_tokens(t_token *tokens);
 
 #endif

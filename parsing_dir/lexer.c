@@ -19,7 +19,7 @@ char *get_env(char *s)
 	str = malloc(sizeof(char)*(c+2));  
 	ft_strlcpy(str,s,c+2);
 	return str;
-}																					//echo "malak"'malak'
+}
 
 void *quotes_hander(char c, t_state *state, t_token **head)
 {
@@ -98,15 +98,13 @@ t_token *lexer(char *str)
 				i+=count_word(str+i)-1;
 			}
 		}
-			else
-			{
-		
-	
+		else
+		{
 				ft_lstadd_back (&head,ft_lstnew(ft_getword(str+i),state,WORD));
 				i+=count_word(str+i)-1;
-			}
-			i++;
 		}
+		i++;
+	}
 	
 	return head;
 }
@@ -123,33 +121,35 @@ int main(int ac, char **av, char **env)
 	while (1)
 	{
 		str = readline("minishell~> ");
-		// printf("%s\n",str);
 		if (!str)
 			return (0);
 
 		head = lexer(str);
 		check_errors(head);
-		// while(head)
-		// {
-		// 	printf("text:%s , state:%d\n",head->text,head->state);
-		// 	head=head->next;
-		// }
-		// exit(0);
 		head = lst_skip_spaces(head);
 		command = parse_tokens(head);
-		args = command->argv;
-		int i = 0;
 		while (command)
-		{
-			while (args[i])
-			{
-				printf("arg[%d] == %s\n", i, args[i]);
-				i++;
-			}
-			printf("command->append == %d\n", command->append);
-			printf("command->infile == %s\n", command->infile);
-			printf("command->outfile == %s\n", command->outfile);
-			command = command->next;
-		}
+        {
+            // Print command arguments
+            if (command->argv)
+            {
+                int i = 0;
+                while (command->argv[i])
+                {
+                    printf("arg[%d] == %s\n", i, command->argv[i]);
+                    i++;
+                }
+            }
+            
+            // Print redirections
+            t_redirect *redirect = command->redirections;
+            while (redirect)
+            {
+                printf("redirection: %s (type: %d)\n", redirect->filename, redirect->type);
+                redirect = redirect->next;
+            }
+            
+            command = command->next;
+        }
 	}
 }

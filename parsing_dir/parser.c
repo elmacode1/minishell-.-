@@ -1,45 +1,48 @@
 #include "minishell.h"
-static void add_arg(char ***argv, int *argc, char *arg)
+void	add_arg(char ***argv, int *argc, char *arg)
 {
-    char **new_argv;
-    int i;
-
-    new_argv = malloc(sizeof(char*) * (*argc + 2)); // +1 for new arg, +1 for NULL
-    if (!new_argv)
-        return;
-    
-    // Copy old arguments
-    i = 0;
-    while (i < *argc)
-    {
-        new_argv[i] = (*argv)[i];
-        i++;
-    }
-    
-    // Add new argument
-    new_argv[*argc] = ft_strdup(arg);
-    new_argv[*argc + 1] = NULL;
-    
-    // Free old array and update
-    if (*argv)
-        free(*argv);
-    *argv = new_argv;
+    *argv = realloc(*argv, sizeof(char*) * (*argc + 2)); // Reallocate argv to hold one more string (+1 for new, +1 for NULL)
+    (*argv)[*argc] = strdup(arg);
     (*argc)++;
+    (*argv)[*argc] = NULL;
 }
-static t_cmd *new_cmd() {
+t_cmd	*new_cmd() 
+{
     t_cmd *new;
 	new = malloc(sizeof(t_cmd));
     if (!new)
 		return NULL;
     new->argv = NULL;
-    new->infile = NULL;
-    new->outfile = NULL;
-    new->append = 0;
+	new->redirections = NULL;
     new->next = NULL;
     return new;
 }
 
-t_cmd *parse_tokens(t_token *tokens) {
+void	add_redirection(t_cmd *cmd, char *filename, int type)
+{
+	// Create new redirection node
+	t_redirect *new_redirect;
+	new_redirect = malloc(sizeof(t_redirect));
+	new_redirect->filename = strdup(filename);
+	new_redirect->type = type;
+	new_redirect->next = NULL;
+
+// Add to the end of the list
+	if (!cmd->redirections)
+	{
+		cmd->redirections = new_redirect;
+	}
+	else
+	{
+		t_redirect *last = cmd->redirections;
+		while (last->next)
+			last = last->next;
+		last->next = new_redirect;
+	}
+}
+
+t_cmd *parse_tokens(t_token *tokens)
+{
     t_cmd *cmd_head;
 	t_cmd *cmd_last;
 	t_cmd *curent_cmd;
@@ -52,40 +55,57 @@ t_cmd *parse_tokens(t_token *tokens) {
     char **argv = NULL;
     int argc = 0;
 
-    while (tok) {
-        if (!curent_cmd) {
+    while (tok)
+	{
+        if (!curent_cmd)
+		{
             curent_cmd = new_cmd();
             argv = NULL;
             argc = 0;
         }
-        if (tok->type == WORD) {
-			add_arg(&argv, &argc, tok->text);
-        } else if (tok->type == RED_IN) {
-            tok = lst_skip_spaces(tok->next);
+        if (tok->type == WORD)
+			add_arg(&argv, &argc, tok->text);//adding the arg to the list;
+		else if (tok->type == RED_IN)
+		{
+			tok = lst_skip_spaces(tok->next);
             if (tok && tok->type == WORD)
-                curent_cmd->infile = ft_strdup(tok->text);
-        } else if (tok->type == RED_OUT) {
-            tok = lst_skip_spaces(tok->next);
-            if (tok && tok->type == WORD) {
-                curent_cmd->outfile = ft_strdup(tok->text);
-                curent_cmd->append = 0;
+			{
+               add_redirection(curent_cmd, tok->text, RED_IN);
+			   tok = tok->next;
+			   continue;
+			}
+        } 
+		else if (tok->type == RED_OUT)
+		{
+			tok = lst_skip_spaces(tok->next);
+            if (tok && tok->type == WORD)
+			{
+                add_redirection(curent_cmd, tok->text, RED_OUT);
+				tok = tok->next;
+				continue;
             }
-        } else if (tok->type == APPEND) {
-            tok = lst_skip_spaces(tok->next);
-            if (tok && tok->type == WORD) {
-                curent_cmd->outfile = ft_strdup(tok->text);
-                curent_cmd->append = 1;
+        }
+		else if (tok->type == APPEND)
+		{
+			tok = lst_skip_spaces(tok->next);
+            if (tok && tok->type == WORD)
+			{
+                add_redirection(curent_cmd, tok->text, APPEND);
+				tok = tok->next;
+				continue;
             }
-        } else if (tok->type == PIPE) {
+        }
+		else if (tok->type == PIPE)
+		{
             curent_cmd->argv = argv;
-            argv = NULL;
-            argc = 0;
             if (!cmd_head)
                 cmd_head = curent_cmd;
             else
                 cmd_last->next = curent_cmd;
             cmd_last = curent_cmd;
             curent_cmd = NULL;
+			argv = NULL;
+			argc = 0;
         }
         if(tok)
 			tok = tok->next;
