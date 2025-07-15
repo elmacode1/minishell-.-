@@ -1,7 +1,7 @@
 #include "minishell.h"
 void	add_arg(char ***argv, int *argc, char *arg)
 {
-    *argv = realloc(*argv, sizeof(char*) * (*argc + 2)); // Reallocate argv to hold one more string (+1 for new, +1 for NULL)
+    *argv = realloc(*argv, sizeof(char*) * (*argc + 2));
     (*argv)[*argc] = strdup(arg);
     (*argc)++;
     (*argv)[*argc] = NULL;
