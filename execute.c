@@ -59,6 +59,7 @@ int execute_external(t_shell *shell, t_command *cmd)
         return 127;
     }
     pid = fork();
+    
     if(pid == -1)
     {
         ft_putstr_fd("minishell: fork\n", STDERR_FILENO);
@@ -66,9 +67,12 @@ int execute_external(t_shell *shell, t_command *cmd)
     }
     if(pid == 0)
     {
-        handle_redirections(shell, cmd);
-        // unlink(shell->tempfile);
-        // shell->tempfile = NULL;
+        
+        if(handle_redirections(shell, cmd) == 1)
+            return 1;
+            // unlink(shell->tempfile);
+            // shell->tempfile = NULL;
+        signal(SIGQUIT, handle_sigquit);
         execve(path, cmd->args, shell->env_copy);
         ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
         return 126;

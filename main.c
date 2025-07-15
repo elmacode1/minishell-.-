@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+t_signal g_signal = {0};
+
 int main(int ac, char **av, char **envp)
 {
     (void)ac;
@@ -9,7 +11,7 @@ int main(int ac, char **av, char **envp)
 
     shell.env_copy = copy_env(envp);
     init_builtin(&shell);
-    
+    init_signals();
     while(1)
     {
         input = readline("minishell$");
@@ -22,20 +24,35 @@ int main(int ac, char **av, char **envp)
         {
             add_history(input);
             t_command  cmd;
+            t_redirects *redir = malloc(sizeof(t_redirects));
+            redir->infiles = malloc(sizeof(char *) * 3);
+            redir->outfiles = malloc(sizeof(char *) * 3);
+            // redir->append = malloc(sizeof(int *) * 3);
             // t_command cmd1;
             // t_command cmd2;
         
-            char *args1[] = {"echo", NULL};
-            // char *args2[] = {"export", NULL};
+            char *args1[] = {"cat", NULL};
+            // char *args2[] = {"pwd", NULL};
 
             // char *args2[] = {"sort", NULL};
             // char *args3[] = {"uniq", NULL};
 
             cmd.args = args1;
-            cmd.outfile = NULL;
-            cmd.infile = NULL;
-            cmd.heredoc_delimiter = "oum";
-            cmd.append = 0;
+            // redir->outfiles = NULL;
+            redir->infiles[0] = "f1";
+            redir->infiles[1] = "f3";
+            redir->infiles[2] = NULL;
+            // redir->append = NULL;
+            redir->outfiles[0] = "out1";
+            redir->outfiles[1] = "out2";
+            redir->outfiles[2] = NULL;
+
+            redir->append[0] = 1;
+            redir->append[1] = 1;
+            redir->append[2] = '\0';
+            cmd.redirs = redir; 
+            cmd.heredoc_delimiter = NULL;
+            // cmd.append = 0;
             cmd.next = NULL;
 
             // cmd1.args = args2;
@@ -43,7 +60,7 @@ int main(int ac, char **av, char **envp)
             // cmd1.infile = NULL;
             // cmd1.heredoc_delimiter = 0;
             // cmd1.append = 0;
-            // cmd1.next = &cmd2;
+            // cmd1.next = NULL;
 
             // cmd2.args = args3;
             // cmd2.outfile = "test3.txt";

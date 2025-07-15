@@ -13,14 +13,15 @@ SRC =	environ.c\
 		builtins/unset.c\
 		builtins/env.c\
 		builtins/echo.c\
-		builtins/builtins.c\
+		builtins/builtins.c \
+		signal.c\
 		main.c\
 		
 OBJ = $(SRC:.c=.o)
 
 FLAGS = -Wall -Werror -Wextra 
 LDFLAGS = -lreadline
-CC	= gcc
+CC	= cc
 LIBFT = Libft/libft.a
 LIBFT_DIR = Libft
 INCLUDES = -I$(LIBFT_DIR)

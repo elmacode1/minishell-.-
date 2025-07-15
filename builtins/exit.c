@@ -35,4 +35,5 @@ int ft_exit(t_shell *shell, char **args)
     }
     exit_status = atoi(args[1]) % 256;
     exit(exit_status);
+    //exit with no arg should exit with the last exit status
 }

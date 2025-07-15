@@ -2,32 +2,49 @@
 
 int    handle_redirections(t_shell *shell, t_command *cmd)
 {
-    int fd;
+    int fd[1024];
     int flags;
+    int i;
     
+    i = 0;
     if(cmd->heredoc_delimiter)
-        heredoc_handeler(shell, cmd);
-    if(cmd->infile) 
     {
-        fd = open(cmd->infile, O_RDONLY);
-        if(fd < 0)
+        if(heredoc_handeler(shell, cmd) == 1)
             return 1;
-        dup2(fd, STDIN_FILENO);
-        
-        close(fd);
     }
-    else if(cmd->outfile)
+    if(cmd->redirs->infiles)
     {
-        flags = O_CREAT | O_WRONLY;
-        if(cmd->append)
-            flags |= O_APPEND;
-        else
-            flags |= O_TRUNC;
-        fd = open(cmd->outfile, flags, 0644);
-        if(fd < 0)
-            return 1;
-        dup2(fd, STDOUT_FILENO);
-        close(fd);
+        while(cmd->redirs->infiles[i])
+        {
+            fd[i] = open(cmd->redirs->infiles[i], O_RDONLY);
+            if(fd[i] < 0)
+                return 1;
+            if(cmd->redirs->infiles[i + 1])
+                close(fd[i]);
+            i++;
+        }
+        dup2(fd[i - 1], STDIN_FILENO);
+        close(fd[i - 1]);
+    }
+    i = 0;   
+    if(cmd->redirs->outfiles)
+    {
+        while (cmd->redirs->outfiles[i])
+        {
+            flags = O_CREAT | O_WRONLY;
+            if(cmd->redirs->append[i] == 1)
+                flags |= O_APPEND;
+            else
+                flags |= O_TRUNC;
+            fd[i] = open(cmd->redirs->outfiles[i], flags, 0644);
+            if(fd[0] < 0)
+                return 1;
+            if(cmd->redirs->outfiles[i + 1])
+                close(fd[i]);
+            i++;
+        }
+        dup2(fd[i - 1], STDOUT_FILENO);
+        close(fd[i - 1]);
     }
     unlink(shell->tempfile);
     shell->tempfile = NULL;

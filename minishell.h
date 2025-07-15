@@ -13,22 +13,46 @@
 #include <string.h>
 #include <errno.h>
 #include <stdbool.h>
+#include <signal.h>
 #include "Libft/libft.h"
 
 typedef struct s_shell t_shell;
 
 typedef int (*func)(struct s_shell *, char **);
 
+typedef struct  s_redirects
+{
+    char **infiles;
+    char **outfiles;
+    int append[1024];
+    // char **heredoc_delimiter;
+
+}   t_redirects;
+
 typedef struct s_command
 {
     char **args;
-    char ***multiple_args;
-    char *infile;
-    char *outfile;
-    int append;
+    // char *infile;
+    // char *outfile;
+    // int append;
     char *heredoc_delimiter;
+    t_redirects *redirs;
     struct s_command *next;
 }       t_command;
+
+// malaks structures
+// typedef struct s_redirect {
+//     char         *filename;
+//     int type;                  // RED_IN,  RED_OUT,  APPEND,  HEREDOC
+//     struct s_redirect          *next;
+// } t_redirect;
+
+// typedef struct s_cmd {
+//     char          **argv;
+//     t_redirect            *redirections;       // this is the linked list of all redirections
+//     struct s_cmd            *next;
+// } t_cmd;
+//handle multiple redirections
 
 typedef struct s_builtin
 {
@@ -36,13 +60,25 @@ typedef struct s_builtin
     func cmd_func;
 }   t_builtin;
 
-
 struct s_shell
 {
     char **env_copy;
     t_builtin builtinds[8];
     char *tempfile;
+    volatile __sig_atomic_t in_heredoc;
+    volatile __sig_atomic_t child_pid;
+    int exit_status;
 };
+
+typedef struct s_signal
+{
+    int in_heredoc;
+    pid_t heredoc_pid;
+} t_signal;
+
+extern t_signal g_signal;
+
+
 int handle_redirections(t_shell *shell, t_command *cmd);
 int execute_pipes(t_shell *shell, t_command *cmd);
 char **copy_env(char **env);
@@ -68,5 +104,9 @@ int	ft_strcmp(const char *s1, const char *s2);
 void free_array(char **arr);
 int builtin_func(t_shell *shell, t_command *cmd);
 int execute(t_shell *shell, t_command *cmd);
+void init_signals(void);
+void handle_heredoc_sig(int sig);
+void handle_sigint(int sig);
+void handle_sigquit(int sig);
 
 #endif
