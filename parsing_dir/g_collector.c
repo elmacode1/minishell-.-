@@ -7,7 +7,7 @@
 // 	return(&global);
 // }
 
-t_free *lst_new_free(void *content)
+t_free *free_lst_new_free(void *content)
 {
 	t_free *node;
 	node = malloc(sizeof(t_free));
@@ -17,7 +17,7 @@ t_free *lst_new_free(void *content)
 	node->next = NULL;
 	return (node);
 }
-t_free	*lst_last(t_free *node)
+t_free	*free_lstlast(t_free *node)
 {
 	if (node == NULL)
 		return (NULL);
@@ -27,7 +27,7 @@ t_free	*lst_last(t_free *node)
 	}
 	return (node);
 }
-void	lstadd_back(t_free **node, t_free *new)
+void	free_lstadd_back(t_free **node, t_free *new)
 {
 	t_free	*tmp;
 
@@ -36,7 +36,7 @@ void	lstadd_back(t_free **node, t_free *new)
 	tmp = *node;
 	if (tmp)
 	{
-		tmp = ft_lstlast(tmp);
+		tmp = free_lstlast(tmp);
 		tmp->next = new;
 	}
 	else
