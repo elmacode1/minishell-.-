@@ -1,7 +1,5 @@
 #include "minishell.h"
 
-t_signal g_signal = {0};
-
 int main(int ac, char **av, char **envp)
 {
     (void)ac;
@@ -23,19 +21,16 @@ int main(int ac, char **av, char **envp)
         if(*input)
         {
             add_history(input);
-            t_command  cmd;
+            t_cmd  cmd;
             t_redirect *redir = malloc(sizeof(t_redirect));
             t_redirect *redir2 = malloc(sizeof(t_redirect));
             t_redirect *redir3 = malloc(sizeof(t_redirect));
-            //cases to handle
-            //redin before heredoc
-            //multiple heredocs
             char *args1[] = {"cat", NULL};
             cmd.args = args1;
             cmd.redirs = redir;
-            redir->filename = "f3";
-            redir->type = RED_IN;
-            redir->delimiter = NULL;
+            redir->filename = NULL;
+            redir->type = HEREDOC;
+            redir->delimiter = "eof";
             redir->next = redir2;
             redir2->filename = NULL;
             redir2->type = HEREDOC;
@@ -45,9 +40,7 @@ int main(int ac, char **av, char **envp)
             redir3->type = RED_OUT;
             redir3->next = NULL;
             cmd.next = NULL;
-
             execute(&shell, &cmd);
-            // execute(&shell, &cmd1);
         }
         free(input);
     }

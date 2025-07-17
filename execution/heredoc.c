@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int heredoc_handeler(t_redirect *current)
 {

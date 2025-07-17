@@ -1,6 +1,6 @@
-#include "minishell.h"
+#include "../minishell.h"
 
-int    handle_redirections(t_shell *shell, t_command *cmd)
+int    handle_redirections(t_shell *shell, t_cmd *cmd)
 {
     int fd_in;
     int fd_out;

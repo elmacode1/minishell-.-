@@ -1,4 +1,4 @@
-#include "../minishell.h"
+#include "../../minishell.h"
 
 char *check_first_arg(char *arg, t_shell *shell)
 {

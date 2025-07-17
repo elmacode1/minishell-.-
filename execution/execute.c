@@ -1,6 +1,6 @@
-#include "minishell.h"
+#include "../minishell.h"
 
-int is_builtin(char *command)
+int is_builtin(char *cmd)
 {
     int i;
     char *builtins[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit", NULL};
@@ -8,14 +8,14 @@ int is_builtin(char *command)
     i = 0;
     while(builtins[i])
     {
-        if(strcmp(command, builtins[i]) == 0)
+        if(strcmp(cmd, builtins[i]) == 0)
             return (1);
         i++;
     }
     return (0);
 }
 
-char *get_command_path(t_shell *shell, char *cmd)
+char *get_cmd_path(t_shell *shell, char *cmd)
 {
     char *env;
     char **paths;
@@ -45,17 +45,17 @@ char *get_command_path(t_shell *shell, char *cmd)
     return result;
 }
 
-int execute_external(t_shell *shell, t_command *cmd)
+int execute_external(t_shell *shell, t_cmd *cmd)
 {
     int pid;
     char *path;
     int status;
-    path = get_command_path(shell, cmd->args[0]);
+    path = get_cmd_path(shell, cmd->args[0]);
     if(!path)
     {
         ft_putstr_fd("minishell: ", STDERR_FILENO);
         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-        ft_putstr_fd("command not found\n", STDERR_FILENO);
+        ft_putstr_fd("cmd not found\n", STDERR_FILENO);
         return 127;
     }
     pid = fork();
@@ -84,7 +84,7 @@ int execute_external(t_shell *shell, t_command *cmd)
     }
 }
 
-int builtin_func(t_shell *shell, t_command *cmd)
+int builtin_func(t_shell *shell, t_cmd *cmd)
 {
     int i;
     char *name;
@@ -100,7 +100,7 @@ int builtin_func(t_shell *shell, t_command *cmd)
     return 0;
 }
 
-int execute_builtin(t_shell *shell, t_command *cmd)
+int execute_builtin(t_shell *shell, t_cmd *cmd)
 {
     int tmp_out;
     int tmp_in;
@@ -126,7 +126,7 @@ int execute_builtin(t_shell *shell, t_command *cmd)
     return status;
 }
 
-int execute_command(t_shell *shell ,t_command *cmd)
+int execute_cmd(t_shell *shell ,t_cmd *cmd)
 {
     if(is_builtin(cmd->args[0]))
         return execute_builtin(shell, cmd);
@@ -134,10 +134,10 @@ int execute_command(t_shell *shell ,t_command *cmd)
         return (execute_external(shell, cmd));
 }
 
-int execute(t_shell *shell, t_command *cmd)
+int execute(t_shell *shell, t_cmd *cmd)
 {
     if(cmd->next)
         return execute_pipes(shell, cmd);
     else
-        return execute_command(shell, cmd);
+        return execute_cmd(shell, cmd);
 }

@@ -53,7 +53,6 @@ CFLAGS = -Wall -Werror -Wextra -c
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	cc $(CFLAGS) $(SRC)
 	ar rc $(NAME) $(OBJS)
 
 bonus: $(OBJB)

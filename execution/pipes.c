@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int **create_pipes(int n_cmds)
 {
@@ -65,20 +65,20 @@ int builtin_exec_pipe(t_shell *shell, char **args)
     return 0;
 }
 
-int count_commands(t_command *command)
+int count_cmds(t_cmd *cmd)
 {
     int n_cmds;
 
     n_cmds = 0;
-    while(command)
+    while(cmd)
     {
         n_cmds++;
-        command = command->next;
+        cmd = cmd->next;
     }
     return n_cmds;
 }
 
-int execute_pipes(t_shell *shell, t_command *cmd)
+int execute_pipes(t_shell *shell, t_cmd *cmd)
 {
     int n_cmds;
     int i;
@@ -88,7 +88,7 @@ int execute_pipes(t_shell *shell, t_command *cmd)
     char *path;
 
     i = 0;
-    n_cmds = count_commands(cmd);
+    n_cmds = count_cmds(cmd);
     printf("%d\n", n_cmds);
     pipes = create_pipes(n_cmds);
     while(i < n_cmds)
@@ -112,12 +112,12 @@ int execute_pipes(t_shell *shell, t_command *cmd)
                 return execute_builtin(shell, cmd);
             else
             {
-                path = get_command_path(shell, cmd->args[0]);
+                path = get_cmd_path(shell, cmd->args[0]);
                 if(!path)
                 {
                     ft_putstr_fd("minishell: ", STDERR_FILENO);
                     ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-                    ft_putstr_fd("command not found\n", STDERR_FILENO);
+                    ft_putstr_fd("cmd not found\n", STDERR_FILENO);
                     return 127;
                 }
                 handle_redirections(shell, cmd);
