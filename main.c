@@ -14,7 +14,7 @@ int main(int ac, char **av, char **envp)
     init_signals();
     while(1)
     {
-        input = readline("minishell$");
+        input = readline("minishell$ ");
         if(!input)
         {
             printf("exit\n");
@@ -24,50 +24,28 @@ int main(int ac, char **av, char **envp)
         {
             add_history(input);
             t_command  cmd;
-            t_redirects *redir = malloc(sizeof(t_redirects));
-            redir->infiles = malloc(sizeof(char *) * 3);
-            redir->outfiles = malloc(sizeof(char *) * 3);
-            // redir->append = malloc(sizeof(int *) * 3);
-            // t_command cmd1;
-            // t_command cmd2;
-        
+            t_redirect *redir = malloc(sizeof(t_redirect));
+            t_redirect *redir2 = malloc(sizeof(t_redirect));
+            t_redirect *redir3 = malloc(sizeof(t_redirect));
+            //cases to handle
+            //redin before heredoc
+            //multiple heredocs
             char *args1[] = {"cat", NULL};
-            // char *args2[] = {"pwd", NULL};
-
-            // char *args2[] = {"sort", NULL};
-            // char *args3[] = {"uniq", NULL};
-
             cmd.args = args1;
-            // redir->outfiles = NULL;
-            redir->infiles[0] = "f1";
-            redir->infiles[1] = "f3";
-            redir->infiles[2] = NULL;
-            // redir->append = NULL;
-            redir->outfiles[0] = "out1";
-            redir->outfiles[1] = "out2";
-            redir->outfiles[2] = NULL;
-
-            redir->append[0] = 1;
-            redir->append[1] = 1;
-            redir->append[2] = '\0';
-            cmd.redirs = redir; 
-            cmd.heredoc_delimiter = NULL;
-            // cmd.append = 0;
+            cmd.redirs = redir;
+            redir->filename = "f3";
+            redir->type = RED_IN;
+            redir->delimiter = NULL;
+            redir->next = redir2;
+            redir2->filename = NULL;
+            redir2->type = HEREDOC;
+            redir2->delimiter = "eof";
+            redir2->next = redir3;
+            redir3->filename = "out3";
+            redir3->type = RED_OUT;
+            redir3->next = NULL;
             cmd.next = NULL;
 
-            // cmd1.args = args2;
-            // cmd1.outfile = NULL;
-            // cmd1.infile = NULL;
-            // cmd1.heredoc_delimiter = 0;
-            // cmd1.append = 0;
-            // cmd1.next = NULL;
-
-            // cmd2.args = args3;
-            // cmd2.outfile = "test3.txt";
-            // cmd2.infile = NULL;
-            // cmd2.heredoc_delimiter = 0;
-            // cmd2.append = 0;
-            // cmd2.next = NULL;
             execute(&shell, &cmd);
             // execute(&shell, &cmd1);
         }

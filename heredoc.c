@@ -1,17 +1,18 @@
 #include "minishell.h"
 
-int heredoc_handeler(t_shell *shell, t_command *cmd)
+int heredoc_handeler(t_redirect *current)
 {
     char *line;
     int fd;
     pid_t pid;
     int status;
+    char *tempfile;
 
-    shell->tempfile = "tempfile";
+    tempfile = ft_strjoin("tempfile",ft_itoa(getpid())); 
     pid = fork();
     if(pid == 0)
     {
-        fd = open(shell->tempfile, O_CREAT | O_APPEND | O_WRONLY, 0666);
+        fd = open(tempfile, O_CREAT | O_APPEND | O_WRONLY, 0666);
         if(fd < 0)
         {
             ft_putstr_fd("minishell: heredoc\n", STDERR_FILENO);
@@ -22,13 +23,12 @@ int heredoc_handeler(t_shell *shell, t_command *cmd)
         while(1)
         {
             line = readline("> ");
-            if(!line || strcmp(line, cmd->heredoc_delimiter) == 0)
+            if(!line || strcmp(line, current->delimiter) == 0)
                 break;
             write(fd, line, strlen(line));
             write(fd, "\n", 1);
             free(line);
         }
-        printf("heredoc\n");
         free(line);
         close(fd);
     }
@@ -38,12 +38,19 @@ int heredoc_handeler(t_shell *shell, t_command *cmd)
         waitpid(pid, &status, 0);
         if(WEXITSTATUS(status) != 0)
         {
-            unlink(shell->tempfile);
-            shell->tempfile = NULL;
+            unlink(tempfile);
+            free(tempfile);
+            tempfile = NULL;
             return 1;
         }
     }
-    cmd->redirs->infiles[0] = strdup(shell->tempfile);
+    current->filename = strdup(tempfile);
+    // current->type = RED_IN;
+    // fd = open(shell->tempfile, O_RDONLY);
+    // if(fd < 0)
+    //     return 1;
+    // dup2(fd, STDIN_FILENO);
+    // close(fd);
     return 0;
 
 }

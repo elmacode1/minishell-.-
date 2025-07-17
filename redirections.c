@@ -2,52 +2,70 @@
 
 int    handle_redirections(t_shell *shell, t_command *cmd)
 {
-    int fd[1024];
+    int fd_in;
+    int fd_out;
     int flags;
-    int i;
-    
-    i = 0;
-    if(cmd->heredoc_delimiter)
+    t_redirect *current;
+
+    (void)shell;
+    current = cmd->redirs;
+    fd_in = -1;
+    fd_out = -1;
+    while (current)
     {
-        if(heredoc_handeler(shell, cmd) == 1)
-            return 1;
-    }
-    if(cmd->redirs->infiles)
-    {
-        while(cmd->redirs->infiles[i])
+        if(current->type == HEREDOC)
         {
-            fd[i] = open(cmd->redirs->infiles[i], O_RDONLY);
-            if(fd[i] < 0)
+            if(fd_in != -1)
+                close(fd_in);
+            if(heredoc_handeler(current) == 1)
                 return 1;
-            if(cmd->redirs->infiles[i + 1])
-                close(fd[i]);
-            i++;
+            fd_in = open(current->filename, O_RDONLY);
+            if(fd_in < 0)
+                return 1;
         }
-        dup2(fd[i - 1], STDIN_FILENO);
-        close(fd[i - 1]);
-    }
-    i = 0;   
-    if(cmd->redirs->outfiles)
-    {
-        while (cmd->redirs->outfiles[i])
+        else if(current->type == RED_IN)
         {
-            flags = O_CREAT | O_WRONLY;
-            if(cmd->redirs->append[i] == 1)
-                flags |= O_APPEND;
+            if(fd_in != -1)
+                close(fd_in);
+            fd_in = open(current->filename, O_RDONLY);
+            if(fd_in < 0)
+                return 1;
+        }
+        else if(current->type == RED_OUT || current->type == APPEND)
+        {
+            if(fd_out != -1)
+                close(fd_out);
+            if(current->type == RED_OUT)
+                flags = O_CREAT | O_WRONLY | O_TRUNC;
             else
-                flags |= O_TRUNC;
-            fd[i] = open(cmd->redirs->outfiles[i], flags, 0644);
-            if(fd[0] < 0)
+                flags = O_CREAT | O_WRONLY | O_APPEND;
+            fd_out = open(current->filename, flags, 0644);
+            if(fd_out < 0)
                 return 1;
-            if(cmd->redirs->outfiles[i + 1])
-                close(fd[i]);
-            i++;
         }
-        dup2(fd[i - 1], STDOUT_FILENO);
-        close(fd[i - 1]);
+        current = current->next;
     }
-    unlink(shell->tempfile);
-    shell->tempfile = NULL;
+    if(fd_in != -1)
+    {
+        dup2(fd_in, STDIN_FILENO);
+        close(fd_in);
+    }
+    if(fd_out != -1)
+    {
+        dup2(fd_out, STDOUT_FILENO);
+        close(fd_out);
+    }
+    current = cmd->redirs;
+    while(current)
+    {
+        if(current->type == HEREDOC && current->filename)
+        {
+            unlink(current->filename);
+            free(current->filename);
+            current->filename = NULL;
+        }
+        current = current->next;
+    }
     return 0;
 }
 

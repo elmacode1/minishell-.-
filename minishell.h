@@ -20,39 +20,35 @@ typedef struct s_shell t_shell;
 
 typedef int (*func)(struct s_shell *, char **);
 
-typedef struct  s_redirects
-{
-    char **infiles;
-    char **outfiles;
-    int append[1024];
-    // char **heredoc_delimiter;
+typedef enum e_token_type{
+	RED_IN,
+	RED_OUT,
+	APPEND,
+	HEREDOC,
+}t_tokentype;
 
-}   t_redirects;
+// typedef struct  s_redirects
+// {
+//     char **infiles;
+//     char **outfiles;
+//     int append[1024];
+//     // char **heredoc_delimiter;
+
+// }   t_redirects;
+typedef struct s_redirect {
+    char         *filename;
+    int type;
+    char *delimiter;
+    struct s_redirect          *next;
+} t_redirect;
 
 typedef struct s_command
 {
     char **args;
-    // char *infile;
-    // char *outfile;
-    // int append;
     char *heredoc_delimiter;
-    t_redirects *redirs;
+    t_redirect *redirs;
     struct s_command *next;
 }       t_command;
-
-// malaks structures
-// typedef struct s_redirect {
-//     char         *filename;
-//     int type;                  // RED_IN,  RED_OUT,  APPEND,  HEREDOC
-//     struct s_redirect          *next;
-// } t_redirect;
-
-// typedef struct s_cmd {
-//     char          **argv;
-//     t_redirect            *redirections;       // this is the linked list of all redirections
-//     struct s_cmd            *next;
-// } t_cmd;
-//handle multiple redirections
 
 typedef struct s_builtin
 {
@@ -90,7 +86,7 @@ int set_env_var(t_shell *shell, char *name, char *var);
 char *get_command_path(t_shell *shell, char *cmd);
 int is_builtin(char *command);
 int execute_builtin(t_shell *shell, t_command *cmd);
-int heredoc_handeler(t_shell *shell, t_command *cmd);
+int heredoc_handeler(t_redirect *current);
 void remove_env_var(t_shell *shell, char *name);
 int is_valid(char *var);
 int ft_export(t_shell *shell, char **args);
