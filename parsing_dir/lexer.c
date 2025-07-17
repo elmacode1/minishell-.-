@@ -86,6 +86,11 @@ t_token *lexer(char *str)
 				ft_lstadd_back(&head,ft_lstnew(">>",state, APPEND));
 				i++;
 			}
+			else if(str[i] == '<' && str[i + 1] && str[i+1] == '<')
+			{
+				ft_lstadd_back(&head,ft_lstnew("<<",state, HEREDOC));
+				i++;
+			}
 			else if(str[i] == '>')
 				ft_lstadd_back(&head,ft_lstnew(">",state ,RED_OUT));
 			else if(str[i] == '<')
@@ -93,9 +98,14 @@ t_token *lexer(char *str)
 			else if(str[i] == '\n')
 				ft_lstadd_back(&head,ft_lstnew("\n",state, NEW_LINE));
 			else if(str[i] == '$'){
-				ft_lstadd_back(&head,ft_lstnew(get_env(str+i),state, ENV));
-				i++;
-				i+=count_word(str+i)-1;
+				if(str[i+1] == '?')
+					ft_lstadd_back(&head,ft_lstnew("$?",state, ENV));
+				else 
+				{
+					ft_lstadd_back(&head,ft_lstnew(get_env(str+i),state, ENV));
+					i++;
+					i+=count_word(str+i)-1;
+				}
 			}
 		}
 		else

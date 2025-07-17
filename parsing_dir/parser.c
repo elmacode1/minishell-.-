@@ -23,12 +23,20 @@ void	add_redirection(t_cmd *cmd, char *filename, int type)
 	// Create new redirection node
 	t_redirect *new_redirect;
 	new_redirect = malloc(sizeof(t_redirect));
-	new_redirect->filename = strdup(filename);
+
+	if(type == HEREDOC)
+	{
+		new_redirect->filename =NULL;
+		new_redirect->delimiter =ft_strdup(filename);
+	}
+	else
+	{
+		new_redirect->filename =ft_strdup(filename);
+		new_redirect->delimiter =NULL;
+	}
 	new_redirect->type = type;
 	new_redirect->next = NULL;
-
-// Add to the end of the list
-	if (!cmd->redirections)
+	if (!cmd->redirections)// Add to the end of the list
 	{
 		cmd->redirections = new_redirect;
 	}
@@ -91,6 +99,16 @@ t_cmd *parse_tokens(t_token *tokens)
             if (tok && tok->type == WORD)
 			{
                 add_redirection(curent_cmd, tok->text, APPEND);
+				tok = tok->next;
+				continue;
+            }
+        }
+		else if (tok->type == HEREDOC)
+		{
+			tok = lst_skip_spaces(tok->next);
+            if (tok && tok->type == WORD)
+			{
+                add_redirection(curent_cmd, tok->text, HEREDOC);
 				tok = tok->next;
 				continue;
             }

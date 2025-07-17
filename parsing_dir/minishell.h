@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "libft_malak/libft.h"
+#include "Libft/libft.h"
 
 typedef enum e_token_type{
 	WORD,
