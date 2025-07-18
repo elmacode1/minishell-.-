@@ -2,6 +2,7 @@
 void	add_arg(char ***argv, int *argc, char *arg)
 {
     *argv = realloc(*argv, sizeof(char*) * (*argc + 2));
+	
     (*argv)[*argc] = strdup(arg);
     (*argc)++;
     (*argv)[*argc] = NULL;
@@ -9,7 +10,11 @@ void	add_arg(char ***argv, int *argc, char *arg)
 t_cmd	*new_cmd() 
 {
     t_cmd *new;
+	t_all *global;
+
+	global = static_var();
 	new = malloc(sizeof(t_cmd));
+	free_lstadd_back(&global->free_list,free_lst_new(new));
     if (!new)
 		return NULL;
     new->argv = NULL;
@@ -21,9 +26,12 @@ t_cmd	*new_cmd()
 void	add_redirection(t_cmd *cmd, char *filename, int type)
 {
 	// Create new redirection node
+		t_all *global;
+
+	global = static_var();
 	t_redirect *new_redirect;
 	new_redirect = malloc(sizeof(t_redirect));
-
+	free_lstadd_back(&global->free_list,free_lst_new(new_redirect));
 	if(type == HEREDOC)
 	{
 		new_redirect->filename =NULL;
@@ -54,6 +62,8 @@ t_cmd *parse_tokens(t_token *tokens)
     t_cmd *cmd_head;
 	t_cmd *cmd_last;
 	t_cmd *curent_cmd;
+	t_token *new_token;
+	int len;
 
 	cmd_head = NULL;
 	cmd_last = NULL;
@@ -62,6 +72,7 @@ t_cmd *parse_tokens(t_token *tokens)
     t_token *tok = tokens;
     char **argv = NULL;
     int argc = 0;
+	len = 0;
 
     while (tok)
 	{
@@ -72,7 +83,23 @@ t_cmd *parse_tokens(t_token *tokens)
             argc = 0;
         }
         if (tok->type == WORD)
-			add_arg(&argv, &argc, tok->text);//adding the arg to the list;
+		{
+			if(tok->state == IN_SQUOTE)
+			{
+				len = ft_strlen(tok->text);
+				new_token = 
+				add_arg(&argv, &argc, new_token);
+
+			}
+			else if(tok->state == IN_DQUOTE)
+			{
+
+			}
+			else
+				add_arg(&argv, &argc, tok->text);//adding the arg to the list;
+
+		}
+			
 		else if (tok->type == RED_IN)
 		{
 			tok = lst_skip_spaces(tok->next);

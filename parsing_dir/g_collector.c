@@ -1,13 +1,13 @@
 #include "minishell.h"
 
 
-// t_all *static_var(){
-// 	static t_all global;
+t_all *static_var(){
+	static t_all global;
 
-// 	return(&global);
-// }
+	return(&global);
+}
 
-t_free *free_lst_new_free(void *content)
+t_free *free_lst_new(void *content)
 {
 	t_free *node;
 	node = malloc(sizeof(t_free));
@@ -41,4 +41,16 @@ void	free_lstadd_back(t_free **node, t_free *new)
 	}
 	else
 		*node = new;
+}
+void free_all(t_free *node){
+	t_free *tmp;
+	tmp = node;
+	
+	while (tmp)
+	{
+		tmp = tmp->next;
+		free(node->content);
+		free(node);
+		node = tmp;
+	}
 }

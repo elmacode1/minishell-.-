@@ -57,8 +57,9 @@ t_token;
 
 typedef struct s_all
 {
+	t_token *token;
+	t_cmd *cmd;
 	t_free *free_list;
-	t_token *tokens;
 }t_all;
 
 int is_space(char c);
@@ -78,8 +79,9 @@ void	add_arg(char ***argv, int *argc, char *arg);
 t_cmd	*new_cmd();
 void	add_redirection(t_cmd *cmd, char *filename, int type);
 t_cmd *parse_tokens(t_token *tokens);
-t_free *free_lst_new_free(void *content);
+t_free *free_lst_new(void *content);
 t_free	*free_lstlast(t_free *node);
 void	free_lstadd_back(t_free **node, t_free *new);
-
+t_all *static_var();
+void free_all(t_free *node);
 #endif

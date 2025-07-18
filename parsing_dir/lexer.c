@@ -4,9 +4,11 @@ char *ft_getword(char *s)
 {
 	int c;
 	char *str;
-	
+	t_all *global;
+	global=static_var();
 	c = count_word(s);
 	str = malloc(sizeof(char)*(c+1));
+	free_lstadd_back(&global->free_list,free_lst_new(str));
 	ft_strlcpy(str,s,c+1);
 	return str;
 }
@@ -81,12 +83,12 @@ t_token *lexer(char *str)
 			else if(str[i] == '\'' || str[i] == '\"')
 				quotes_hander(str[i], &state, &head);
 
-			else if(str[i] == '>' && str[i + 1] && str[i+1] == '>')
+			else if(str[i] == '>' && str[i+1] == '>')
 			{
 				ft_lstadd_back(&head,ft_lstnew(">>",state, APPEND));
 				i++;
 			}
-			else if(str[i] == '<' && str[i + 1] && str[i+1] == '<')
+			else if(str[i] == '<' && str[i+1] == '<')
 			{
 				ft_lstadd_back(&head,ft_lstnew("<<",state, HEREDOC));
 				i++;
@@ -123,18 +125,23 @@ int main(int ac, char **av, char **env)
 {
 	char *str;
 	t_token *head;
-	// t_all *global;
+	t_all *global;
 	t_cmd *command;
 	char	**args;
 
-	// global=static_var();
+	global=static_var();
 	while (1)
 	{
 		str = readline("minishell~> ");
 		if (!str)
 			return (0);
-
+		if(!strcmp(str,"exit"))
+		{
+			free_all(global->free_list);
+			exit(0);
+		}
 		head = lexer(str);
+		free(str);
 		check_errors(head);
 		head = lst_skip_spaces(head);
 		command = parse_tokens(head);
@@ -162,4 +169,6 @@ int main(int ac, char **av, char **env)
             command = command->next;
         }
 	}
+	free_all(global->free_list);
+
 }
