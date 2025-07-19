@@ -11,6 +11,8 @@ int    handle_redirections(t_shell *shell, t_cmd *cmd)
     current = cmd->redirs;
     fd_in = -1;
     fd_out = -1;
+    if(!current)
+        return 0;
     while (current)
     {
         if(current->type == HEREDOC)

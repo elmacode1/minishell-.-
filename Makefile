@@ -16,7 +16,7 @@ LIBFT_DIR = Libft
 
 INCLUDES = -I$(LIBFT_DIR) -I$(EXEC_DIR)
 
-all : $(NAME)
+all : $(NAME) 
 
 $(NAME) : $(OBJ) $(EXEC) $(LIBFT)
 	$(CC) $(FLAGS) $^ -o  $@ $(LDFLAGS)

@@ -51,6 +51,7 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     char *path;
     int status;
     path = get_cmd_path(shell, cmd->args[0]);
+    
     if(!path)
     {
         ft_putstr_fd("minishell: ", STDERR_FILENO);
@@ -67,21 +68,21 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     }
     if(pid == 0)
     {
-        
         if(handle_redirections(shell, cmd) == 1)
             return 1;
-            // unlink(shell->tempfile);
-            // shell->tempfile = NULL;
         signal(SIGQUIT, handle_sigquit);
+        signal(SIGINT, handle_child_sig);
         execve(path, cmd->args, shell->env_copy);
         ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
         return 126;
     }
     else
     {
+        signal(SIGQUIT, SIG_IGN);
         waitpid(pid, &status, 0);
         return WEXITSTATUS(status);
     }
+
 }
 
 int builtin_func(t_shell *shell, t_cmd *cmd)

@@ -98,6 +98,8 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
         pid = fork();
         if(pid == 0)
         {
+            signal(SIGINT, handle_child_sig);
+            signal(SIGQUIT, handle_sigquit);
             if(i > 0)
                 dup2(pipes[i - 1][0], STDIN_FILENO);
             if(i < n_cmds - 1)

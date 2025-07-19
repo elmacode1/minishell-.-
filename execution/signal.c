@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-void handle_heredoc_sig(int sig)
+void handle_child_sig(int sig)
 {
     (void)sig;
     ft_putstr_fd("\n", STDOUT_FILENO);
@@ -21,20 +21,8 @@ void handle_sigquit(int sig)
 {
     (void)sig;
     ft_putstr_fd("Quit: 3\n", STDERR_FILENO);
-    // shell->exit_status = 131;
+    exit(131);
 }
-
-// void handle_childsig(t_shell *shell, int sig)
-// {
-//     (void)sig;
-//     int status;
-//     pid_t pid;
-
-//     while((pid = waitpid(-1, &status, WNOHANG)) > 0)
-//     {
-
-//     }
-// }
 
 
 void init_signals(void)

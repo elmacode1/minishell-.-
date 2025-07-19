@@ -90,7 +90,7 @@ void free_array(char **arr);
 int builtin_func(t_shell *shell, t_cmd *cmd);
 int execute(t_shell *shell, t_cmd *cmd);
 void init_signals(void);
-void handle_heredoc_sig(int sig);
+void handle_child_sig(int sig);
 void handle_sigint(int sig);
 void handle_sigquit(int sig);
 

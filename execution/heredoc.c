@@ -7,21 +7,24 @@ int heredoc_handeler(t_redirect *current)
     pid_t pid;
     int status;
     char *tempfile;
-
+    signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
     tempfile = ft_strjoin("tempfile",ft_itoa(getpid())); 
     pid = fork();
     if(pid == 0)
     {
+       
         fd = open(tempfile, O_CREAT | O_APPEND | O_WRONLY, 0666);
         if(fd < 0)
         {
             ft_putstr_fd("minishell: heredoc\n", STDERR_FILENO);
             return 1;
         }
-        signal(SIGINT, handle_heredoc_sig);
-        signal(SIGQUIT, handle_sigquit);
+   
         while(1)
         {
+            signal(SIGINT, handle_child_sig);
+            signal(SIGQUIT, handle_sigquit);
             line = readline("> ");
             if(!line || strcmp(line, current->delimiter) == 0)
                 break;
@@ -34,7 +37,8 @@ int heredoc_handeler(t_redirect *current)
     }
     else
     {
-        signal(SIGINT, SIG_IGN);
+        // signal(SIGINT, SIG_IGN);
+        // signal(SIGQUIT, SIG_IGN);
         waitpid(pid, &status, 0);
         if(WEXITSTATUS(status) != 0)
         {
@@ -45,12 +49,6 @@ int heredoc_handeler(t_redirect *current)
         }
     }
     current->filename = strdup(tempfile);
-    // current->type = RED_IN;
-    // fd = open(shell->tempfile, O_RDONLY);
-    // if(fd < 0)
-    //     return 1;
-    // dup2(fd, STDIN_FILENO);
-    // close(fd);
     return 0;
 
 }
