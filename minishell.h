@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "Libft/libft.h"
+#include <stdlib.h>
 
 typedef enum e_token_type{
 	WORD,
@@ -84,4 +84,11 @@ t_free	*free_lstlast(t_free *node);
 void	free_lstadd_back(t_free **node, t_free *new);
 t_all *static_var();
 void free_all(t_free *node);
+char	*ft_strdup(const char *s1);
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
+size_t	ft_strlen(const char *s);
+t_cmd	*parsing(t_token *head, char *input, char **env);
+void expander(t_token **head,char **env);
+void free_helper(void *ptr);
+
 #endif

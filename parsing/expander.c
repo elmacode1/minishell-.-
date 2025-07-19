@@ -39,7 +39,8 @@ char *get_value(char *str)
 		i++;
 	}
 }
-void expander(t_token **head,char **env){
+void expander(t_token **head,char **env)
+{
 	t_token *tmp_head;
 	tmp_head = *head;
 

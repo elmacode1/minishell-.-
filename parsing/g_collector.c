@@ -55,7 +55,8 @@ void free_all(t_free *node){
 	}
 }
 
-void free_helper(void *ptr){
+void free_helper(void *ptr)
+{
 	t_all *glob;
 
 	glob = static_var();
