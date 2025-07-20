@@ -96,7 +96,7 @@ void update_env(t_shell *shell, char *equal, char *arg)
             add_new_var(shell, arg);
     }
 }
-int ft_export(t_shell *shell, char **args)
+int ft_export(t_shell *shell, char **argv)
 {
     int i;
     char *equal;
@@ -104,23 +104,23 @@ int ft_export(t_shell *shell, char **args)
 
     i = 1;
     ret = 0;
-    if(!args[1])
+    if(!argv[1])
         sort_and_print(shell->env_copy);
-    while(args[i])
+    while(argv[i])
     {
         printf("export called\n");
 
-        if(!is_valid(args[i]))
+        if(!is_valid(argv[i]))
         {
             ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-            ft_putstr_fd(args[i], STDERR_FILENO);
+            ft_putstr_fd(argv[i], STDERR_FILENO);
             ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
             ret = 1;
             i++;
             continue;
         }
-        equal = ft_strchr(args[i], '=');
-        update_env(shell, equal, args[i]);
+        equal = ft_strchr(argv[i], '=');
+        update_env(shell, equal, argv[i]);
         i++;
     }
     return ret;

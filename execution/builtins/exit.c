@@ -15,25 +15,25 @@ int is_num(char *str)
     return 1;
 }
 
-int ft_exit(t_shell *shell, char **args)
+int ft_exit(t_shell *shell, char **argv)
 {
     (void)shell;
     int exit_status;
-    if (!args[1])
+    if (!argv[1])
         exit(0);
-    if(args[2])
+    if(argv[2])
     {
         ft_putstr_fd("minishell: exit : too many arguments\n", STDERR_FILENO);
         return 1;
     }
-    if(is_num(args[1]) == 0)
+    if(is_num(argv[1]) == 0)
     {
         ft_putstr_fd("minishell: exit: `", STDERR_FILENO);
-        ft_putstr_fd(args[1],STDERR_FILENO);
+        ft_putstr_fd(argv[1],STDERR_FILENO);
         ft_putstr_fd("' numeric argument required\n", STDERR_FILENO);
         exit(255);
     }
-    exit_status = atoi(args[1]) % 256;
+    exit_status = atoi(argv[1]) % 256;
     exit(exit_status);
     //exit with no arg should exit with the last exit status
 }

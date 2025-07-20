@@ -49,17 +49,17 @@ void waiting_all(int n_cmds)
     }
 }
 
-int builtin_exec_pipe(t_shell *shell, char **args)
+int builtin_exec_pipe(t_shell *shell, char **argv)
 {
     int i;
     char *name;
 
     i = 0;
-    name = args[0];
+    name = argv[0];
     while(shell->builtinds[i].name)
     {
         if(strcmp(shell->builtinds[i].name, name) == 0)
-            return(shell->builtinds[i].cmd_func(shell, args));
+            return(shell->builtinds[i].cmd_func(shell, argv));
         i++;
     }
     return 0;
@@ -110,20 +110,20 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
                 close(pipes[j][1]);
                 j++;
             }
-            if(is_builtin(cmd->args[0]))
+            if(is_builtin(cmd->argv[0]))
                 return execute_builtin(shell, cmd);
             else
             {
-                path = get_cmd_path(shell, cmd->args[0]);
+                path = get_cmd_path(shell, cmd->argv[0]);
                 if(!path)
                 {
                     ft_putstr_fd("minishell: ", STDERR_FILENO);
-                    ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+                    ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
                     ft_putstr_fd("cmd not found\n", STDERR_FILENO);
                     return 127;
                 }
                 handle_redirections(shell, cmd);
-                execve(path, cmd->args, shell->env_copy);
+                execve(path, cmd->argv, shell->env_copy);
                 free(path);
                 ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
                 return 126;

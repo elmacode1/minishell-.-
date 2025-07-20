@@ -1,11 +1,11 @@
 #include "../../minishell.h"
 
-int ft_env(t_shell *shell, char **args)
+int ft_env(t_shell *shell, char **argv)
 {
     int i;
 
     i = 0;
-    if(args[1])
+    if(argv[1])
     {
         ft_putstr_fd("minishell: env: too many arguments\n", STDERR_FILENO);
         return 1;

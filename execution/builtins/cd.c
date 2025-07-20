@@ -28,12 +28,12 @@ char *check_first_arg(char *arg, t_shell *shell)
     return arg;
 }
 
-int ft_cd(t_shell *shell, char **args)
+int ft_cd(t_shell *shell, char **argv)
 {
     char cwd[1024]; 
     char *path;
 
-    path = check_first_arg(args[1], shell);
+    path = check_first_arg(argv[1], shell);
     if(!path)
         return 1;
     if(!getcwd(cwd, sizeof(cwd)))

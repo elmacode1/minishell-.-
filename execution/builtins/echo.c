@@ -1,14 +1,14 @@
 #include "../../minishell.h"
 
-int check_new_line(char **args)
+int check_new_line(char **argv)
 {
     int i;
     char *p;
 
     i = 1;
-    while(args[i] && args[i][0] == '-' && args[i][1] == 'n')
+    while(argv[i] && argv[i][0] == '-' && argv[i][1] == 'n')
     {
-        p = args[i] + 2;
+        p = argv[i] + 2;
         while(*p == 'n')
             p++;
         if(*p != '\0')
@@ -18,22 +18,22 @@ int check_new_line(char **args)
     return i;
 }
 
-int ft_echo(t_shell *shell, char **args)
+int ft_echo(t_shell *shell, char **argv)
 {
     int i;
     (void)shell;
 
 
     i = 1;
-    i = check_new_line(args);
-    while(args[i])
+    i = check_new_line(argv);
+    while(argv[i])
     {
-        ft_putstr_fd(args[i], STDOUT_FILENO);
-        if(args[i + 1])
+        ft_putstr_fd(argv[i], STDOUT_FILENO);
+        if(argv[i + 1])
             ft_putstr_fd(" ", STDOUT_FILENO);
         i++;
     }
-    if(check_new_line(args) == 1)
+    if(check_new_line(argv) == 1)
         ft_putstr_fd("\n", STDOUT_FILENO);
     return 0;
 }

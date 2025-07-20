@@ -1,9 +1,9 @@
 #include "../../minishell.h"
 
-int ft_pwd(t_shell *shell, char **args)
+int ft_pwd(t_shell *shell, char **argv)
 {
     (void)shell;
-    (void)args;
+    (void)argv;
     char cwd[1024];
     char *pwd;
 

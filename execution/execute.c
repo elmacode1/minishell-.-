@@ -50,12 +50,12 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     int pid;
     char *path;
     int status;
-    path = get_cmd_path(shell, cmd->args[0]);
+    path = get_cmd_path(shell, cmd->argv[0]);
     
     if(!path)
     {
         ft_putstr_fd("minishell: ", STDERR_FILENO);
-        ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+        ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
         ft_putstr_fd("cmd not found\n", STDERR_FILENO);
         return 127;
     }
@@ -72,7 +72,7 @@ int execute_external(t_shell *shell, t_cmd *cmd)
             return 1;
         signal(SIGQUIT, handle_sigquit);
         signal(SIGINT, handle_child_sig);
-        execve(path, cmd->args, shell->env_copy);
+        execve(path, cmd->argv, shell->env_copy);
         ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
         return 126;
     }
@@ -91,11 +91,11 @@ int builtin_func(t_shell *shell, t_cmd *cmd)
     char *name;
 
     i = 0;
-    name = cmd->args[0];
+    name = cmd->argv[0];
     while(shell->builtinds[i].name)
     {
         if(strcmp(shell->builtinds[i].name, name) == 0)
-            return(shell->builtinds[i].cmd_func(shell, cmd->args));
+            return(shell->builtinds[i].cmd_func(shell, cmd->argv));
         i++;
     }
     return 0;
@@ -129,7 +129,7 @@ int execute_builtin(t_shell *shell, t_cmd *cmd)
 
 int execute_cmd(t_shell *shell ,t_cmd *cmd)
 {
-    if(is_builtin(cmd->args[0]))
+    if(is_builtin(cmd->argv[0]))
         return execute_builtin(shell, cmd);
     else
         return (execute_external(shell, cmd));
