@@ -24,9 +24,9 @@ t_cmd	*new_cmd()
 void	add_redirection(t_cmd *cmd, char *filename, int type)
 {
 	// Create new redirection node
-		t_all *global;
+	// 	t_all *global;
 
-	global = static_var();
+	// global = static_var();
 	t_redirect *new_redirect;
 	new_redirect = malloc(sizeof(t_redirect));
 	free_helper(new_redirect);
@@ -61,7 +61,6 @@ t_cmd *parse_tokens(t_token *tokens)
 	t_cmd *cmd_last;
 	t_cmd *curent_cmd;
 	t_token *new_token;
-	int len;
 
 	cmd_head = NULL;
 	cmd_last = NULL;
@@ -70,7 +69,6 @@ t_cmd *parse_tokens(t_token *tokens)
     t_token *tok = tokens;
     char **argv = NULL;
     int argc = 0;
-	len = 0;
 
     while (tok)
 	{
