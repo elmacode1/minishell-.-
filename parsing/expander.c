@@ -38,6 +38,7 @@ char *get_value(char *str)
 			return ft_strdup(&str[i+1]);
 		i++;
 	}
+	return NULL;
 }
 void expander(t_token **head,char **env)
 {

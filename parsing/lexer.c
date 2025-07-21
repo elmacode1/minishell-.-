@@ -23,7 +23,7 @@ char *get_env(char *s)
 	return str;
 }
 
-void *quotes_hander(char c, t_state *state, t_token **head)
+void quotes_hander(char c, t_state *state, t_token **head)
 {
 	if(c == '\"'){
 
@@ -31,32 +31,32 @@ void *quotes_hander(char c, t_state *state, t_token **head)
 		if(*state ==IN_DQUOTE)
 		{
 			*state = GENERAL;
-			ft_lstadd_back(head,ft_lstnew("\"", *state, DQUOTE));
+			ft_lstadd_back_token(head,ft_lstnew_token("\"", *state, DQUOTE));
 		}
 		else if (*state == GENERAL)
 		{
-			ft_lstadd_back(head,ft_lstnew("\"", *state, DQUOTE));
+			ft_lstadd_back_token(head,ft_lstnew_token("\"", *state, DQUOTE));
 			*state = IN_DQUOTE;
 		}
 		else
 		{
-			ft_lstadd_back(head,ft_lstnew("\"", *state, DQUOTE));
+			ft_lstadd_back_token(head,ft_lstnew_token("\"", *state, DQUOTE));
 		}
 	}
 	else if(c == '\''){
 		if(*state ==IN_SQUOTE)
 		{
 			*state = GENERAL;
-			ft_lstadd_back(head,ft_lstnew("\'", *state, SQUOTE));
+			ft_lstadd_back_token(head,ft_lstnew_token("\'", *state, SQUOTE));
 		}
 		else if (*state == GENERAL)
 		{
-			ft_lstadd_back(head,ft_lstnew("\'", *state, SQUOTE));
+			ft_lstadd_back_token(head,ft_lstnew_token("\'", *state, SQUOTE));
 			*state = IN_SQUOTE;
 		}
 		else
 		{
-			ft_lstadd_back(head,ft_lstnew("\'", *state, SQUOTE));
+			ft_lstadd_back_token(head,ft_lstnew_token("\'", *state, SQUOTE));
 		}
 	}
 }
@@ -76,35 +76,35 @@ t_token *lexer(char *str)
 		if(is_special(str[i]))
 		{
 			if(str[i]=='|')
-				ft_lstadd_back(&head,ft_lstnew("|",state ,PIPE));
+				ft_lstadd_back_token(&head,ft_lstnew_token("|",state ,PIPE));
 			else if(is_space(str[i])){
-				ft_lstadd_back(&head,ft_lstnew(" ",state ,WHITESPACE));
+				ft_lstadd_back_token(&head,ft_lstnew_token(" ",state ,WHITESPACE));
 			}
 			else if(str[i] == '\'' || str[i] == '\"')
 				quotes_hander(str[i], &state, &head);
 
 			else if(str[i] == '>' && str[i+1] == '>')
 			{
-				ft_lstadd_back(&head,ft_lstnew(">>",state, APPEND));
+				ft_lstadd_back_token(&head,ft_lstnew_token(">>",state, APPEND));
 				i++;
 			}
 			else if(str[i] == '<' && str[i+1] == '<')
 			{
-				ft_lstadd_back(&head,ft_lstnew("<<",state, HEREDOC));
+				ft_lstadd_back_token(&head,ft_lstnew_token("<<",state, HEREDOC));
 				i++;
 			}
 			else if(str[i] == '>')
-				ft_lstadd_back(&head,ft_lstnew(">",state ,RED_OUT));
+				ft_lstadd_back_token(&head,ft_lstnew_token(">",state ,RED_OUT));
 			else if(str[i] == '<')
-				ft_lstadd_back(&head,ft_lstnew("<",state ,RED_IN));
+				ft_lstadd_back_token(&head,ft_lstnew_token("<",state ,RED_IN));
 			else if(str[i] == '\n')
-				ft_lstadd_back(&head,ft_lstnew("\n",state, NEW_LINE));
+				ft_lstadd_back_token(&head,ft_lstnew_token("\n",state, NEW_LINE));
 			else if(str[i] == '$'){
 				if(str[i+1] == '?')
-					ft_lstadd_back(&head,ft_lstnew("$?",state, ENV));
+					ft_lstadd_back_token(&head,ft_lstnew_token("$?",state, ENV));
 				else 
 				{
-					ft_lstadd_back(&head,ft_lstnew(get_env(str+i),state, ENV));
+					ft_lstadd_back_token(&head,ft_lstnew_token(get_env(str+i),state, ENV));
 					i++;
 					i+=count_word(str+i)-1;
 				}
@@ -112,7 +112,7 @@ t_token *lexer(char *str)
 		}
 		else
 		{
-				ft_lstadd_back (&head,ft_lstnew(ft_getword(str+i),state,WORD));
+				ft_lstadd_back_token (&head,ft_lstnew_token(ft_getword(str+i),state,WORD));
 				i+=count_word(str+i)-1;
 		}
 		i++;
@@ -129,65 +129,65 @@ t_token *lexer(char *str)
 // 	}
 // }
 
-t_cmd	*parsing(t_token *head, char *input, char **env)
+t_cmd	*parsing(t_token *head, char **env)
 {
 	t_cmd *cmd;
-	head = lexer(input);
-	check_errors(head);
+	if(!check_errors(head))
+		return NULL;
 	expander(&head,env);
 	cmd = parse_tokens(head);
 	return (cmd);
 }
-int main(int ac, char **av, char **env)
-{
-	char *str;
-	t_token *head;
-	t_all *global;
-	t_cmd *command;
-	char	**args;
+// int main(int ac, char **av, char **env)
+// {
+// 	char *str;
+// 	t_token *head;
+// 	t_all *global;
+// 	t_cmd *command;
+// 	char	**args;
 
-	global=static_var();
-	while (1)
-	{
-		str = readline("minishell~> ");
-		if (!str)
-			return (0);
-		if(!strcmp(str,"exit"))
-		{
-			free_all(global->free_list);
-			free(str);
-			exit(0);
-		}
-		// head = lexer(str);
-		add_history(str);
-		// check_errors(head);
-		// expander(&head,env);
-		// // aff_lexer(head);
-		command = parsing(head,str,env);
-		while (command)
-        {
-            // Print command arguments
-            if (command->argv)
-            {
-                int i = 0;
-                while (command->argv[i])
-                {
-                    printf("arg[%d] == %s\n", i, command->argv[i]);
-                    i++;
-                }
-            }
+// 	global=static_var();
+// 	while (1)
+// 	{
+// 		str = readline("minishell~> ");
+// 		if (!str)
+// 			return (0);
+// 		if(!strcmp(str,"exit"))
+// 		{
+// 			free_all(global->free_list);
+// 			free(str);
+// 			exit(0);
+// 		}
+// 		// head = lexer(str);
+// 		add_history(str);
+// 		// check_errors(head);
+// 		// expander(&head,env);
+// 		// // aff_lexer(head);
+// 		command = parsing(head,str,env);
+// 		while (command)
+//         {
+//             // Print command arguments
+//             if (command->argv)
+//             {
+//                 int i = 0;
+//                 while (command->argv[i])
+//                 {
+//                     printf("arg[%d] == %s\n", i, command->argv[i]);
+//                     i++;
+//                 }
+//             }
             
-            // Print redirections
-            t_redirect *redirect = command->redirections;
-            while (redirect)
-            {
-                printf("redirection: %s (type: %d)\n", redirect->filename, redirect->type);
-                redirect = redirect->next;
-            }
+//             // Print redirections
+//             t_redirect *redirect = command->redirections;
+//             while (redirect)
+//             {
+//                 printf("redirection: %s (type: %d)\n", redirect->filename, redirect->type);
+//                 redirect = redirect->next;
+//             }
             
-            command = command->next;
-        }
-	}
-	free_all(global->free_list);
+//             command = command->next;
+//         }
+// 	}
+// 	free_all(global->free_list);
 
-}
+// }
