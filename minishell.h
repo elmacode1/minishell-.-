@@ -155,6 +155,7 @@ size_t	ft_strlen(const char *s);
 t_cmd	*parsing(t_token *head, char **env);
 void expander(t_token **head,char **env);
 void free_helper(void *ptr);
+void aff_lexer(t_token *head);
 
 #endif
 

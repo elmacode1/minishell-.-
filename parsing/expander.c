@@ -52,6 +52,10 @@ void expander(t_token **head,char **env)
 			tmp_head->text = get_value(env[get_env_index(tmp_head->text+1,env)]);
 			tmp_head->type=WORD ;
 		}
+		else if(tmp_head->state == IN_SQUOTE && tmp_head->type == ENV)
+		{
+			tmp_head->type = WORD;
+		}
 		tmp_head= tmp_head->next;
 	}
 }

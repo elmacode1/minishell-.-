@@ -120,14 +120,6 @@ t_token *lexer(char *str)
 	
 	return head;
 }
-// void aff_lexer(t_token *head)
-// {
-// 	t_token *tmp=head;
-// 	while(tmp){
-// 		printf("%s\n",tmp->text);
-// 		tmp = tmp->next;
-// 	}
-// }
 
 t_cmd	*parsing(t_token *head, char **env)
 {
@@ -135,6 +127,7 @@ t_cmd	*parsing(t_token *head, char **env)
 	if(!check_errors(head))
 		return NULL;
 	expander(&head,env);
+	aff_lexer(head);
 	cmd = parse_tokens(head);
 	return (cmd);
 }

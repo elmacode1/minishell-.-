@@ -1,12 +1,12 @@
 #include "minishell.h"
-// void aff_lexer(t_token *head)
-// {
-// 	t_token *tmp=head;
-// 	while(tmp){
-// 		printf("token%s.\n",tmp->text);
-// 		tmp = tmp->next;
-// 	}
-// }
+void aff_lexer(t_token *head)
+{
+	t_token *tmp=head;
+	while(tmp){
+		printf("token%s.\n",tmp->text);
+		tmp = tmp->next;
+	}
+}
 void aff_cmd(t_cmd *cmd){
 	 	while (cmd)
         {
