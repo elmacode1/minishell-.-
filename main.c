@@ -66,7 +66,7 @@ int main(int ac, char **av, char **envp)
 	        head = lexer(input);
 			// aff_lexer(head);
             if((cmd = parsing(head, envp))){
-           aff_cmd(cmd);
+        //    aff_cmd(cmd);
 			execute(&shell, cmd);
 			}
         }

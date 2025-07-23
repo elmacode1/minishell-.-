@@ -127,7 +127,7 @@ t_cmd	*parsing(t_token *head, char **env)
 	if(!check_errors(head))
 		return NULL;
 	expander(&head,env);
-	aff_lexer(head);
+	// aff_lexer(head);
 	cmd = parse_tokens(head);
 	return (cmd);
 }

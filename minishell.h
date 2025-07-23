@@ -46,7 +46,7 @@ typedef struct s_cmd
     char **argv; //change in other files
     t_redirect *redirections; //change in other files
     struct s_cmd *next;
-}       t_cmd;
+}t_cmd;
 
 typedef struct s_builtin
 {
