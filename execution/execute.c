@@ -35,6 +35,7 @@ char *get_cmd_path(t_shell *shell, char *cmd)
         if(access(cmd_path, X_OK) == 0)
         {
             result = cmd_path;
+            free(slash);
             break;
         }
         free(slash);
@@ -56,11 +57,10 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     {
         ft_putstr_fd("minishell: ", STDERR_FILENO);
         ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
-        ft_putstr_fd("cmd not found\n", STDERR_FILENO);
+        ft_putstr_fd(" cmd not found\n", STDERR_FILENO);
         return 127;
     }
     pid = fork();
-    
     if(pid == -1)
     {
         ft_putstr_fd("minishell: fork\n", STDERR_FILENO);
@@ -69,9 +69,10 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     if(pid == 0)
     {
         if(handle_redirections(shell, cmd) == 1)
-            return 1;
-        signal(SIGQUIT, handle_sigquit);
-        signal(SIGINT, handle_child_sig);
+        { 
+            g_exit_status = 130;
+            exit(130);
+        }
         execve(path, cmd->argv, shell->env_copy);
         ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
         return 126;
@@ -80,9 +81,10 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     {
         signal(SIGQUIT, SIG_IGN);
         waitpid(pid, &status, 0);
+        // signal(SIGINT, handle_sigint);
+        free(path);
         return WEXITSTATUS(status);
     }
-
 }
 
 int builtin_func(t_shell *shell, t_cmd *cmd)
@@ -122,8 +124,6 @@ int execute_builtin(t_shell *shell, t_cmd *cmd)
     dup2(tmp_in, STDIN_FILENO);
     close(tmp_in);
     close(tmp_out);
-    // unlink(shell->tempfile);
-    // shell->tempfile = NULL;
     return status;
 }
 
@@ -135,10 +135,68 @@ int execute_cmd(t_shell *shell ,t_cmd *cmd)
         return (execute_external(shell, cmd));
 }
 
+void open_heredocs(t_cmd *cmd)
+{
+    t_cmd *temp;
+    t_redirect *current;
+
+    temp = cmd;
+    while(cmd)
+    {
+        current = cmd->redirections;
+        while (current)
+        {
+            if(current->type == HEREDOC)
+            {
+                heredoc_handeler(current);
+                // printf("%s\n", current->filename);
+            }
+            current = current->next;
+        }
+        cmd = cmd->next;
+    }
+    cmd = temp;
+    // cmd->redirections = current;
+}
+
+void close_heredocs(t_cmd *cmd)
+{
+    t_cmd *temp;
+    t_redirect *current;
+
+    temp = cmd;
+    while(cmd)
+    {
+        current = cmd->redirections;
+        while (current)
+        {
+            if(current->type == HEREDOC && current->filename)
+            {
+                unlink(current->filename);
+                free(current->filename);
+                current->filename = NULL;
+            }
+            current = current->next;
+        }
+        cmd = cmd->next;
+    }
+    cmd = temp;
+}
+
 int execute(t_shell *shell, t_cmd *cmd)
 {
-    if(cmd->next)
-        return execute_pipes(shell, cmd);
-    else
-        return execute_cmd(shell, cmd);
+    int status;
+
+    status = 0;
+    if(cmd)
+        open_heredocs(cmd);
+    if(cmd && cmd->argv)
+    {
+        if(cmd->next)
+            status = execute_pipes(shell, cmd);
+        else
+            status = execute_cmd(shell, cmd);
+    }
+    close_heredocs(cmd);
+    return status;
 }

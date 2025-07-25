@@ -15,17 +15,7 @@ int    handle_redirections(t_shell *shell, t_cmd *cmd)
         return 0;
     while (current)
     {
-        if(current->type == HEREDOC)
-        {
-            if(fd_in != -1)
-                close(fd_in);
-            if(heredoc_handeler(current) == 1)
-                return 1;
-            fd_in = open(current->filename, O_RDONLY);
-            if(fd_in < 0)
-                return 1;
-        }
-        else if(current->type == RED_IN)
+        if(current->type == HEREDOC || current->type == RED_IN)
         {
             if(fd_in != -1)
                 close(fd_in);
@@ -56,17 +46,6 @@ int    handle_redirections(t_shell *shell, t_cmd *cmd)
     {
         dup2(fd_out, STDOUT_FILENO);
         close(fd_out);
-    }
-    current = cmd->redirections;
-    while(current)
-    {
-        if(current->type == HEREDOC && current->filename)
-        {
-            unlink(current->filename);
-            free(current->filename);
-            current->filename = NULL;
-        }
-        current = current->next;
     }
     return 0;
 }

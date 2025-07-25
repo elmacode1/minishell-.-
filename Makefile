@@ -24,14 +24,16 @@ all : $(NAME)
 $(NAME) : $(OBJ) $(PARS) $(EXEC) $(LIBFT)
 	$(CC) $(FLAGS) $^ -o  $@ $(LDFLAGS)
 
-$(EXEC) :
+$(EXEC) :	FORCE
 	make -C $(EXEC_DIR)
 
-$(LIBFT) :
+$(LIBFT) :	FORCE
 	make -C $(LIBFT_DIR)
 
-$(PARS) :
+$(PARS) :	FORCE
 	make -C $(PARS_DIR)
+
+FORCE:
 
 %.o : %.c
 	$(CC) $(FLAGS) $(INCLUDES) -c $< -o $@
@@ -52,5 +54,5 @@ fclean : clean
 re : fclean all
 
 
-
+.PHONY: all clean fclean FORCE re 
 

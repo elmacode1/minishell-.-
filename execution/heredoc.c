@@ -7,24 +7,26 @@ int heredoc_handeler(t_redirect *current)
     pid_t pid;
     int status;
     char *tempfile;
-    signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_DFL);
-    tempfile = ft_strjoin("tempfile",ft_itoa(getpid())); 
+    static int counter;
+
+
+    char *id = ft_itoa(counter++);
+    tempfile = ft_strjoin("/tmp/tempfile", id); 
+    free(id);
+    printf("%s\n", tempfile);
+    signal(SIGINT, SIG_IGN);
     pid = fork();
     if(pid == 0)
-    {
-       
-        fd = open(tempfile, O_CREAT | O_APPEND | O_WRONLY, 0666);
+    {     
+        fd = open(tempfile, O_CREAT | O_WRONLY | O_TRUNC, 0600);
         if(fd < 0)
         {
             ft_putstr_fd("minishell: heredoc\n", STDERR_FILENO);
-            return 1;
-        }
-   
+            exit(1);
+        } 
+        signal(SIGINT, SIG_DFL);
         while(1)
         {
-            signal(SIGINT, handle_child_sig);
-            signal(SIGQUIT, handle_sigquit);
             line = readline("> ");
             if(!line || strcmp(line, current->delimiter) == 0)
                 break;
@@ -34,12 +36,20 @@ int heredoc_handeler(t_redirect *current)
         }
         free(line);
         close(fd);
+        exit(0);
     }
     else
     {
-        // signal(SIGINT, SIG_IGN);
-        // signal(SIGQUIT, SIG_IGN);
         waitpid(pid, &status, 0);
+        signal(SIGINT, handle_sigint);
+        if(WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+        {
+            ft_putstr_fd("\n", STDOUT_FILENO);
+            unlink(tempfile);
+            free(tempfile);
+            g_exit_status = 130;
+            return 1;
+        }
         if(WEXITSTATUS(status) != 0)
         {
             unlink(tempfile);
@@ -48,7 +58,8 @@ int heredoc_handeler(t_redirect *current)
             return 1;
         }
     }
+    
     current->filename = strdup(tempfile);
+    free(tempfile);
     return 0;
-
 }

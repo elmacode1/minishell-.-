@@ -11,7 +11,7 @@ int **create_pipes(int n_cmds)
         return NULL;
     while(j < n_cmds - 1)
     {
-        pipes[j] = malloc(sizeof(int *) * 2);
+        pipes[j] = malloc(sizeof(int ) * 2);
         if(!pipes[j])
             return NULL;
         if(pipe(pipes[j]) == -1)
@@ -89,8 +89,8 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
 
     i = 0;
     n_cmds = count_cmds(cmd);
-    printf("%d\n", n_cmds);
     pipes = create_pipes(n_cmds);
+
     while(i < n_cmds)
     {
         j = 0;
@@ -111,7 +111,10 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
                 j++;
             }
             if(is_builtin(cmd->argv[0]))
-                return execute_builtin(shell, cmd);
+            {
+                g_exit_status = execute_builtin(shell, cmd);
+                exit(g_exit_status);
+            }
             else
             {
                 path = get_cmd_path(shell, cmd->argv[0]);
@@ -120,13 +123,19 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
                     ft_putstr_fd("minishell: ", STDERR_FILENO);
                     ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
                     ft_putstr_fd("cmd not found\n", STDERR_FILENO);
-                    return 127;
+                    g_exit_status = 127;
+                    exit(127);
                 }
-                handle_redirections(shell, cmd);
+                if(handle_redirections(shell, cmd) == 1)
+                {
+                    g_exit_status = 130;
+                    exit(130);
+                }
                 execve(path, cmd->argv, shell->env_copy);
                 free(path);
                 ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
-                return 126;
+                g_exit_status = 126;
+                exit(126);
             }
         }
         cmd = cmd->next;

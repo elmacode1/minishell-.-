@@ -33,6 +33,7 @@ typedef enum e_token_type{
 	ENV,
 }t_tokentype;
 
+extern int g_exit_status;
 
 typedef struct s_redirect {
     char         *filename;
@@ -43,8 +44,8 @@ typedef struct s_redirect {
 
 typedef struct s_cmd
 {
-    char **argv; //change in other files
-    t_redirect *redirections; //change in other files
+    char **argv; 
+    t_redirect *redirections; 
     struct s_cmd *next;
 }       t_cmd;
 
@@ -123,6 +124,7 @@ void init_signals(void);
 void handle_child_sig(int sig);
 void handle_sigint(int sig);
 void handle_sigquit(int sig);
+void close_heredocs(t_cmd *cmd);
 
 // malak s functions
 

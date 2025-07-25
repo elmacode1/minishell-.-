@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+int g_exit_status;
+
 int main(int ac, char **av, char **envp)
 {
     (void)ac;
@@ -7,10 +9,11 @@ int main(int ac, char **av, char **envp)
     char *input;
     t_shell shell;
     t_token *head;
+    t_cmd *cmd;
 	t_all *global;
-	t_cmd *cmd;
 
     shell.env_copy = copy_env(envp);
+    g_exit_status = 0;
     init_builtin(&shell);
     init_signals();
 	global = static_var();
@@ -22,18 +25,12 @@ int main(int ac, char **av, char **envp)
             printf("exit\n");
             exit(1);
         }
-        if(!strcmp(input,"exit"))
-		{
-			free_all(global->free_list);
-			free(input);
-			exit(0);
-		}
         if(*input)
         {
             add_history(input);
 	        head = lexer(input);
             cmd = parsing(head, envp);
-            execute(&shell, cmd);
+            g_exit_status = execute(&shell, cmd);
         }
         free(input);
     }
