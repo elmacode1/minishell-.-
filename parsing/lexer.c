@@ -100,14 +100,11 @@ t_token *lexer(char *str)
 			else if(str[i] == '\n')
 				ft_lstadd_back_token(&head,ft_lstnew_token("\n",state, NEW_LINE));
 			else if(str[i] == '$'){
-				if(str[i+1] == '?')
-					ft_lstadd_back_token(&head,ft_lstnew_token("$?",state, ENV));
-				else 
-				{
+				
 					ft_lstadd_back_token(&head,ft_lstnew_token(get_env(str+i),state, ENV));
 					i++;
 					i+=count_word(str+i)-1;
-				}
+				
 			}
 		}
 		else

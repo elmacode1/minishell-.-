@@ -33,7 +33,6 @@ typedef enum e_token_type{
 	ENV,
 }t_tokentype;
 
-
 typedef struct s_redirect {
     char         *filename;
     int type;

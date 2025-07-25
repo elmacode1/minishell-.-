@@ -29,7 +29,7 @@ int ft_echo(t_shell *shell, char **argv)
     while(argv[i])
     {
         ft_putstr_fd(argv[i], STDOUT_FILENO);
-        if(argv[i + 1])
+        if(argv[i + 1] && ft_strcmp(argv[i + 1]," ") && ft_strcmp(argv[i]," "))
             ft_putstr_fd(" ", STDOUT_FILENO);
         i++;
     }
