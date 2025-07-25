@@ -8,13 +8,17 @@ FLAGS = -Wall  -Wextra
 LDFLAGS = -lreadline
 CC	= gcc
 
+LIBFT = ../Libft/libft.a
+LIBFT_DIR = ../Libft
+INCLUDES = -I$(LIBFT_DIR)
+
 all : $(NAME)
 
 $(NAME) : $(OBJ)
 	ar rcs  $@ $^
 
 %.o : %.c
-	$(CC) $(FLAGS) -c $< -o $@
+	$(CC) $(FLAGS) $(INCLUDES) -c $< -o $@
 
 clean : 
 	rm -f $(OBJ)

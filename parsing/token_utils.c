@@ -13,9 +13,7 @@ int count_word(char *s)
 t_token	*ft_lstnew_token(char *text,t_state state, t_tokentype  type)
 {
 	t_token	*node;
-	// t_all *global;
-
-	// global = static_var();
+	
 	node = malloc(sizeof(t_token));
 	free_helper(node);
 	if (!node)

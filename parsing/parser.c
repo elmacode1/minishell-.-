@@ -1,11 +1,20 @@
 #include "../minishell.h"
-void	add_arg(char ***argv, int *argc, char *arg)
+int	count_tokens(t_token *tokens)
 {
-    *argv = realloc(*argv, sizeof(char*) * (*argc + 2));
-	
-    (*argv)[*argc] = strdup(arg);
-    (*argc)++;
-    (*argv)[*argc] = NULL;
+	int count;
+
+	count =0;
+	while(tokens)
+	{
+		if(tokens->type == PIPE && tokens->state == GENERAL)
+			break;
+		if(!((tokens->type == WHITESPACE || tokens->type == DQUOTE || tokens->type == SQUOTE 
+			|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
+			|| tokens->type == HEREDOC) && tokens->state == GENERAL))
+		count++;
+		tokens = tokens->next;		
+	}
+	return count;
 }
 t_cmd	*new_cmd() 
 {
@@ -20,14 +29,35 @@ t_cmd	*new_cmd()
     new->next = NULL;
     return new;
 }
+t_cmd	*ft_lstlast_cmd(t_cmd *lst)
+{
+	if (lst == NULL)
+		return (NULL);
+	while (lst->next != NULL)
+	{
+		lst = lst->next;
+	}
+	return (lst);
+}
+void	ft_lstadd_back_cmd(t_cmd **lst, t_cmd *new)
+{
+	t_cmd	*tmp;
 
+	if (lst == NULL || new == NULL)
+		return ;
+	tmp = *lst;
+	if (tmp)
+	{
+		tmp = ft_lstlast_cmd(tmp);
+		tmp->next = new;
+	}
+	else
+		*lst = new;
+}
 void	add_redirection(t_cmd *cmd, char *filename, int type)
 {
-	// Create new redirection node
-	// 	t_all *global;
-
-	// global = static_var();
 	t_redirect *new_redirect;
+	t_redirect *last;
 	new_redirect = malloc(sizeof(t_redirect));
 	free_helper(new_redirect);
 	if(type == HEREDOC)
@@ -42,122 +72,95 @@ void	add_redirection(t_cmd *cmd, char *filename, int type)
 	}
 	new_redirect->type = type;
 	new_redirect->next = NULL;
-	if (!cmd->redirections)// Add to the end of the list
-	{
+	if (!cmd->redirections)
 		cmd->redirections = new_redirect;
-	}
 	else
 	{
-		t_redirect *last = cmd->redirections;
+		last = cmd->redirections;
 		while (last->next)
 			last = last->next;
 		last->next = new_redirect;
 	}
 }
-
-t_cmd *parse_tokens(t_token *tokens)
+t_cmd	*parse_tokens(t_token *tokens)
 {
-    t_cmd *cmd_head;
-	t_cmd *cmd_last;
-	t_cmd *curent_cmd;
-	t_token *new_token;
+	t_cmd	*cmd;
+	t_cmd	*new;
+	char	**argv;
+	int i;
 
-	cmd_head = NULL;
-	cmd_last = NULL;
-	curent_cmd = NULL;
-
-    t_token *tok = tokens;
-    char **argv = NULL;
-    int argc = 0;
-
-    while (tok)
+	cmd = NULL;
+	new = NULL;
+	argv = NULL;
+	i = 0;
+	while (tokens)
 	{
-        if (!curent_cmd)
+		new = new_cmd();
+		argv = malloc(sizeof(char *) * (count_tokens(tokens) + 1));
+		free_helper(argv);
+		while(tokens)
 		{
-            curent_cmd = new_cmd();
-            argv = NULL;
-            argc = 0;
-        }
-        if (tok->type == WORD)
-		{
-			if(tok->state == IN_SQUOTE)
+			if(tokens->type == PIPE && tokens->state == GENERAL)
+				break;
+			if(!((tokens->type == WHITESPACE || tokens->type == DQUOTE || tokens->type == SQUOTE 
+				|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
+				|| tokens->type == HEREDOC) && tokens->state == GENERAL))
 			{
-				// len = ft_strlen(tok->text);
-				// new_token = 
-				add_arg(&argv, &argc, new_token->text);
-
+				argv[i]=ft_strdup(tokens->text);
+				i++;
 			}
-			else if(tok->state == IN_DQUOTE)
+			else if (tokens->type == RED_IN)
 			{
-
+				tokens = lst_skip_spaces(tokens->next);
+            	if (tokens && tokens->type == WORD)
+				{
+               		add_redirection(new, tokens->text, RED_IN);
+			   		tokens = tokens->next;
+			   		continue;
+				}
+        	} 
+			else if (tokens->type == RED_OUT)
+			{
+				tokens = lst_skip_spaces(tokens->next);
+            	if (tokens && tokens->type == WORD)
+				{
+                	add_redirection(new, tokens->text, RED_OUT);
+					tokens = tokens->next;
+					continue;
+           		}
+        	}
+			else if (tokens->type == APPEND)
+			{
+				tokens = lst_skip_spaces(tokens->next);
+            	if (tokens && tokens->type == WORD)
+				{
+					add_redirection(new, tokens->text, APPEND);
+					tokens = tokens->next;
+					continue;
+				}
+        	}
+			else if (tokens->type == HEREDOC)
+			{
+				tokens = lst_skip_spaces(tokens->next);
+				if (tokens && tokens->type == WORD)
+				{
+					add_redirection(new, tokens->text, HEREDOC);
+					tokens = tokens->next;
+					continue;
+				}
 			}
-			else
-				add_arg(&argv, &argc, tok->text);//adding the arg to the list;
-
+			tokens = tokens->next;		
 		}
-		else if (tok->type == RED_IN)
+		argv[i]=NULL;
+		i = 0;
+		new->argv=argv;
+		ft_lstadd_back_cmd(&cmd,new);
+		if(tokens && tokens->type == PIPE )
 		{
-			tok = lst_skip_spaces(tok->next);
-            if (tok && tok->type == WORD)
-			{
-               add_redirection(curent_cmd, tok->text, RED_IN);
-			   tok = tok->next;
-			   continue;
-			}
-        } 
-		else if (tok->type == RED_OUT)
-		{
-			tok = lst_skip_spaces(tok->next);
-            if (tok && tok->type == WORD)
-			{
-                add_redirection(curent_cmd, tok->text, RED_OUT);
-				tok = tok->next;
-				continue;
-            }
-        }
-		else if (tok->type == APPEND)
-		{
-			tok = lst_skip_spaces(tok->next);
-            if (tok && tok->type == WORD)
-			{
-                add_redirection(curent_cmd, tok->text, APPEND);
-				tok = tok->next;
-				continue;
-            }
-        }
-		else if (tok->type == HEREDOC)
-		{
-			tok = lst_skip_spaces(tok->next);
-            if (tok && tok->type == WORD)
-			{
-                add_redirection(curent_cmd, tok->text, HEREDOC);
-				tok = tok->next;
-				continue;
-            }
-        }
-		else if (tok->type == PIPE)
-		{
-            curent_cmd->argv = argv;
-            if (!cmd_head)
-                cmd_head = curent_cmd;
-            else
-                cmd_last->next = curent_cmd;
-            cmd_last = curent_cmd;
-            curent_cmd = NULL;
+			tokens = tokens->next;
+			new = NULL;
 			argv = NULL;
-			argc = 0;
-        }
-        if(tok)
-			tok = tok->next;
-    }
-    //handling last cmd
-    if (curent_cmd)
-	{
-        curent_cmd->argv = argv;
-        if (!cmd_head)
-            cmd_head = curent_cmd;
-        else
-            cmd_last->next = curent_cmd;
-    }
-    return cmd_head;
+		}  
+	}
+	return cmd;
 }

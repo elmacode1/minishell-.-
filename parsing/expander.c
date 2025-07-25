@@ -1,4 +1,5 @@
 #include "../minishell.h"
+
 int	string_search(const char *str1, const char *str2)
 {
 	int i;
@@ -38,18 +39,30 @@ char *get_value(char *str)
 			return ft_strdup(&str[i+1]);
 		i++;
 	}
+	return NULL;
 }
 void expander(t_token **head,char **env)
 {
 	t_token *tmp_head;
 	tmp_head = *head;
 
+	// char *test="10";
 	while(tmp_head)
 	{
+		if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV && !ft_strcmp(tmp_head->text+1,"?"))
+			{
+				tmp_head->text= ft_itoa(g_exit_status);
+				return;
+			}
 		if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV)
 		{
+			
 			tmp_head->text = get_value(env[get_env_index(tmp_head->text+1,env)]);
 			tmp_head->type=WORD ;
+		}
+		else if(tmp_head->state == IN_SQUOTE && tmp_head->type == ENV)
+		{
+			tmp_head->type = WORD;
 		}
 		tmp_head= tmp_head->next;
 	}

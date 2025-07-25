@@ -35,7 +35,9 @@ int check_squotes(t_token *token)
 	flag = 1;	
 	while(token)
 	{
-		if(token->type == SQUOTE && flag==1){
+		while(token && token->type != SQUOTE)
+			token = token->next;
+		if(token && token->type == SQUOTE && flag==1){
 			flag = 1;
 			c++;
 			token = token->next;
@@ -59,7 +61,9 @@ int check_dquotes(t_token *token)
 	flag = 1;	
 	while(token)
 	{
-		if(token->type == DQUOTE && flag==1){
+		while(token && token->type != DQUOTE)
+			token = token->next;
+		if(token && token->type == DQUOTE && flag==1){
 			flag = 1;
 			c++;
 			token = token->next;

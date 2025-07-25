@@ -100,14 +100,11 @@ t_token *lexer(char *str)
 			else if(str[i] == '\n')
 				ft_lstadd_back_token(&head,ft_lstnew_token("\n",state, NEW_LINE));
 			else if(str[i] == '$'){
-				if(str[i+1] == '?')
-					ft_lstadd_back_token(&head,ft_lstnew_token("$?",state, ENV));
-				else 
-				{
+				
 					ft_lstadd_back_token(&head,ft_lstnew_token(get_env(str+i),state, ENV));
 					i++;
 					i+=count_word(str+i)-1;
-				}
+				
 			}
 		}
 		else
@@ -120,73 +117,14 @@ t_token *lexer(char *str)
 	
 	return head;
 }
-// void aff_lexer(t_token *head)
-// {
-// 	t_token *tmp=head;
-// 	while(tmp){
-// 		printf("%s\n",tmp->text);
-// 		tmp = tmp->next;
-// 	}
-// }
 
 t_cmd	*parsing(t_token *head, char **env)
 {
 	t_cmd *cmd;
-	check_errors(head);
+	if(!check_errors(head))
+		return NULL;
 	expander(&head,env);
+	// aff_lexer(head);
 	cmd = parse_tokens(head);
 	return (cmd);
 }
-// int main(int ac, char **av, char **env)
-// {
-// 	char *str;
-// 	t_token *head;
-// 	t_all *global;
-// 	t_cmd *command;
-// 	char	**args;
-
-// 	global=static_var();
-// 	while (1)
-// 	{
-// 		str = readline("minishell~> ");
-// 		if (!str)
-// 			return (0);
-// 		if(!strcmp(str,"exit"))
-// 		{
-// 			free_all(global->free_list);
-// 			free(str);
-// 			exit(0);
-// 		}
-// 		// head = lexer(str);
-// 		add_history(str);
-// 		// check_errors(head);
-// 		// expander(&head,env);
-// 		// // aff_lexer(head);
-// 		command = parsing(head,str,env);
-// 		while (command)
-//         {
-//             // Print command arguments
-//             if (command->argv)
-//             {
-//                 int i = 0;
-//                 while (command->argv[i])
-//                 {
-//                     printf("arg[%d] == %s\n", i, command->argv[i]);
-//                     i++;
-//                 }
-//             }
-            
-//             // Print redirections
-//             t_redirect *redirect = command->redirections;
-//             while (redirect)
-//             {
-//                 printf("redirection: %s (type: %d)\n", redirect->filename, redirect->type);
-//                 redirect = redirect->next;
-//             }
-            
-//             command = command->next;
-//         }
-// 	}
-// 	free_all(global->free_list);
-
-// }
