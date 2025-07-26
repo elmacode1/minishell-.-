@@ -30,7 +30,7 @@ int main(int ac, char **av, char **envp)
             add_history(input);
 	        head = lexer(input);
             cmd = parsing(head, envp);
-            g_exit_status = execute(&shell, cmd);
+            execute(&shell, cmd);
         }
         free(input);
     }

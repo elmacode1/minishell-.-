@@ -68,6 +68,8 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     }
     if(pid == 0)
     {
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
         if(handle_redirections(shell, cmd) == 1)
         { 
             exit(g_exit_status);
@@ -79,8 +81,19 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     else
     {
         signal(SIGQUIT, SIG_IGN);
+        signal(SIGINT, SIG_IGN);
         waitpid(pid, &status, 0);
-        // signal(SIGINT, handle_sigint);
+        signal(SIGINT, handle_sigint);
+        if(WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
+        {
+            ft_putstr_fd("Quit\n", STDERR_FILENO);
+            return 131;//status 
+        }
+        else if(WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+        {
+            ft_putstr_fd("\n", STDERR_FILENO);
+            return 130;//status 
+        }
         free(path);
         return WEXITSTATUS(status);
     }
@@ -182,20 +195,16 @@ void close_heredocs(t_cmd *cmd)
     cmd = temp;
 }
 
-int execute(t_shell *shell, t_cmd *cmd)
+void execute(t_shell *shell, t_cmd *cmd)
 {
-    int status;
-
-    status = 0;
     if(cmd)
         open_heredocs(cmd);
     if(cmd && cmd->argv && cmd->argv[0])
     {
         if(cmd->next)
-            status = execute_pipes(shell, cmd);
+            g_exit_status = execute_pipes(shell, cmd);
         else
-            status = execute_cmd(shell, cmd);
+            g_exit_status = execute_cmd(shell, cmd);
     }
     close_heredocs(cmd);
-    return status;
 }
