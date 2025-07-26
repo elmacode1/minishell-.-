@@ -22,7 +22,7 @@ void handle_sigquit(int sig)
 {
     (void)sig;
     ft_putstr_fd("Quit: 3\n", STDERR_FILENO);
-    g_exit_status = 131;
+    // g_exit_status = 131;
     exit(131);
 }
 

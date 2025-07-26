@@ -17,8 +17,8 @@ int check_pipes(t_token *token)
 	{
 		if(token->type == PIPE)
 		{
-			next_token = lst_skip_spaces(token->next);
-			if(!next_token || next_token->type != WORD)
+			next_token = lst_skip_spaces(token->next); //edited here
+			if(!next_token)
 				return 0;
 		}
 		token = token->next;
@@ -106,10 +106,12 @@ int check_errors(t_token *tokens)
         return 0;
     }
     if (check_squotes(tokens) == 1) {
+		//should handle unclosed sinle quote"
         printf("Syntax error: unclosed single quote\n");
         return 0;
     }
     if (check_dquotes(tokens) == 1) {
+		//should handle unclosed sinle quote"
         printf("Syntax error: unclosed double quote\n");
         return 0;
     }

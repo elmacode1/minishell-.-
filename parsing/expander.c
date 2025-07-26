@@ -46,10 +46,10 @@ void expander(t_token **head,char **env)
 	t_token *tmp_head;
 	tmp_head = *head;
 
-	// char *test="10";
 	while(tmp_head)
 	{
 		if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV && !ft_strcmp(tmp_head->text+1,"?"))
+		//should check whats after the expander ? 
 			{
 				tmp_head->text= ft_itoa(g_exit_status);
 				return;

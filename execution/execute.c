@@ -70,8 +70,7 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     {
         if(handle_redirections(shell, cmd) == 1)
         { 
-            g_exit_status = 130;
-            exit(130);
+            exit(g_exit_status);
         }
         execve(path, cmd->argv, shell->env_copy);
         ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
@@ -190,7 +189,7 @@ int execute(t_shell *shell, t_cmd *cmd)
     status = 0;
     if(cmd)
         open_heredocs(cmd);
-    if(cmd && cmd->argv)
+    if(cmd && cmd->argv && cmd->argv[0])
     {
         if(cmd->next)
             status = execute_pipes(shell, cmd);
