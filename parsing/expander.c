@@ -5,7 +5,7 @@ int	string_search(const char *str1, const char *str2)
 	int i;
 
 	i = 0;
-	while(str1[i]==str2[i])
+	while(str1[i] == str2[i])
 	{
 		if(!str1[i+1] && str2[i+1] == '=')
 			return 1;
@@ -19,7 +19,7 @@ int get_env_index(char *str, char **env)
 {
 	int i;
 	i = 0;
-
+	
 	while(env[i])
 	{
 		if(string_search(str,env[i]))
@@ -44,26 +44,28 @@ char *get_value(char *str)
 void expander(t_token **head,char **env)
 {
 	t_token *tmp_head;
+
 	tmp_head = *head;
 
-	// char *test="10";
 	while(tmp_head)
 	{
-		if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV && !ft_strcmp(tmp_head->text+1,"?"))
-			{
-				tmp_head->text= ft_itoa(g_exit_status);
-				return;
-			}
-		if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV)
+		if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV && !strncmp(tmp_head->text+1,"?",1))
 		{
-			
-			tmp_head->text = get_value(env[get_env_index(tmp_head->text+1,env)]);
-			tmp_head->type=WORD ;
+			tmp_head->text= ft_strjoin(ft_itoa(g_exit_status),tmp_head->text+2);
+			tmp_head->type=WORD;
+		}
+		else if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV)
+		{
+			if(get_env_index(tmp_head->text+1,env) >= 0)
+				tmp_head->text = get_value(env[get_env_index(tmp_head->text+1,env)]);
+			else
+				tmp_head->text = ft_strdup("");
+			tmp_head->type = WORD;
 		}
 		else if(tmp_head->state == IN_SQUOTE && tmp_head->type == ENV)
 		{
 			tmp_head->type = WORD;
 		}
-		tmp_head= tmp_head->next;
+		tmp_head = tmp_head->next;
 	}
 }

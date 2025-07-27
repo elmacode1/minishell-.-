@@ -15,7 +15,7 @@ int check_pipes(t_token *token)
 		return 0;
 	while(token)
 	{
-		if(token->type == PIPE)
+		if(token->type == PIPE && token->state== GENERAL)
 		{
 			next_token = lst_skip_spaces(token->next);
 			if(!next_token || next_token->type != WORD)
@@ -28,55 +28,33 @@ int check_pipes(t_token *token)
 }
 int check_squotes(t_token *token)
 {
-	int flag;
-	int c;
-
-	c = 0;
-	flag = 1;	
+	int count;
+	
+	count = 0;
 	while(token)
 	{
-		while(token && token->type != SQUOTE)
-			token = token->next;
-		if(token && token->type == SQUOTE && flag==1){
-			flag = 1;
-			c++;
-			token = token->next;
-		}
-		while(token && token->type != SQUOTE)
-			token = token->next;
-		if( token && token->type == SQUOTE){
-			flag++;
-			token = token->next;}
+		if(token->type == SQUOTE && token->state== GENERAL)
+			count ++;
+		token = token->next;
 	}
-	if(c == 0)
-		return -1;
-	return flag;
+	if(count % 2 == 0)
+		return (1); //pair num : closed
+	return 0;
 }
 int check_dquotes(t_token *token)
 {
-	int flag;
-	int c;
-
-	c = 0;
-	flag = 1;	
+	int count;
+	
+	count = 0;
 	while(token)
 	{
-		while(token && token->type != DQUOTE)
-			token = token->next;
-		if(token && token->type == DQUOTE && flag==1){
-			flag = 1;
-			c++;
-			token = token->next;
-		}
-		while(token && token->type != DQUOTE)
-			token = token->next;
-		if( token && token->type == DQUOTE){
-			flag++;
-			token = token->next;}
+		if(token->type == DQUOTE && token->state== GENERAL)
+			count ++;
+		token = token->next;
 	}
-	if(c == 0)
-		return -1;
-	return flag;
+	if(count % 2 == 0)
+		return (1); //pair num : closed
+	return 0;
 }
 int check_red(t_token *token)
 {
@@ -84,7 +62,7 @@ int check_red(t_token *token)
 	
 	while(token)
 	{
-		if(token->type == RED_IN || token->type == RED_OUT || token->type == APPEND)
+		if((token->type == RED_IN || token->type == RED_OUT || token->type == HEREDOC || token->type == APPEND )&& token->state== GENERAL)
 		{
 			next_token = lst_skip_spaces(token->next);
 			if(!next_token || next_token->type != WORD)
@@ -97,19 +75,23 @@ int check_red(t_token *token)
 
 int check_errors(t_token *tokens)
 {
-	if (!check_pipes(tokens)) {
+	if (!check_pipes(tokens))
+	{
         printf("Syntax error: invalid pipe usage\n");
         return 0;
     }
-    if (!check_red(tokens)) {
+    if (!check_red(tokens))
+	{
         printf("Syntax error: invalid redirection\n");
         return 0;
     }
-    if (check_squotes(tokens) == 1) {
+    if (check_squotes(tokens) == 0)
+	{
         printf("Syntax error: unclosed single quote\n");
         return 0;
     }
-    if (check_dquotes(tokens) == 1) {
+    if (check_dquotes(tokens) == 0)
+	{
         printf("Syntax error: unclosed double quote\n");
         return 0;
     }

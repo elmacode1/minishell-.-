@@ -17,7 +17,6 @@ int check_new_line(char **argv)
     }
     return i;
 }
-
 int ft_echo(t_shell *shell, char **argv)
 {
     int i;

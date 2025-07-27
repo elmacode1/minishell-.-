@@ -1,4 +1,5 @@
 #include "../minishell.h"
+
 int	count_tokens(t_token *tokens)
 {
 	int count;
@@ -16,7 +17,7 @@ int	count_tokens(t_token *tokens)
 	}
 	return count;
 }
-t_cmd	*new_cmd() 
+t_cmd	*new_cmd()
 {
     t_cmd *new;
 	
@@ -88,16 +89,19 @@ t_cmd	*parse_tokens(t_token *tokens)
 	t_cmd	*new;
 	char	**argv;
 	int i;
+	char *tmp;
+	int max_args;
 
 	cmd = NULL;
-	new = NULL;
-	argv = NULL;
-	i = 0;
 	while (tokens)
 	{
 		new = new_cmd();
-		argv = malloc(sizeof(char *) * (count_tokens(tokens) + 1));
+
+		max_args = count_tokens(tokens);
+		argv = malloc(sizeof(char *) * (max_args + 1));
 		free_helper(argv);
+		
+		i = 0;
 		while(tokens)
 		{
 			if(tokens->type == PIPE && tokens->state == GENERAL)
@@ -106,19 +110,37 @@ t_cmd	*parse_tokens(t_token *tokens)
 				|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
 				|| tokens->type == HEREDOC) && tokens->state == GENERAL))
 			{
-				argv[i]=ft_strdup(tokens->text);
-				i++;
+				tmp = NULL;
+
+				while(tokens && !((tokens->type == WHITESPACE || tokens->type == DQUOTE || tokens->type == SQUOTE 
+					|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
+					|| tokens->type == HEREDOC) && tokens->state == GENERAL))
+				{
+					char *old_tmp = tmp;
+					tmp = ft_strjoin(tmp, tokens->text);
+					if (old_tmp)
+						free(old_tmp);
+					tokens = tokens->next;
+				}
+				
+				if (tmp && i < max_args)
+				{
+					argv[i] = ft_strdup(tmp);
+					free(tmp);
+					i++;
+				}
+				continue;
 			}
 			else if (tokens->type == RED_IN)
 			{
 				tokens = lst_skip_spaces(tokens->next);
-            	if (tokens && tokens->type == WORD)
+				if (tokens && tokens->type == WORD)
 				{
-               		add_redirection(new, tokens->text, RED_IN);
-			   		tokens = tokens->next;
-			   		continue;
+					add_redirection(new, tokens->text, RED_IN);
+					tokens = tokens->next;
+					continue;
 				}
-        	} 
+			}
 			else if (tokens->type == RED_OUT)
 			{
 				tokens = lst_skip_spaces(tokens->next);
@@ -149,17 +171,17 @@ t_cmd	*parse_tokens(t_token *tokens)
 					continue;
 				}
 			}
-			tokens = tokens->next;		
+			
+			// Skip whitespace and special tokens
+				tokens = tokens->next;	
 		}
-		argv[i]=NULL;
-		i = 0;
-		new->argv=argv;
-		ft_lstadd_back_cmd(&cmd,new);
-		if(tokens && tokens->type == PIPE )
+		argv[i] = NULL;
+		new->argv = argv;
+		ft_lstadd_back_cmd(&cmd, new);
+		
+		if(tokens && tokens->type == PIPE)
 		{
 			tokens = tokens->next;
-			new = NULL;
-			argv = NULL;
 		}  
 	}
 	return cmd;
