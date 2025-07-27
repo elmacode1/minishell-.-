@@ -36,7 +36,6 @@ void quotes_hander(char c, t_state *state, t_token **head)
 {
 	if(c == '\"'){
 
-		
 		if(*state ==IN_DQUOTE)
 		{
 			*state = GENERAL;

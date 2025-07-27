@@ -13,7 +13,6 @@ int heredoc_handeler(t_redirect *current)
     char *id = ft_itoa(counter++);
     tempfile = ft_strjoin("/tmp/tempfile", id); 
     free(id);
-    printf("%s\n", tempfile);
     signal(SIGINT, SIG_IGN);
     pid = fork();
     if(pid == 0)
@@ -25,6 +24,7 @@ int heredoc_handeler(t_redirect *current)
             exit(1);
         } 
         signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_IGN);
         while(1)
         {
             line = readline("> ");
@@ -48,6 +48,12 @@ int heredoc_handeler(t_redirect *current)
             unlink(tempfile);
             free(tempfile);
             g_exit_status = 130;
+            return 1;
+        }
+        else if(WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
+        {
+            unlink(tempfile);
+            free(tempfile);
             return 1;
         }
         if(WEXITSTATUS(status) != 0)

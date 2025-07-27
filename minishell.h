@@ -119,7 +119,7 @@ int ft_unset(t_shell *shell, char **argv);
 int	ft_strcmp(const char *s1, const char *s2);
 void free_array(char **arr);
 int builtin_func(t_shell *shell, t_cmd *cmd);
-int execute(t_shell *shell, t_cmd *cmd);
+void execute(t_shell *shell, t_cmd *cmd);
 void init_signals(void);
 void handle_child_sig(int sig);
 void handle_sigint(int sig);

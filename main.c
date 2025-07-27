@@ -45,7 +45,7 @@ int main(int ac, char **av, char **envp)
 				cmd= cmd->next;
 			}
 			exit(0);
-            g_exit_status = execute(&shell, cmd);
+            execute(&shell, cmd);
         }
         free(input);
     }

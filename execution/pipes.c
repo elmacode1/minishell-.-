@@ -131,6 +131,7 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
                     g_exit_status = 130;
                     exit(130);
                 }
+                //handle for cat pipe
                 execve(path, cmd->argv, shell->env_copy);
                 free(path);
                 ft_putstr_fd("minishell: execve\n", STDERR_FILENO);

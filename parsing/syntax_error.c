@@ -17,8 +17,8 @@ int check_pipes(t_token *token)
 	{
 		if(token->type == PIPE && token->state== GENERAL)
 		{
-			next_token = lst_skip_spaces(token->next);
-			if(!next_token || next_token->type != WORD)
+			next_token = lst_skip_spaces(token->next); //edited here
+			if(!next_token)
 				return 0;
 		}
 		token = token->next;
