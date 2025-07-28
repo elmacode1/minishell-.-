@@ -12,7 +12,7 @@ int	count_tokens(t_token *tokens)
 		if(!((tokens->type == WHITESPACE || tokens->type == DQUOTE || tokens->type == SQUOTE 
 			|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
 			|| tokens->type == HEREDOC) && tokens->state == GENERAL))
-		count++;
+			count++;
 		tokens = tokens->next;		
 	}
 	return count;
@@ -98,6 +98,7 @@ t_cmd	*parse_tokens(t_token *tokens)
 		new = new_cmd();
 
 		max_args = count_tokens(tokens);
+		// printf("%d\n",max_args);
 		argv = malloc(sizeof(char *) * (max_args + 1));
 		free_helper(argv);
 		
@@ -110,19 +111,28 @@ t_cmd	*parse_tokens(t_token *tokens)
 				|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
 				|| tokens->type == HEREDOC) && tokens->state == GENERAL))
 			{
-				tmp = NULL;
+					tmp = NULL;
 
 				while(tokens && !((tokens->type == WHITESPACE || tokens->type == DQUOTE || tokens->type == SQUOTE 
 					|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
-					|| tokens->type == HEREDOC) && tokens->state == GENERAL))
+					|| tokens->type == HEREDOC) && tokens->state == GENERAL))          //if its a word join it 
 				{
+					
 					char *old_tmp = tmp;
 					tmp = ft_strjoin(tmp, tokens->text);
 					if (old_tmp)
 						free(old_tmp);
 					tokens = tokens->next;
 				}
-				
+				if(tokens && tokens->next && ((tokens->type == DQUOTE || tokens->type == SQUOTE) && tokens->next->state != GENERAL))
+				{
+					tokens = tokens->next;
+					while(tokens->next)
+					{
+						tmp = ft_strjoin(tmp, tokens->text);
+						tokens = tokens->next;
+					}
+				}
 				if (tmp && i < max_args)
 				{
 					argv[i] = ft_strdup(tmp);

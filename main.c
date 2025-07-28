@@ -35,17 +35,18 @@ int main(int ac, char **av, char **envp)
 				// 	head=head->next;
 				// }
 				// exit(0);
-            cmd = parsing(head, envp);
-			int i=0;
-			while(cmd){
-				i = 0;
-				while(cmd->argv[i]){
-					printf("%s\n",cmd->argv[i]);
-					i++;
-				}
-				cmd= cmd->next;
-			}
-			exit(0);
+            cmd = parsing(head, shell.env_copy);
+			// int i=0;
+			// t_cmd *tmp=cmd;
+			// while(tmp){
+			// 	i = 0;
+			// 	while(tmp->argv[i]){
+			// 		printf("%s\n",tmp->argv[i]);
+			// 		i++;
+			// 	}
+			// 	tmp= tmp->next;
+			// }
+			// // exit(0);
             execute(&shell, cmd);
         }
         shell.lines++;
