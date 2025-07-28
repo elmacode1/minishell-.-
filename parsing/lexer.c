@@ -1,5 +1,14 @@
 #include "../minishell.h"
 
+char *get_env_special()
+{
+	char *str;
+
+	str = malloc(sizeof(char)*2);
+	free_helper(str);
+	ft_strlcpy(str,"$?",3);
+	return str;
+}
 char *ft_getword(char *s)
 {
 	int c;
@@ -99,17 +108,16 @@ t_token *lexer(char *str)
 			else if(str[i] == '\n')
 				ft_lstadd_back_token(&head,ft_lstnew_token("\n",state, NEW_LINE));
 			else if(str[i] == '$'){
-				
-					ft_lstadd_back_token(&head,ft_lstnew_token(get_env(str+i),state, ENV));
-					i++;
-					i+=count_word(str+i)-1;
-				
+					
+						ft_lstadd_back_token(&head,ft_lstnew_token(get_env(str+i),state, ENV));
+						i++;
+						i+=count_word(str+i)-1;
 			}
 		}
 		else
 		{
 				ft_lstadd_back_token (&head,ft_lstnew_token(ft_getword(str+i),state,WORD));
-				i+=count_word(str+i)-1;
+				i+=count_word(str+i)-1; 
 		}
 		i++;
 	}
