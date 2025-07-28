@@ -13,6 +13,7 @@ int main(int ac, char **av, char **envp)
 	t_all *global;
 
     shell.env_copy = copy_env(envp);
+    shell.lines = 0;
     g_exit_status = 0;
     init_builtin(&shell);
     init_signals();
@@ -32,6 +33,7 @@ int main(int ac, char **av, char **envp)
             cmd = parsing(head, envp);
             execute(&shell, cmd);
         }
+        shell.lines++;
         free(input);
     }
     free_all(global->free_list);

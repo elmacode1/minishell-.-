@@ -3,7 +3,7 @@
 void handle_child_sig(int sig)
 {
     (void)sig;
-    ft_putstr_fd("\n", STDOUT_FILENO);
+    ft_putstr_fd("hey\n", STDOUT_FILENO);
     g_exit_status = 130;
     exit(130);
 }

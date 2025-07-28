@@ -40,13 +40,30 @@ void free_pipes(int  **pipes, int n_cmds)
 void waiting_all(int n_cmds)
 {
     int j;
+    int status;
+    int pid;
 
     j = 0;
     while(j < n_cmds)
     {
-        wait(NULL);
+        pid = wait(&status);
         j++;
     }
+    if(pid != -1)
+    {
+        // if(WIFEXITED(status))
+        //     g_exit_status = WEXITSTATUS(status);
+         if(WIFSIGNALED(status))
+        {
+            if(WTERMSIG(status) == SIGQUIT)
+                ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+            else if(WTERMSIG(status) == SIGINT)
+                ft_putstr_fd("\n", STDERR_FILENO);
+            g_exit_status = 128 + WTERMSIG(status);
+        }
+    }
+    signal(SIGINT, handle_sigint);
+    signal(SIGQUIT, SIG_IGN);
 }
 
 int builtin_exec_pipe(t_shell *shell, char **argv)
@@ -94,12 +111,13 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
     while(i < n_cmds)
     {
         j = 0;
-        
+        signal(SIGINT, SIG_IGN);
+        signal(SIGQUIT, SIG_IGN);
         pid = fork();
         if(pid == 0)
         {
-            signal(SIGINT, handle_child_sig);
-            signal(SIGQUIT, handle_sigquit);
+            signal(SIGINT, SIG_DFL);
+            signal(SIGQUIT, SIG_DFL);
             if(i > 0)
                 dup2(pipes[i - 1][0], STDIN_FILENO);
             if(i < n_cmds - 1)
@@ -131,7 +149,6 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
                     g_exit_status = 130;
                     exit(130);
                 }
-                //handle for cat pipe
                 execve(path, cmd->argv, shell->env_copy);
                 free(path);
                 ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
@@ -151,5 +168,5 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
     }
     waiting_all(n_cmds);
     free_pipes(pipes, n_cmds);
-    return 0;
+    return g_exit_status;
 }

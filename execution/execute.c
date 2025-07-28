@@ -86,13 +86,13 @@ int execute_external(t_shell *shell, t_cmd *cmd)
         signal(SIGINT, handle_sigint);
         if(WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
         {
-            ft_putstr_fd("Quit\n", STDERR_FILENO);
-            return 131;//status 
+            ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+            return 131;
         }
         else if(WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
         {
             ft_putstr_fd("\n", STDERR_FILENO);
-            return 130;//status 
+            return 130; 
         }
         free(path);
         return WEXITSTATUS(status);
@@ -156,12 +156,13 @@ void open_heredocs(t_cmd *cmd)
     while(cmd)
     {
         current = cmd->redirections;
+        // if(!current->delimiter)
+            // ft_putstr_fd("syntax error near unexpected token `newline'\n", STDERR_FILENO);
         while (current)
         {
             if(current->type == HEREDOC)
             {
                 heredoc_handeler(current);
-                // printf("%s\n", current->filename);
             }
             current = current->next;
         }

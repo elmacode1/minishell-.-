@@ -60,6 +60,7 @@ struct s_shell
     char **env_copy;
     t_builtin builtinds[8];
     int exit_status;
+	int lines;
 };
 
 //malak structs
