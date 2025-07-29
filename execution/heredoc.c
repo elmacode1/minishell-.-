@@ -64,8 +64,5 @@ int heredoc_handeler(t_redirect *current)
         current->filename = strdup(tempfile);
         free(tempfile);
         return 0;
-        //i need to handle cat << without any delimiter it segfaluts now
     }
 }
-
-//problem in << alone as command syntax error near unexpected token `newline'
