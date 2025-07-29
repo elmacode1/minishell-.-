@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-int heredoc_handeler(t_redirect *current)
+int heredoc_handeler(t_redirect *current, int *exit_status)
 {
     char *line;
     int fd;
@@ -58,7 +58,7 @@ int heredoc_handeler(t_redirect *current)
             ft_putstr_fd("\n", STDOUT_FILENO);
             unlink(tempfile);
             free(tempfile);
-            g_exit_status = 130;
+            *exit_status = 130;
             return 130;
         }
         current->filename = strdup(tempfile);

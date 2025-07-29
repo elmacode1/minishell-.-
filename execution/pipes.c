@@ -130,8 +130,8 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
             }
             if(is_builtin(cmd->argv[0]))
             {
-                g_exit_status = execute_builtin(shell, cmd);
-                exit(g_exit_status);
+                shell->exit_status = execute_builtin(shell, cmd);
+                exit(shell->exit_status);
             }
             else
             {
@@ -141,18 +141,18 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
                     ft_putstr_fd("minishell: ", STDERR_FILENO);
                     ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
                     ft_putstr_fd("cmd not found\n", STDERR_FILENO);
-                    g_exit_status = 127;
+                    shell->exit_status = 127;
                     exit(127);
                 }
                 if(handle_redirections(shell, cmd) == 1)
                 {
-                    g_exit_status = 130;
+                    shell->exit_status = 130;
                     exit(130);
                 }
                 execve(path, cmd->argv, shell->env_copy);
                 free(path);
                 ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
-                g_exit_status = 126;
+                shell->exit_status = 126;
                 exit(126);
             }
         }
@@ -168,5 +168,5 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
     }
     waiting_all(n_cmds);
     free_pipes(pipes, n_cmds);
-    return g_exit_status;
+    return shell->exit_status;
 }

@@ -150,7 +150,7 @@ int execute_cmd(t_shell *shell ,t_cmd *cmd)
         return (execute_external(shell, cmd));
 }
 
-void open_heredocs(t_cmd *cmd)
+void open_heredocs(t_cmd *cmd, t_shell *shell)
 {
     t_cmd *temp;
     t_redirect *current;
@@ -165,7 +165,7 @@ void open_heredocs(t_cmd *cmd)
         {
             if(current->type == HEREDOC)
             {
-                heredoc_handeler(current);
+                heredoc_handeler(current, &shell->exit_status);
             }
             current = current->next;
         }
@@ -201,13 +201,13 @@ void close_heredocs(t_cmd *cmd)
 void execute(t_shell *shell, t_cmd *cmd)
 {
     if(cmd)
-        open_heredocs(cmd);
+        open_heredocs(cmd, shell);
     if(cmd && cmd->argv && cmd->argv[0])
     {
         if(cmd->next)
-            g_exit_status = execute_pipes(shell, cmd);
+            shell->exit_status = execute_pipes(shell, cmd);
         else
-            g_exit_status = execute_cmd(shell, cmd);
+            shell->exit_status = execute_cmd(shell, cmd);
     }
     close_heredocs(cmd);
 }

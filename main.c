@@ -14,7 +14,7 @@ int main(int ac, char **av, char **envp)
 	
     shell.env_copy = copy_env(envp);
     shell.lines = 0;
-    g_exit_status = 0;
+    shell.exit_status = 0;
     init_builtin(&shell);
     init_signals();
 	global = static_var();
@@ -35,7 +35,7 @@ int main(int ac, char **av, char **envp)
 				// 	head=head->next;
 				// }
 				// exit(0);
-            cmd = parsing(head, shell.env_copy);
+            cmd = parsing(head, &shell);
 			// int i=0;
 			// t_cmd *tmp=cmd;
 			// while(tmp){

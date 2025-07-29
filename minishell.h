@@ -107,7 +107,7 @@ int set_env_var(t_shell *shell, char *name, char *var);
 char *get_cmd_path(t_shell *shell, char *cmd);
 int is_builtin(char *cmd);
 int execute_builtin(t_shell *shell, t_cmd *cmd);
-int heredoc_handeler(t_redirect *current);
+int heredoc_handeler(t_redirect *current, int *status);
 void remove_env_var(t_shell *shell, char *name);
 int is_valid(char *var);
 int ft_export(t_shell *shell, char **argv);
@@ -138,7 +138,6 @@ t_token	*ft_lstnew_token(char *text,t_state state,t_tokentype  type);
 int count_word(char *s);
 char *ft_getword(char *s);
 char *get_env(char *s);
-// t_all *static_var();
 int check_errors(t_token *tokens);
 t_token *lst_skip_spaces(t_token *token);
 t_cmd *parse_tokens(t_token *tokens);
@@ -155,8 +154,8 @@ void free_all(t_free *node);
 char	*ft_strdup(const char *s1);
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 size_t	ft_strlen(const char *s);
-t_cmd	*parsing(t_token *head, char **env);
-void expander(t_token **head,char **env);
+t_cmd	*parsing(t_token *head, t_shell *shell);
+void expander(t_token **head, t_shell *shell);
 void free_helper(void *ptr);
 
 #endif

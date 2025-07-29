@@ -41,7 +41,7 @@ char *get_value(char *str)
 	}
 	return NULL;
 }
-void expander(t_token **head,char **env)
+void expander(t_token **head, t_shell *shell)
 {
 	t_token *tmp_head;
 
@@ -51,13 +51,13 @@ void expander(t_token **head,char **env)
 	{
 		if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV && !strncmp(tmp_head->text+1,"?",1))
 		{
-			tmp_head->text= ft_strjoin(ft_itoa(g_exit_status),tmp_head->text+2);
+			tmp_head->text= ft_strjoin(ft_itoa(shell->exit_status),tmp_head->text+2);
 			tmp_head->type=WORD;
 		}
 		else if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV)
 		{
-			if(get_env_index(tmp_head->text+1,env) >= 0)
-				tmp_head->text = get_value(env[get_env_index(tmp_head->text+1,env)]);
+			if(get_env_index(tmp_head->text+1,shell->env_copy) >= 0)
+				tmp_head->text = get_value(shell->env_copy[get_env_index(tmp_head->text+1,shell->env_copy)]);
 			else
 				tmp_head->text = ft_strdup("");
 			tmp_head->type = WORD;

@@ -1,0 +1,16 @@
+ echo "        hey="dd"     " should not have space between =
+
+
+ sh-5.2$ echo "        hey="dd"     "
+        hey=dd     
+sh-5.2$ echo "        hey="dd'     "
+> ccc
+> cc
+> "
+> '
+        hey=dd     "
+ccc
+cc
+"
+
+open quote

@@ -125,12 +125,12 @@ t_token *lexer(char *str)
 	return head;
 }
 
-t_cmd	*parsing(t_token *head, char **env)
+t_cmd	*parsing(t_token *head, t_shell *shell)
 {
 	t_cmd *cmd;
 	if(!check_errors(head))
 		return NULL;
-	expander(&head,env);
+	expander(&head,shell);
 	// aff_lexer(head);
 	cmd = parse_tokens(head);
 	return (cmd);
