@@ -31,7 +31,10 @@ char *get_cmd_path(t_shell *shell, char *cmd)
     while(paths[i])
     {
         slash = ft_strjoin(paths[i], "/");
-        cmd_path = ft_strjoin(slash, cmd);
+        if(ft_strncmp(cmd, "/bin", 4) == 0)
+            cmd_path = ft_strjoin(slash, cmd + 4);
+        else
+            cmd_path = ft_strjoin(slash, cmd);
         if(access(cmd_path, X_OK) == 0)
         {
             result = cmd_path;
@@ -169,7 +172,6 @@ void open_heredocs(t_cmd *cmd)
         cmd = cmd->next;
     }
     cmd = temp;
-    // cmd->redirections = current;
 }
 
 void close_heredocs(t_cmd *cmd)
