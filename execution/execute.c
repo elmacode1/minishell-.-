@@ -31,10 +31,7 @@ char *get_cmd_path(t_shell *shell, char *cmd)
     while(paths[i])
     {
         slash = ft_strjoin(paths[i], "/");
-        if(ft_strncmp(cmd, "/bin", 4) == 0)
-            cmd_path = ft_strjoin(slash, cmd + 4);
-        else
-            cmd_path = ft_strjoin(slash, cmd);
+        cmd_path = ft_strjoin(slash, cmd);
         if(access(cmd_path, X_OK) == 0)
         {
             result = cmd_path;
@@ -54,7 +51,28 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     int pid;
     char *path;
     int status;
-    path = get_cmd_path(shell, cmd->argv[0]);
+
+    //should add it also in pipes
+    if(cmd->argv[0][0] == '/' || (cmd->argv[0][0] == '.' && cmd->argv[0][1] == '/'))
+    {
+        if(access(cmd->argv[0], F_OK) != 0)
+        {
+             ft_putstr_fd("minishell: ", STDERR_FILENO);
+            ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
+            ft_putstr_fd(" No such file or directory\n", STDERR_FILENO);
+            return 127;
+        }
+        if(access(cmd->argv[0], X_OK) != 0)
+        {
+            ft_putstr_fd("minishell: ", STDERR_FILENO);
+            ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
+            ft_putstr_fd(" Permission denied\n", STDERR_FILENO);
+            return 126;
+        }
+        path = ft_strdup(cmd->argv[0]);
+    }
+    else
+        path = get_cmd_path(shell, cmd->argv[0]);
     
     if(!path)
     {
@@ -75,7 +93,7 @@ int execute_external(t_shell *shell, t_cmd *cmd)
         signal(SIGQUIT, SIG_DFL);
         if(handle_redirections(shell, cmd) == 1)
         { 
-            exit(g_exit_status);
+            exit(shell->exit_status);
         }
         execve(path, cmd->argv, shell->env_copy);
         ft_putstr_fd("minishell: execve\n", STDERR_FILENO);

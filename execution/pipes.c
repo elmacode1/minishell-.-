@@ -135,7 +135,28 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
             }
             else
             {
-                path = get_cmd_path(shell, cmd->argv[0]);
+                if(cmd->argv[0][0] == '/' || (cmd->argv[0][0] == '.' && cmd->argv[0][1] == '/'))
+                {
+                    if(access(cmd->argv[0], F_OK) != 0)
+                    {
+                        ft_putstr_fd("minishell: ", STDERR_FILENO);
+                        ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
+                        ft_putstr_fd(" No such file or directory\n", STDERR_FILENO);
+                        shell->exit_status = 127;
+                        exit(127);
+                    }
+                    if(access(cmd->argv[0], X_OK) != 0)
+                    {
+                        ft_putstr_fd("minishell: ", STDERR_FILENO);
+                        ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
+                        ft_putstr_fd(" Permission denied\n", STDERR_FILENO);
+                        shell->exit_status = 126;
+                        exit(126);
+                    }
+                    path = ft_strdup(cmd->argv[0]);
+                }
+                else
+                    path = get_cmd_path(shell, cmd->argv[0]);
                 if(!path)
                 {
                     ft_putstr_fd("minishell: ", STDERR_FILENO);
