@@ -39,14 +39,13 @@ int main(int ac, char **av, char **envp)
 			// int i=0;
 			// t_cmd *tmp=cmd;
 			// while(tmp){
-			// 	i = 0;
 			// 	while(tmp->argv[i]){
 			// 		printf("%s\n",tmp->argv[i]);
 			// 		i++;
 			// 	}
 			// 	tmp= tmp->next;
 			// }
-			// // exit(0);
+			// exit(0);
             execute(&shell, cmd);
         }
         shell.lines++;

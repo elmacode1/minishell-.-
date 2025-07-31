@@ -93,6 +93,11 @@ t_cmd	*parse_tokens(t_token *tokens)
 	int max_args;
 
 	cmd = NULL;
+		// while(tokens){
+		// printf("%s\n",tokens->text);
+		// tokens=tokens->next;
+		// }
+		// exit(0);
 	while (tokens)
 	{
 		new = new_cmd();
@@ -124,7 +129,7 @@ t_cmd	*parse_tokens(t_token *tokens)
 						free(old_tmp);
 					tokens = tokens->next;
 				}
-				if(tokens && tokens->next && ((tokens->type == DQUOTE || tokens->type == SQUOTE) && tokens->next->state != GENERAL))
+				if(tokens && tokens->next && ((tokens->type == DQUOTE || tokens->type == SQUOTE) && tokens->state != GENERAL && tokens->next->state != GENERAL))
 				{
 					tokens = tokens->next;
 					while(tokens->next)
@@ -135,7 +140,7 @@ t_cmd	*parse_tokens(t_token *tokens)
 				}
 				if (tmp && i < max_args)
 				{
-					argv[i] = ft_strdup(tmp);
+					argv[i] = ft_strdup(tmp);                     
 					free(tmp);
 					i++;
 				}
