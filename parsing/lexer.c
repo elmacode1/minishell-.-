@@ -32,11 +32,14 @@ char *get_env(char *s)
 	return str;
 }
 
-void quotes_hander(char c, t_state *state, t_token **head)
+void quotes_hander(char* c, t_state *state, t_token **head)
 {
-	if(c == '\"'){
-
-		if(*state ==IN_DQUOTE)
+	if(c[0] == '\"'){
+		if(c[1] == '\"')
+		{
+			ft_lstadd_back_token(head,ft_lstnew_token("", *state, EMPTY_STR));
+		}
+		else if(*state ==IN_DQUOTE)
 		{
 			*state = GENERAL;
 			ft_lstadd_back_token(head,ft_lstnew_token("\"", *state, DQUOTE));
@@ -51,8 +54,12 @@ void quotes_hander(char c, t_state *state, t_token **head)
 			ft_lstadd_back_token(head,ft_lstnew_token("\"", *state, DQUOTE));
 		}
 	}
-	else if(c == '\''){
-		if(*state ==IN_SQUOTE)
+	else if(c[0] == '\''){
+		if(c[1] == '\'')
+		{
+			ft_lstadd_back_token(head,ft_lstnew_token("", *state, EMPTY_STR));
+		}
+		else if(*state ==IN_SQUOTE)
 		{
 			*state = GENERAL;
 			ft_lstadd_back_token(head,ft_lstnew_token("\'", *state, SQUOTE));
@@ -88,9 +95,11 @@ t_token *lexer(char *str)
 			else if(is_space(str[i])){
 				ft_lstadd_back_token(&head,ft_lstnew_token(" ",state ,WHITESPACE));
 			}
-			else if(str[i] == '\'' || str[i] == '\"')
-				quotes_hander(str[i], &state, &head);
-
+			else if(str[i] == '\'' || str[i] == '\"'){
+					quotes_hander(&str[i], &state, &head);
+					if(ft_lstlast_token(head)->type==EMPTY_STR)
+					i++;
+			}
 			else if(str[i] == '>' && str[i+1] == '>')
 			{
 				ft_lstadd_back_token(&head,ft_lstnew_token(">>",state, APPEND));

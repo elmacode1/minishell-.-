@@ -112,24 +112,29 @@ t_cmd	*parse_tokens(t_token *tokens)
 		{
 			if(tokens->type == PIPE && tokens->state == GENERAL)
 				break;
-			if(!((tokens->type == WHITESPACE || tokens->type == DQUOTE || tokens->type == SQUOTE 
+			tmp = NULL;
+			if(!((tokens->type == WHITESPACE || tokens->type == DQUOTE || tokens->type == SQUOTE || tokens->type == EMPTY_STR
 				|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
 				|| tokens->type == HEREDOC) && tokens->state == GENERAL))
 			{
-					tmp = NULL;
+					
 
-				while(tokens && !((tokens->type == WHITESPACE || tokens->type == DQUOTE || tokens->type == SQUOTE 
+				while(tokens && !((tokens->type == WHITESPACE
 					|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
 					|| tokens->type == HEREDOC) && tokens->state == GENERAL))          //if its a word join it 
 				{
-					
+					if( (tokens->type == DQUOTE || tokens->type == SQUOTE)&& tokens->state == GENERAL)
+					{
+						tokens = tokens->next;
+						continue;
+					}
 					char *old_tmp = tmp;
 					tmp = ft_strjoin(tmp, tokens->text);
 					if (old_tmp)
 						free(old_tmp);
 					tokens = tokens->next;
 				}
-				if(tokens && tokens->next && ((tokens->type == DQUOTE || tokens->type == SQUOTE) && tokens->state != GENERAL && tokens->next->state != GENERAL))
+				if(tokens && tokens->next && ((tokens->type == DQUOTE || tokens->type == SQUOTE)  && tokens->next->state != GENERAL))
 				{
 					tokens = tokens->next;
 					while(tokens->next)
@@ -145,6 +150,11 @@ t_cmd	*parse_tokens(t_token *tokens)
 					i++;
 				}
 				continue;
+			}
+			else if(tokens->type == EMPTY_STR)
+			{
+				argv[i]= ft_strdup("");
+				i++;
 			}
 			else if (tokens->type == RED_IN)
 			{

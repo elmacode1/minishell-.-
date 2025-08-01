@@ -40,9 +40,11 @@ int main(int ac, char **av, char **envp)
 			// t_cmd *tmp=cmd;
 			// while(tmp){
 			// 	while(tmp->argv[i]){
-			// 		printf("%s\n",tmp->argv[i]);
+			// 		printf("\'%s\'\n",tmp->argv[i]);
+					
 			// 		i++;
 			// 	}
+			// 	printf("yes%s",tmp->redirections->filename);
 			// 	tmp= tmp->next;
 			// }
 			// exit(0);

@@ -31,6 +31,7 @@ typedef enum e_token_type{
 	HEREDOC,
 	NEW_LINE,
 	ENV,
+	EMPTY_STR,
 }t_tokentype;
 
 extern int g_exit_status;
