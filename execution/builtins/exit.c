@@ -18,7 +18,7 @@ int is_num(char *str)
 int ft_exit(t_shell *shell, char **argv)
 {
     (void)shell;
-    // ft_putendl_fd("exit", STDOUT_FILENO);
+    
     if (!argv[1])
         exit(shell->exit_status);
     if(argv[2])

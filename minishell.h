@@ -97,6 +97,7 @@ typedef struct s_all
 	t_free *free_list;
 }t_all;
 
+
 int handle_redirections(t_shell *shell, t_cmd *cmd);
 int execute_pipes(t_shell *shell, t_cmd *cmd);
 char **copy_env(char **env);
@@ -127,6 +128,8 @@ void handle_child_sig(int sig);
 void handle_sigint(int sig);
 void handle_sigquit(int sig);
 void close_heredocs(t_cmd *cmd);
+int valid_cmd(t_shell *shell, t_cmd *cmd, char **path);
+void print_error(char *ms1, char *arg, char *ms2);
 
 // malak s functions
 

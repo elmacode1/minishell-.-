@@ -97,6 +97,7 @@ int  set_env_var(t_shell *shell, char *name, char *var)
     add_new_var(shell, new_var);
     return 0;
 }
+
 void remove_env_var(t_shell *shell, char *name)
 {
     int i;

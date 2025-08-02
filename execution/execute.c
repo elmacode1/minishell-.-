@@ -15,36 +15,79 @@ int is_builtin(char *cmd)
     return (0);
 }
 
-char *get_cmd_path(t_shell *shell, char *cmd)
+char *path_access(char **paths, char *cmd)
 {
-    char *env;
-    char **paths;
-    char *cmd_path;
-    char *result;
     char *slash;
+    char *cmd_path;
+
     int i;
 
     i = 0;
-    result = NULL;
-    env = get_env_var(shell, "PATH");
-    paths = ft_split(env, ':');
     while(paths[i])
     {
         slash = ft_strjoin(paths[i], "/");
         cmd_path = ft_strjoin(slash, cmd);
         if(access(cmd_path, X_OK) == 0)
         {
-            result = cmd_path;
             free(slash);
-            break;
+            return cmd_path;
         }
         free(slash);
         free(cmd_path);
         i++;
     }
+    return NULL;
+}
+
+char *get_cmd_path(t_shell *shell, char *cmd)
+{
+    char *env;
+    char **paths;
+    char *result;
+
+    result = NULL;
+    env = get_env_var(shell, "PATH");
+    paths = ft_split(env, ':');
+    result = path_access(paths,cmd);
     free_array(paths);
     return result;
 }
+
+void print_error(char *ms1, char *arg, char *ms2)
+{
+    ft_putstr_fd(ms1, STDERR_FILENO);
+    ft_putstr_fd(arg, STDERR_FILENO);
+    ft_putstr_fd(ms2, STDERR_FILENO);
+}
+
+int valid_cmd(t_shell *shell, t_cmd *cmd, char **path)
+{
+    if(cmd->argv[0][0] == '/' || (cmd->argv[0][0] == '.' && cmd->argv[0][1] == '/'))
+    {
+        if(access(cmd->argv[0], F_OK) != 0)
+        {
+            print_error("minishell: ", cmd->argv[0],": No such file or directory\n");
+            return 127;
+        }
+        if(access(cmd->argv[0], X_OK) != 0)
+        {
+            print_error("minishell: ", cmd->argv[0],": Permission denied\n");
+            return 126; 
+        }
+        *path = ft_strdup(cmd->argv[0]);
+    }
+    else
+        *path = get_cmd_path(shell, cmd->argv[0]);
+    
+    if(!*path)
+    {
+        print_error("minishell: ", cmd->argv[0],": cmd not found\n");
+        return 127;
+    }
+    return 0;
+}
+
+
 
 int execute_external(t_shell *shell, t_cmd *cmd)
 {
@@ -52,34 +95,25 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     char *path;
     int status;
 
-    //should add it also in pipes
-    if(cmd->argv[0][0] == '/' || (cmd->argv[0][0] == '.' && cmd->argv[0][1] == '/'))
+    int tmp_out = dup(STDOUT_FILENO);
+    int tmp_in = dup(STDIN_FILENO);
+    path = NULL;
+    if((shell->exit_status = handle_redirections(shell, cmd)) != 0)
     {
-        if(access(cmd->argv[0], F_OK) != 0)
-        {
-             ft_putstr_fd("minishell: ", STDERR_FILENO);
-            ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
-            ft_putstr_fd(" No such file or directory\n", STDERR_FILENO);
-            return 127;
-        }
-        if(access(cmd->argv[0], X_OK) != 0)
-        {
-            ft_putstr_fd("minishell: ", STDERR_FILENO);
-            ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
-            ft_putstr_fd(" Permission denied\n", STDERR_FILENO);
-            return 126;
-        }
-        path = ft_strdup(cmd->argv[0]);
+        dup2(tmp_in, STDIN_FILENO);
+        dup2(tmp_out, STDOUT_FILENO);
+        close(tmp_out);
+        close(tmp_in);
+        return(shell->exit_status);
     }
-    else
-        path = get_cmd_path(shell, cmd->argv[0]);
-    
-    if(!path)
+    status = valid_cmd(shell, cmd, &path);
+    if(status != 0)
     {
-        ft_putstr_fd("minishell: ", STDERR_FILENO);
-        ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
-        ft_putstr_fd(" cmd not found\n", STDERR_FILENO);
-        return 127;
+        dup2(tmp_in, STDIN_FILENO);
+        dup2(tmp_out, STDOUT_FILENO);
+        close(tmp_out);
+        close(tmp_in);
+        return(status);
     }
     pid = fork();
     if(pid == -1)
@@ -89,15 +123,11 @@ int execute_external(t_shell *shell, t_cmd *cmd)
     }
     if(pid == 0)
     {
-        signal(SIGINT, SIG_DFL);
+         signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
-        if(handle_redirections(shell, cmd) == 1)
-        { 
-            exit(shell->exit_status);
-        }
         execve(path, cmd->argv, shell->env_copy);
         ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
-        return 126;
+        exit(126);
     }
     else
     {
@@ -105,6 +135,11 @@ int execute_external(t_shell *shell, t_cmd *cmd)
         signal(SIGINT, SIG_IGN);
         waitpid(pid, &status, 0);
         signal(SIGINT, handle_sigint);
+
+        dup2(tmp_in, STDIN_FILENO);
+        dup2(tmp_out, STDOUT_FILENO);
+        close(tmp_out);
+        close(tmp_in);
         if(WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
         {
             ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
@@ -162,13 +197,18 @@ int execute_builtin(t_shell *shell, t_cmd *cmd)
 
 int execute_cmd(t_shell *shell ,t_cmd *cmd)
 {
+    // int redir_status = handle_redirections(shell, cmd);
+    // if (redir_status == 1)
+    //     return shell->exit_status;
+    if(!cmd->argv || !cmd->argv[0])
+        return handle_redirections(shell,cmd);
     if(is_builtin(cmd->argv[0]))
         return execute_builtin(shell, cmd);
     else
         return (execute_external(shell, cmd));
 }
 
-void open_heredocs(t_cmd *cmd, t_shell *shell)
+int open_heredocs(t_cmd *cmd, t_shell *shell)
 {
     t_cmd *temp;
     t_redirect *current;
@@ -177,19 +217,22 @@ void open_heredocs(t_cmd *cmd, t_shell *shell)
     while(cmd)
     {
         current = cmd->redirections;
-        // if(!current->delimiter)
-            // ft_putstr_fd("syntax error near unexpected token `newline'\n", STDERR_FILENO);
         while (current)
         {
             if(current->type == HEREDOC)
             {
-                heredoc_handeler(current, &shell->exit_status);
+                if(heredoc_handeler(current, &shell->exit_status) == 130)
+                {
+                    shell->exit_status = 130;
+                    return 130;
+                }
             }
             current = current->next;
         }
         cmd = cmd->next;
     }
     cmd = temp;
+    return 0;
 }
 
 void close_heredocs(t_cmd *cmd)
@@ -219,8 +262,9 @@ void close_heredocs(t_cmd *cmd)
 void execute(t_shell *shell, t_cmd *cmd)
 {
     if(cmd)
-        open_heredocs(cmd, shell);
-    if(cmd && cmd->argv && cmd->argv[0])
+        if(open_heredocs(cmd, shell) == 130)
+            return;
+    if(cmd )
     {
         if(cmd->next)
             shell->exit_status = execute_pipes(shell, cmd);
@@ -229,3 +273,4 @@ void execute(t_shell *shell, t_cmd *cmd)
     }
     close_heredocs(cmd);
 }
+// handle redirections should happen even if there is no command file should be opened

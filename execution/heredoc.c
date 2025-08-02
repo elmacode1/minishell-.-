@@ -17,8 +17,7 @@ int heredoc_handeler(t_redirect *current, int *exit_status)
     signal(SIGINT, SIG_IGN);
     pid = fork();
     if(pid == 0)
-    { 
-        close(pipe_fd[0]);  
+    {
         fd = open(tempfile, O_CREAT | O_WRONLY | O_TRUNC, 0600);
         if(fd < 0)
         {
@@ -40,12 +39,14 @@ int heredoc_handeler(t_redirect *current, int *exit_status)
                 break;
             }
             else if( strcmp(line, current->delimiter) == 0)
+            {
+                free(line);
                 break;
+            }
             write(fd, line, strlen(line));
             write(fd, "\n", 1);
             free(line);
         }
-        free(line);
         close(fd);
         exit(0);
     }

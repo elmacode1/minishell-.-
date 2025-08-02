@@ -13,7 +13,6 @@ int is_valid(char *var)
             return 0;
         i++;
     }
-    // printf("%d", i);
     return 1;
 }
 

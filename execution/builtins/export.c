@@ -96,6 +96,25 @@ void update_env(t_shell *shell, char *equal, char *arg)
             add_new_var(shell, arg);
     }
 }
+
+void export_no_args(t_shell *shell, char **argv, int *i)
+{
+
+    if(!argv[1])
+        sort_and_print(shell->env_copy);
+    else
+    {
+        while(argv[*i])
+        {
+            if(ft_strcmp(argv[*i], "") == 0)
+                (*i)++;
+            else
+                break;
+        }
+        if(argv[*i] ==  NULL)
+            sort_and_print(shell->env_copy);
+    }
+}
 int ft_export(t_shell *shell, char **argv)
 {
     int i;
