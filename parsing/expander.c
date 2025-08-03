@@ -41,6 +41,14 @@ char *get_value(char *str)
 	}
 	return NULL;
 }
+int special_char(char *str)
+{
+	int i = 0;
+	if((str[i] == '%' || str[i] == '+') || str[i] == ':' 
+	|| str[i] == '/' || str[i] == '.' || str[i] == '=')
+		return 1;
+	return 0;
+}
 void expander(t_token **head, t_shell *shell)
 {
 	t_token *tmp_head;
@@ -53,12 +61,16 @@ void expander(t_token **head, t_shell *shell)
 		// // exit(0);
 	while(tmp_head)
 	{
+		// if(tmp_head->type == ENV && )
+		// 	tmp_head->type = WORD;
+		if((tmp_head->type == ENV && !strncmp(tmp_head->text + 1,"",1)) || special_char(tmp_head->text + 1))
+			tmp_head->type = WORD;
 		if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV && !strncmp(tmp_head->text + 1,"?",1))
 		{
 			tmp_head->text = ft_strjoin(ft_itoa(shell->exit_status),tmp_head->text+2);
 			tmp_head->type = WORD;
 		}
-		else if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV && strncmp(tmp_head->text + 1,"=",1))
+		else if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV)
 		{
 			if(get_env_index(tmp_head->text+1,shell->env_copy) >= 0)
 				tmp_head->text = get_value(shell->env_copy[get_env_index(tmp_head->text+1,shell->env_copy)]);

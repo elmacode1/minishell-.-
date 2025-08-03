@@ -65,7 +65,7 @@ int check_red(t_token *token)
 		if((token->type == RED_IN || token->type == RED_OUT || token->type == HEREDOC || token->type == APPEND )&& token->state== GENERAL)
 		{
 			next_token = lst_skip_spaces(token->next);
-			if(!next_token || (next_token->type != WORD && next_token->type != ENV ))
+			if(!next_token || (next_token->type != WORD && next_token->type != ENV && next_token->type != SQUOTE && next_token->type != DQUOTE))
 				return 0;
 		}
 		token = token->next;

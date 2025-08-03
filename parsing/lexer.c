@@ -90,6 +90,8 @@ t_token *lexer(char *str)
 	{	
 		if(is_special(str[i]))
 		{
+			if(str[i]=='\\')
+				ft_lstadd_back_token(&head,ft_lstnew_token("\\",state ,BACK_SLASH));
 			if(str[i]=='|')
 				ft_lstadd_back_token(&head,ft_lstnew_token("|",state ,PIPE));
 			else if(is_space(str[i])){

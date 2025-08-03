@@ -91,7 +91,7 @@ t_cmd	*parse_tokens(t_token *tokens)
 	int i;
 	char *tmp;
 	int max_args;
-
+	char *test;
 	cmd = NULL;
 		// while(tokens){
 		// printf("%s\n",tokens->text);
@@ -115,12 +115,12 @@ t_cmd	*parse_tokens(t_token *tokens)
 			tmp = NULL;
 			if(!((tokens->type == WHITESPACE || tokens->type == DQUOTE || tokens->type == SQUOTE || tokens->type == EMPTY_STR
 				|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
-				|| tokens->type == HEREDOC) && tokens->state == GENERAL))
+				|| tokens->type == HEREDOC  || tokens->type == BACK_SLASH) && tokens->state == GENERAL))
 			{
 					
 
 				while(tokens && !((tokens->type == WHITESPACE
-					|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
+					|| tokens->type == RED_IN || tokens->type == RED_OUT || tokens->type == APPEND
 					|| tokens->type == HEREDOC) && tokens->state == GENERAL))          //if its a word join it 
 				{
 					if( (tokens->type == DQUOTE || tokens->type == SQUOTE)&& tokens->state == GENERAL)
@@ -156,47 +156,47 @@ t_cmd	*parse_tokens(t_token *tokens)
 				argv[i]= ft_strdup("");
 				i++;
 			}
-			else if (tokens->type == RED_IN)
-			{
-				tokens = lst_skip_spaces(tokens->next);
-				if (tokens && tokens->type == WORD)
+			else if (tokens->type == RED_OUT ||  tokens->type == RED_IN || tokens->type == APPEND ||tokens->type == HEREDOC){
+				t_tokentype t = tokens->type;
+				tokens = tokens->next;
+				tokens = lst_skip_spaces(tokens);
+				if(tokens && ((tokens->type == DQUOTE ||  tokens->type == SQUOTE) && tokens->state ==GENERAL))
 				{
-					add_redirection(new, tokens->text, RED_IN);
+					test = NULL;
+					tokens=tokens->next;
+					while(tokens && !((tokens->type == DQUOTE ||  tokens->type == SQUOTE) && tokens->state ==GENERAL))
+					{
+						test = ft_strjoin(test,tokens->text);
+						tokens=tokens->next;
+					}
+				}
+				else
+				test = tokens->text;
+				if(t == RED_IN)
+				{
+					add_redirection(new, test, RED_IN);
+					tokens = tokens->next;
+					continue;
+				}
+				else if (t == RED_OUT)
+				{
+					add_redirection(new, test, RED_OUT);
+					tokens = tokens->next;
+					continue;
+				}
+				else if (t == APPEND)
+				{
+					add_redirection(new, test, APPEND);
+					tokens = tokens->next;
+					continue;
+				}
+				else if (t == HEREDOC)
+				{
+					add_redirection(new, test, HEREDOC);
 					tokens = tokens->next;
 					continue;
 				}
 			}
-			else if (tokens->type == RED_OUT)
-			{
-				tokens = lst_skip_spaces(tokens->next);
-            	if (tokens && tokens->type == WORD)
-				{
-                	add_redirection(new, tokens->text, RED_OUT);
-					tokens = tokens->next;
-					continue;
-           		}
-        	}
-			else if (tokens->type == APPEND)
-			{
-				tokens = lst_skip_spaces(tokens->next);
-            	if (tokens && tokens->type == WORD)
-				{
-					add_redirection(new, tokens->text, APPEND);
-					tokens = tokens->next;
-					continue;
-				}
-        	}
-			else if (tokens->type == HEREDOC)
-			{
-				tokens = lst_skip_spaces(tokens->next);
-				if (tokens && tokens->type == WORD)
-				{
-					add_redirection(new, tokens->text, HEREDOC);
-					tokens = tokens->next;
-					continue;
-				}
-			}
-			
 			// Skip whitespace and special tokens
 				tokens = tokens->next;	
 		}

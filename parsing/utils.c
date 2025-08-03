@@ -5,11 +5,12 @@ int is_space(char c)
 }
 int is_special(char c)
 {
-	if (c == '|' || c == '<' || c == '>'|| c == '\n'
+	if (c == '|' || c == '<' || c == '>'
 		|| c == '\'' || c == '\"' || c == '$' || is_space(c))
 		return (1);
 	return (0);
 }
+
 char	*ft_strdup(const char *s1)
 {
 	int		len;

@@ -32,6 +32,7 @@ typedef enum e_token_type{
 	NEW_LINE,
 	ENV,
 	EMPTY_STR,
+	BACK_SLASH,
 }t_tokentype;
 
 extern int g_exit_status;
