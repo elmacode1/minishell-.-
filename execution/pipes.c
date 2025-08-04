@@ -94,7 +94,60 @@ int count_cmds(t_cmd *cmd)
     }
     return n_cmds;
 }
+void close_pipes(int n_cmds, int **pipes)
+{
+    int j;
 
+    j = 0;
+    while(j < n_cmds - 1)
+    {
+        close(pipes[j][0]);
+        close(pipes[j][1]);
+        j++;
+    }
+}
+void manage_pipes(int i, int **pipes, int n_cmds, int j)
+{
+    if(i > 0)
+        dup2(pipes[i - 1][0], STDIN_FILENO);
+    if(i < n_cmds - 1)
+        dup2(pipes[i][1], STDOUT_FILENO);
+    while(j < n_cmds - 1)
+    {
+        close(pipes[j][0]);
+        close(pipes[j][1]);
+        j++;
+    }
+}
+
+int manage_cmd(t_cmd *cmd, t_shell *shell, int tmp_in, int tmp_out, char *path)
+{
+    int status;
+
+    if(!cmd->argv || !cmd->argv[0])
+    {
+        shell->exit_status = handle_redirections(shell, cmd);
+        return(shell->exit_status);
+    }
+    else
+    {
+        if(is_builtin(cmd->argv[0]))
+        {
+            shell->exit_status = execute_builtin(shell, cmd);
+            return(shell->exit_status);
+        }
+        else
+        {
+            if((status = validate_arg(cmd, tmp_in, tmp_out, &path, shell)) != -1)
+                return(status);
+            execve(path, cmd->argv, shell->env_copy);
+            free(path);
+            ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
+            return(126);
+        }
+    }
+    return -1;
+}
 int execute_pipes(t_shell *shell, t_cmd *cmd)
 {
     int n_cmds;
@@ -123,16 +176,9 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
         {
             signal(SIGINT, SIG_DFL);
             signal(SIGQUIT, SIG_DFL);
-            if(i > 0)
-                dup2(pipes[i - 1][0], STDIN_FILENO);
-            if(i < n_cmds - 1)
-                dup2(pipes[i][1], STDOUT_FILENO);
-            while(j < n_cmds - 1)
-            {
-                close(pipes[j][0]);
-                close(pipes[j][1]);
-                j++;
-            }
+            manage_pipes(i, pipes, n_cmds, j);
+            // if((status = manage_cmd(cmd, shell, tmp_in, tmp_out, path)) != -1)
+            //     exit(status);
             if(!cmd->argv || !cmd->argv[0])
             {
                 shell->exit_status = handle_redirections(shell, cmd);
@@ -147,23 +193,8 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
                 }
                 else
                 {
-                    if((shell->exit_status = handle_redirections(shell, cmd)) != 0)
-                    {   
-                        dup2(tmp_in, STDIN_FILENO);
-                        dup2(tmp_out, STDOUT_FILENO);
-                        close(tmp_out);
-                        close(tmp_in);
-                        exit(shell->exit_status);
-                    }
-                    status = valid_cmd(shell, cmd, &path);
-                    if(status != 0)
-                    {
-                        dup2(tmp_in, STDIN_FILENO);
-                        dup2(tmp_out, STDOUT_FILENO);
-                        close(tmp_out);
-                        close(tmp_in);
+                    if((status = validate_arg(cmd, tmp_in, tmp_out, &path, shell)) != -1)
                         exit(status);
-                    }
                     execve(path, cmd->argv, shell->env_copy);
                     free(path);
                     ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
@@ -175,13 +206,7 @@ int execute_pipes(t_shell *shell, t_cmd *cmd)
         pids[i] = pid;
         i++;
     }
-    j = 0;
-    while(j < n_cmds - 1)
-    {
-        close(pipes[j][0]);
-        close(pipes[j][1]);
-        j++;
-    }
+    close_pipes(n_cmds, pipes);
     waiting_all(n_cmds, shell, pids);
     free_pipes(pipes, n_cmds);
     return shell->exit_status;

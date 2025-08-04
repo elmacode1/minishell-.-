@@ -44,9 +44,11 @@ int handle_output(t_redirect *current, int *fd_out)
         *fd_out = open(current->filename, flags, 0644);
         if(*fd_out < 0)
         {
-            ft_putstr_fd("minishell: ", STDERR_FILENO);
-            ft_putstr_fd(current->filename, STDERR_FILENO);
-            ft_putstr_fd(": Permission denied\n", STDOUT_FILENO);
+            if(access(current->filename, X_OK) != 0)
+            {
+                print_error("minishell: ", current->filename, ": Permission denied\n");
+                return 126; 
+            }
             return 1;
         }
     }
@@ -103,7 +105,7 @@ int    handle_redirections(t_shell *shell, t_cmd *cmd)
     current = cmd->redirections;
     fd_in = -1;
     fd_out = -1;
-    int flags;
+    int status;
     tmp_in = -1;
     tmp_out = -1;
 
@@ -114,50 +116,8 @@ int    handle_redirections(t_shell *shell, t_cmd *cmd)
         tmp_out = dup(STDOUT_FILENO);
         tmp_in = dup(STDIN_FILENO);
     }
-    // if((status = check_current(current, &fd_in, &fd_out)) != 0)
-    //     return status;
-     if(current->type == HEREDOC || current->type == RED_IN)
-    {
-        if(fd_in != -1)
-            close(fd_in);
-        fd_in = open(current->filename, O_RDONLY);
-        if(fd_in < 0)
-        {
-            if(access(current->filename, F_OK) != 0)
-            {
-                print_error("minishell: ", current->filename,": No such file or directory\n");
-                return 1;
-            }
-            if(access(current->filename, X_OK) != 0)
-            {
-                print_error("minishell: ", current->filename, ": Permission denied\n");
-                return 126; 
-            }
-            return 1;
-        }
-    }
-    if(current->type == RED_OUT || current->type == APPEND)
-    {
-        if(ft_strcmp(current->filename, "/dev/stdout") == 0)
-        {
-            current = current->next;
-            return 0;
-        }
-        if(fd_out != -1)
-            close(fd_out);
-        if(current->type == RED_OUT)
-            flags = O_CREAT | O_WRONLY | O_TRUNC;
-        else
-            flags = O_CREAT | O_WRONLY | O_APPEND;
-        fd_out = open(current->filename, flags, 0644);
-        if(fd_out < 0)
-        {
-            ft_putstr_fd("minishell: ", STDERR_FILENO);
-            ft_putstr_fd(current->filename, STDERR_FILENO);
-            ft_putstr_fd(": Permission denied\n", STDOUT_FILENO);
-            return 1;
-        }
-    }
+    if((status = check_current(current, &fd_in, &fd_out)) != 0)
+        return status;
     restore_fds(&fd_in, &fd_out, &tmp_in, &tmp_out);
     return 0;
 }

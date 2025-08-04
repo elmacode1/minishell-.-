@@ -131,6 +131,7 @@ void handle_sigquit(int sig);
 void close_heredocs(t_cmd *cmd);
 int valid_cmd(t_shell *shell, t_cmd *cmd, char **path);
 void print_error(char *ms1, char *arg, char *ms2);
+int validate_arg(t_cmd *cmd, int tmp_in, int tmp_out, char **path, t_shell *shell);
 
 // malak s functions
 

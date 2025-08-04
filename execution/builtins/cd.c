@@ -33,9 +33,15 @@ int ft_cd(t_shell *shell, char **argv)
     char cwd[1024]; 
     char *path;
 
+    if(argv[2])
+        {
+            ft_putstr_fd("minishell: cd: too many arguments\n", STDERR_FILENO);
+            return 1;
+        }
     path = check_first_arg(argv[1], shell);
     if(!path)
         return 1;
+        //more than one arg
     if(!getcwd(cwd, sizeof(cwd)))
     {
         ft_putstr_fd("minishell: cd: error retreiving current directory\n", STDERR_FILENO);

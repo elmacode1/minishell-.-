@@ -77,81 +77,108 @@ int valid_cmd(t_shell *shell, t_cmd *cmd, char **path)
         *path = ft_strdup(cmd->argv[0]);
     }
     else
+    {
         *path = get_cmd_path(shell, cmd->argv[0]);
     
-    if(!*path)
-    {
-        print_error("minishell: ", cmd->argv[0],": cmd not found\n");
-        return 127;
+        if(!*path)
+        {
+            print_error("minishell: ", cmd->argv[0],": cmd not found\n");
+            return 127;
+        }
     }
     return 0;
 }
-
-
-
-int execute_external(t_shell *shell, t_cmd *cmd)
+int restore_tmp(int tmp_in, int tmp_out, int stat)
 {
-    int pid;
-    char *path;
+    dup2(tmp_in, STDIN_FILENO);
+    dup2(tmp_out, STDOUT_FILENO);
+    close(tmp_out);
+    close(tmp_in);
+    return(stat);
+}
+
+int handle_parent_sig(int status, int pid, int tmp_in, int tmp_out)
+{
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGINT, SIG_IGN);
+    waitpid(pid, &status, 0);
+    signal(SIGINT, handle_sigint);
+
+    dup2(tmp_in, STDIN_FILENO);
+    dup2(tmp_out, STDOUT_FILENO);
+    close(tmp_out);
+    close(tmp_in);
+    if(WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
+    {
+        ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+        return 131;
+    }
+    else if(WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+    {
+        ft_putstr_fd("\n", STDERR_FILENO);
+        return 130; 
+    }
+    // free(path);
+    return WEXITSTATUS(status);
+}
+int validate_arg(t_cmd *cmd, int tmp_in, int tmp_out, char **path, t_shell *shell)
+{
     int status;
 
-    int tmp_out = dup(STDOUT_FILENO);
-    int tmp_in = dup(STDIN_FILENO);
-    path = NULL;
+    if(ft_strcmp(cmd->argv[0], "") == 0)
+        return 0;
     if((shell->exit_status = handle_redirections(shell, cmd)) != 0)
     {
         dup2(tmp_in, STDIN_FILENO);
         dup2(tmp_out, STDOUT_FILENO);
         close(tmp_out);
         close(tmp_in);
-        return(shell->exit_status);
+        return shell->exit_status;
     }
-    status = valid_cmd(shell, cmd, &path);
+    status = valid_cmd(shell, cmd, path);
     if(status != 0)
     {
         dup2(tmp_in, STDIN_FILENO);
         dup2(tmp_out, STDOUT_FILENO);
         close(tmp_out);
         close(tmp_in);
-        return(status);
+        return status;
     }
+    return -1;
+}
+void handle_child(t_cmd *cmd, t_shell *shell, char *path)
+{
+    signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
+    execve(path, cmd->argv, shell->env_copy);
+    ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
+}
+
+int execute_external(t_shell *shell, t_cmd *cmd)
+{
+    int pid;
+    char *path;
+    int status;
+    int ret;
+    
+    int tmp_out = dup(STDOUT_FILENO);
+    int tmp_in = dup(STDIN_FILENO);
+    path = NULL;
+    status = 0;
+    
+    if((ret = validate_arg(cmd, tmp_in, tmp_out, &path, shell)) != -1)
+        return ret;
     pid = fork();
-    if(pid == -1)
-    {
-        ft_putstr_fd("minishell: fork\n", STDERR_FILENO);
-        return 1;
-    }
     if(pid == 0)
     {
-         signal(SIGINT, SIG_DFL);
-        signal(SIGQUIT, SIG_DFL);
-        execve(path, cmd->argv, shell->env_copy);
-        ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
+        handle_child(cmd, shell, path);
         exit(126);
     }
     else
     {
-        signal(SIGQUIT, SIG_IGN);
-        signal(SIGINT, SIG_IGN);
-        waitpid(pid, &status, 0);
-        signal(SIGINT, handle_sigint);
-
-        dup2(tmp_in, STDIN_FILENO);
-        dup2(tmp_out, STDOUT_FILENO);
-        close(tmp_out);
-        close(tmp_in);
-        if(WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
-        {
-            ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
-            return 131;
-        }
-        else if(WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-        {
-            ft_putstr_fd("\n", STDERR_FILENO);
-            return 130; 
-        }
+        ret = handle_parent_sig(status, pid, tmp_in, tmp_out);
         free(path);
-        return WEXITSTATUS(status);
+        return ret;
     }
 }
 
@@ -179,13 +206,13 @@ int execute_builtin(t_shell *shell, t_cmd *cmd)
 
     tmp_out = dup(STDOUT_FILENO);
     tmp_in = dup(STDIN_FILENO);
-    if(handle_redirections(shell, cmd) == 1)
+    if((status = handle_redirections(shell, cmd)) != 0)
     {
         dup2(tmp_out, STDOUT_FILENO);
         dup2(tmp_in, STDIN_FILENO);
         close(tmp_in);
         close(tmp_out);
-        return 1;
+        return status;
     }
     status = builtin_func(shell, cmd);
     dup2(tmp_out, STDOUT_FILENO);
@@ -197,9 +224,6 @@ int execute_builtin(t_shell *shell, t_cmd *cmd)
 
 int execute_cmd(t_shell *shell ,t_cmd *cmd)
 {
-    // int redir_status = handle_redirections(shell, cmd);
-    // if (redir_status == 1)
-    //     return shell->exit_status;
     if(!cmd->argv || !cmd->argv[0])
         return handle_redirections(shell,cmd);
     if(is_builtin(cmd->argv[0]))
