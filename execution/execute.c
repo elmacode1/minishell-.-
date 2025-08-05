@@ -141,7 +141,10 @@ int validate_arg(t_cmd *cmd, int tmp_in, int tmp_out, char **path, t_shell *shel
     int status;
 
     if(ft_strcmp(cmd->argv[0], "") == 0)
-        return 0;
+	{
+		 print_error("minishell: ", cmd->argv[0],": command not found\n");
+            return 127;
+	}
     if((shell->exit_status = handle_redirections(shell, cmd)) != 0)
     {
         dup2(tmp_in, STDIN_FILENO);

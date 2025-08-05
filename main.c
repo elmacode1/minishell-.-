@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+int g_exit_status;
 
 int main(int ac, char **av, char **envp)
 {
@@ -39,7 +40,7 @@ int main(int ac, char **av, char **envp)
 			// t_cmd *tmp=cmd;
 			// while(tmp){
 			// 	while(tmp->argv[i]){
-			// 		printf("%s\n",tmp->argv[i]);		
+			// 		printf("'%s'\n",tmp->argv[i]);		
 			// 		i++;
 			// 	}
 			// 	while(tmp->redirections){

@@ -120,7 +120,7 @@ t_cmd	*parse_tokens(t_token *tokens)
 			tmp = NULL;
 			if(!((tokens->type == WHITESPACE || tokens->type == DQUOTE || tokens->type == SQUOTE || tokens->type == EMPTY_STR
 				|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
-				|| tokens->type == HEREDOC  || tokens->type == BACK_SLASH) && tokens->state == GENERAL))
+				|| tokens->type == HEREDOC) && tokens->state == GENERAL))
 			{
 					
 
@@ -176,7 +176,7 @@ t_cmd	*parse_tokens(t_token *tokens)
 					}
 				}
 				else
-				test = tokens->text;
+					test = tokens->text;
 				if(t == RED_IN)
 				{
 					add_redirection(new, test, RED_IN);

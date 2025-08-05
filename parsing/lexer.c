@@ -35,7 +35,7 @@ char *get_env(char *s)
 void quotes_hander(char* c, t_state *state, t_token **head)
 {
 	if(c[0] == '\"'){
-		if(c[1] == '\"')
+		if(c[1] == '\"' && *state == GENERAL)
 		{
 			ft_lstadd_back_token(head,ft_lstnew_token("", *state, EMPTY_STR));
 		}
@@ -55,7 +55,7 @@ void quotes_hander(char* c, t_state *state, t_token **head)
 		}
 	}
 	else if(c[0] == '\''){
-		if(c[1] == '\'')
+		if(c[1] == '\''  && *state == GENERAL)
 		{
 			ft_lstadd_back_token(head,ft_lstnew_token("", *state, EMPTY_STR));
 		}
@@ -90,8 +90,6 @@ t_token *lexer(char *str)
 	{	
 		if(is_special(str[i]))
 		{
-			if(str[i]=='\\')
-				ft_lstadd_back_token(&head,ft_lstnew_token("\\",state ,BACK_SLASH));
 			if(str[i]=='|')
 				ft_lstadd_back_token(&head,ft_lstnew_token("|",state ,PIPE));
 			else if(is_space(str[i])){

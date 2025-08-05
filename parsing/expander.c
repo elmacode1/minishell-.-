@@ -61,8 +61,6 @@ void expander(t_token **head, t_shell *shell)
 		// // exit(0);
 	while(tmp_head)
 	{
-		// if(tmp_head->type == ENV && )
-		// 	tmp_head->type = WORD;
 		if((tmp_head->type == ENV && !strncmp(tmp_head->text + 1,"",1)) || special_char(tmp_head->text + 1))
 			tmp_head->type = WORD;
 		if(tmp_head->state != IN_SQUOTE && tmp_head->type == ENV && !strncmp(tmp_head->text + 1,"?",1))
