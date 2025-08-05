@@ -42,8 +42,10 @@ int main(int ac, char **av, char **envp)
 			// 		printf("%s\n",tmp->argv[i]);		
 			// 		i++;
 			// 	}
-			// 	if(tmp->redirections)
+			// 	while(tmp->redirections){
 			// 	printf("red=%s\n",tmp->redirections->filename);
+			// 	tmp->redirections = tmp->redirections->next;
+			// 	}
 			// 	tmp = tmp->next;
 			// }
 			// exit(0);

@@ -110,6 +110,11 @@ t_cmd	*parse_tokens(t_token *tokens)
 		i = 0;
 		while(tokens)
 		{
+			if(tokens->type == WORD && !ft_strcmp(tokens->text,""))
+			{
+				tokens = tokens->next;
+				continue;
+			}
 			if(tokens->type == PIPE && tokens->state == GENERAL)
 				break;
 			tmp = NULL;
