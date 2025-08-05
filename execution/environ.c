@@ -38,7 +38,7 @@ char *get_env_var(t_shell *shell, char *name)
     len = strlen(name);
     while(shell->env_copy[i])
     {
-        if(strncmp(shell->env_copy[i], name, len) == 0 && shell->env_copy[i][len] == '=')
+        if(ft_strncmp(shell->env_copy[i], name, len) == 0 && shell->env_copy[i][len] == '=' )
             return (&shell->env_copy[i][len + 1]);
         i++;
     }
@@ -86,7 +86,7 @@ int  set_env_var(t_shell *shell, char *name, char *var)
     new_var = ft_strjoin(new_var, var);
     while(shell->env_copy[i])
     {
-        if(strncmp(shell->env_copy[i], name, name_len) == 0 && shell->env_copy[i][name_len] == '=')
+        if(strncmp(shell->env_copy[i], name, name_len) == 0 && ((shell->env_copy[i][name_len] == '=' ||  shell->env_copy[i][name_len] == '\0')))
         {
             free(shell->env_copy[i]);
             shell->env_copy[i] = new_var;

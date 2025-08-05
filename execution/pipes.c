@@ -106,8 +106,11 @@ void close_pipes(int n_cmds, int **pipes)
         j++;
     }
 }
-void manage_pipes(int i, int **pipes, int n_cmds, int j)
+void manage_pipes(int i, int **pipes, int n_cmds)
 {
+    int j;
+
+    j = 0;
     if(i > 0)
         dup2(pipes[i - 1][0], STDIN_FILENO);
     if(i < n_cmds - 1)
@@ -120,94 +123,70 @@ void manage_pipes(int i, int **pipes, int n_cmds, int j)
     }
 }
 
-int manage_cmd(t_cmd *cmd, t_shell *shell, int tmp_in, int tmp_out, char *path)
+void manage_cmd(t_cmd *cmd, t_shell *shell, int tmp_in, int tmp_out, char *path)
 {
     int status;
 
     if(!cmd->argv || !cmd->argv[0])
     {
         shell->exit_status = handle_redirections(shell, cmd);
-        return(shell->exit_status);
+        exit(shell->exit_status);
     }
     else
     {
         if(is_builtin(cmd->argv[0]))
         {
             shell->exit_status = execute_builtin(shell, cmd);
-            return(shell->exit_status);
+            exit(shell->exit_status);
         }
         else
         {
             if((status = validate_arg(cmd, tmp_in, tmp_out, &path, shell)) != -1)
-                return(status);
+                exit(status);
             execve(path, cmd->argv, shell->env_copy);
             free(path);
             ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
-            return(126);
+            exit(126);
         }
     }
-    return -1;
 }
+
+
+void init_vars(t_cmd *cmd, t_pipes *pipe)
+{
+    pipe->i = 0;
+     pipe->tmp_out = dup(STDOUT_FILENO);
+     pipe->tmp_in = dup(STDIN_FILENO);
+     pipe->path = NULL;
+     pipe->n_cmds = count_cmds(cmd);
+     pipe->pipes = create_pipes( pipe->n_cmds);
+     pipe->pids = malloc(sizeof(int) * pipe->n_cmds);
+}
+
 int execute_pipes(t_shell *shell, t_cmd *cmd)
 {
-    int n_cmds;
-    int i;
-    int j;
-    int pid;
-    int **pipes;
-    char *path;
-    int status;
+    t_pipes *pipe;
 
-    int tmp_out = dup(STDOUT_FILENO);
-    int tmp_in = dup(STDIN_FILENO);
-    path = NULL;
-    i = 0;
-    int *pids;
-    n_cmds = count_cmds(cmd);
-    pipes = create_pipes(n_cmds);
-    pids = malloc(sizeof(int) * n_cmds);
-    while(i < n_cmds)
+    pipe = malloc(sizeof(t_pipes));
+    init_vars(cmd, pipe);
+    while(pipe->i < pipe->n_cmds)
     {
-        j = 0;
         signal(SIGINT, SIG_IGN);
         signal(SIGQUIT, SIG_IGN);
-        pid = fork();
-        if(pid == 0)
+        pipe->pid = fork();
+        if(pipe->pid == 0)
         {
             signal(SIGINT, SIG_DFL);
             signal(SIGQUIT, SIG_DFL);
-            manage_pipes(i, pipes, n_cmds, j);
-            // if((status = manage_cmd(cmd, shell, tmp_in, tmp_out, path)) != -1)
-            //     exit(status);
-            if(!cmd->argv || !cmd->argv[0])
-            {
-                shell->exit_status = handle_redirections(shell, cmd);
-                exit(shell->exit_status);
-            }
-            else
-            {
-                if(is_builtin(cmd->argv[0]))
-                {
-                    shell->exit_status = execute_builtin(shell, cmd);
-                    exit(shell->exit_status);
-                }
-                else
-                {
-                    if((status = validate_arg(cmd, tmp_in, tmp_out, &path, shell)) != -1)
-                        exit(status);
-                    execve(path, cmd->argv, shell->env_copy);
-                    free(path);
-                    ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
-                    exit(126);
-                }
-            }
+            manage_pipes(pipe->i,pipe->pipes, pipe->n_cmds);
+            manage_cmd(cmd, shell, pipe->tmp_in, pipe->tmp_out, pipe->path);
         }
         cmd = cmd->next;
-        pids[i] = pid;
-        i++;
+        pipe->pids[pipe->i] = pipe->pid;
+        pipe->i++;
     }
-    close_pipes(n_cmds, pipes);
-    waiting_all(n_cmds, shell, pids);
-    free_pipes(pipes, n_cmds);
+    close_pipes(pipe->n_cmds, pipe->pipes);
+    waiting_all(pipe->n_cmds, shell, pipe->pids);
+    free_pipes(pipe->pipes, pipe->n_cmds);
     return shell->exit_status;
 }

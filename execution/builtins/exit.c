@@ -28,9 +28,8 @@ int ft_exit(t_shell *shell, char **argv)
     }
     if(is_num(argv[1]) == 0)
     {
-        ft_putstr_fd("minishell: exit: `", STDERR_FILENO);
-        ft_putstr_fd(argv[1],STDERR_FILENO);
-        ft_putstr_fd("' numeric argument required\n", STDERR_FILENO);
+        ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+        ft_putstr_fd("numeric argument required\n", STDERR_FILENO);
         shell->exit_status = 2;
         exit(2);
     }

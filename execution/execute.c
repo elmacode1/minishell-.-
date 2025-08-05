@@ -60,14 +60,29 @@ void print_error(char *ms1, char *arg, char *ms2)
     ft_putstr_fd(ms2, STDERR_FILENO);
 }
 
+int is_directory(char *path)
+{
+    struct stat path_stat;
+
+    if(stat(path, &path_stat) == 0)
+        return S_ISDIR(path_stat.st_mode);
+    return 0;
+
+}
 int valid_cmd(t_shell *shell, t_cmd *cmd, char **path)
 {
+   
     if(cmd->argv[0][0] == '/' || (cmd->argv[0][0] == '.' && cmd->argv[0][1] == '/'))
     {
         if(access(cmd->argv[0], F_OK) != 0)
         {
             print_error("minishell: ", cmd->argv[0],": No such file or directory\n");
             return 127;
+        }
+        if(is_directory(cmd->argv[0]))
+        {
+            print_error("minishell: ", cmd->argv[0],": Is a directory\n");
+            return 126;
         }
         if(access(cmd->argv[0], X_OK) != 0)
         {
@@ -82,7 +97,7 @@ int valid_cmd(t_shell *shell, t_cmd *cmd, char **path)
     
         if(!*path)
         {
-            print_error("minishell: ", cmd->argv[0],": cmd not found\n");
+            print_error("minishell: ", cmd->argv[0],": command not found\n");
             return 127;
         }
     }
@@ -150,6 +165,7 @@ void handle_child(t_cmd *cmd, t_shell *shell, char *path)
 {
     signal(SIGINT, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
+    //here i cant skip it when its empty string $fff
     execve(path, cmd->argv, shell->env_copy);
     ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
 }

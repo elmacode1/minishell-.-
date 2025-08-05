@@ -4,6 +4,11 @@ int handle_input(t_redirect *current, int *fd_in)
 {
     if(current->type == HEREDOC || current->type == RED_IN)
     {
+        if(ft_strcmp(current->filename, "/dev/stdin") == 0)
+        {
+            current = current->next;
+            return 0;
+        }
         if(*fd_in != -1)
             close(*fd_in);
         *fd_in = open(current->filename, O_RDONLY);
@@ -47,7 +52,7 @@ int handle_output(t_redirect *current, int *fd_out)
             if(access(current->filename, X_OK) != 0)
             {
                 print_error("minishell: ", current->filename, ": Permission denied\n");
-                return 126; 
+                return 1; 
             }
             return 1;
         }

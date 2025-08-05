@@ -77,7 +77,21 @@ void sort_and_print(char **env)
     print_env(sorted);
     free_env(sorted);
 }
+char *get_var(t_shell *shell, char *name)
+{
+    int len;
+    int i;
 
+    i = 0;
+    len = strlen(name);
+    while(shell->env_copy[i])
+    {
+        if(ft_strncmp(shell->env_copy[i], name, len) == 0 )
+            return (&shell->env_copy[i][len + 1]);
+        i++;
+    }
+    return NULL;
+}
 void update_env(t_shell *shell, char *equal, char *arg)
 {
     char *value;
@@ -89,32 +103,30 @@ void update_env(t_shell *shell, char *equal, char *arg)
     }
     else
     {
-        value = get_env_var(shell, arg);
-        if(value)
-            set_env_var(shell, arg, value);
-        else
+        value = get_var(shell, arg);
+        if(!value)
             add_new_var(shell, arg);
     }
 }
 
-void export_no_args(t_shell *shell, char **argv, int *i)
-{
+// void export_no_args(t_shell *shell, char **argv, int *i)
+// {
 
-    if(!argv[1])
-        sort_and_print(shell->env_copy);
-    else
-    {
-        while(argv[*i])
-        {
-            if(ft_strcmp(argv[*i], "") == 0)
-                (*i)++;
-            else
-                break;
-        }
-        if(argv[*i] ==  NULL)
-            sort_and_print(shell->env_copy);
-    }
-}
+//     if(!argv[1])
+//         sort_and_print(shell->env_copy);
+//     else
+//     {
+//         while(argv[*i])
+//         {
+//             if(ft_strcmp(argv[*i], "") == 0)
+//                 (*i)++;
+//             else
+//                 break;
+//         }
+//         if(argv[*i] ==  NULL)
+//             sort_and_print(shell->env_copy);
+//     }
+// }
 int ft_export(t_shell *shell, char **argv)
 {
     int i;

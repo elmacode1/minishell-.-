@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <fcntl.h>
@@ -32,6 +33,7 @@ typedef enum e_token_type{
 	NEW_LINE,
 	ENV,
 	EMPTY_STR,
+	EXPND,
 	BACK_SLASH,
 }t_tokentype;
 
@@ -65,6 +67,17 @@ struct s_shell
 	int lines;
 };
 
+typedef struct s_pipes
+{
+    int n_cmds;
+    int i;
+    int pid;
+    int **pipes;
+    char *path;
+    int tmp_out;
+    int tmp_in;
+    int *pids;
+}   t_pipes;
 //malak structs
 
 
