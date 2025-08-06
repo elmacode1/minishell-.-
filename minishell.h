@@ -66,6 +66,12 @@ struct s_shell
 	int lines;
 };
 
+typedef struct s_tmp
+{
+	int tmp_in;
+	int tmp_out;
+}	t_tmp;
+
 typedef struct s_pipes
 {
     int n_cmds;
@@ -73,10 +79,26 @@ typedef struct s_pipes
     int pid;
     int **pipes;
     char *path;
-    int tmp_out;
-    int tmp_in;
+    t_tmp *tmp;
     int *pids;
 }   t_pipes;
+
+
+typedef struct  s_extern_cmd
+{
+	int		pid;
+	char	*path;
+	int		status;
+	t_tmp	*tmp;
+}	t_extern_cmd;
+
+typedef struct s_heredoc
+{
+	pid_t		pid;
+	char		*tempfile;
+	char		*id;
+}	t_heredoc;
+
 //malak structs
 
 
@@ -143,7 +165,26 @@ void handle_sigquit(int sig);
 void close_heredocs(t_cmd *cmd);
 int valid_cmd(t_shell *shell, t_cmd *cmd, char **path);
 void print_error(char *ms1, char *arg, char *ms2);
-int validate_arg(t_cmd *cmd, int tmp_in, int tmp_out, char **path, t_shell *shell);
+int	validate_arg(t_cmd *cmd, t_tmp *tmp, char **path, t_shell *shell);
+int execute_builtin(t_shell *shell, t_cmd *cmd);
+int execute_external(t_shell *shell, t_cmd *cmd);
+char *path_access(char **paths, char *cmd);
+char *get_cmd_path(t_shell *shell, char *cmd);
+void print_error(char *ms1, char *arg, char *ms2);
+int is_directory(char *path);
+int valid_cmd(t_shell *shell, t_cmd *cmd, char **path);
+int is_builtin(char *cmd);
+int **create_pipes(int n_cmds);
+void free_pipes(int  **pipes, int n_cmds);
+void waiting_all(int n_cmds, t_shell *shell, int *pids);
+int builtin_exec_pipe(t_shell *shell, char **argv);
+int count_cmds(t_cmd *cmd);
+void	print_error(char *ms1, char *arg, char *ms2);
+void	bubble_sort(char **sorted, int len);
+void	print_env(char **env);
+void	free_env(char **env);
+int compose_varname(char **new_var, int len, char *name, char *var);
+int	check_access_redir(t_redirect *current);
 
 // malak s functions
 

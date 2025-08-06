@@ -14,7 +14,12 @@ SRC =	environ.c\
 		builtins/env.c\
 		builtins/echo.c\
 		builtins/builtins.c \
+		builtins/export_utils.c\
 		signal.c\
+		execute_extern_utils.c\
+		execute_extern.c\
+		execute_builtin.c\
+		pipes_utils.c\
 		
 OBJ = $(SRC:.c=.o)
 
