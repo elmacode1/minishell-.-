@@ -36,8 +36,6 @@ typedef enum e_token_type{
 	EXPND,
 }t_tokentype;
 
-extern int g_exit_status;
-
 typedef struct s_redirect {
     char         *filename;
     int type;

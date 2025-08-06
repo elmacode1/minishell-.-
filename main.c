@@ -1,7 +1,5 @@
 #include "minishell.h"
 
-int g_exit_status;
-
 int main(int ac, char **av, char **envp)
 {
     (void)ac;
