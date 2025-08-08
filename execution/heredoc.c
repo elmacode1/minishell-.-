@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:43 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/06 14:43:33 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/07 16:22:27 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,15 @@ int	valid_line(char *line, t_redirect *current)
 	return (0);
 }
 
-void	handle_heredoc_child(t_redirect *current, char *tempfile)
+void	handle_heredoc_child(t_redirect *current, t_heredoc *heredoc)
 {
 	int		fd;
 	char	*line;
 
-	fd = open(tempfile, O_CREAT | O_WRONLY | O_TRUNC, 0600);
+	fd = open(heredoc->tempfile, O_CREAT | O_WRONLY | O_TRUNC, 0600);
 	if (fd < 0)
 	{
 		ft_putstr_fd("minishell: heredoc\n", STDERR_FILENO);
-		free(tempfile);
 		exit(1);
 	}
 	signal(SIGINT, SIG_DFL);
@@ -61,13 +60,10 @@ int	check_sig(int status, char *tempfile, int *exit_status, t_redirect *current)
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 	{
 		ft_putstr_fd("\n", STDOUT_FILENO);
-		unlink(tempfile);
-		free(tempfile);
 		*exit_status = 130;
 		return (130);
 	}
 	current->filename = strdup(tempfile);
-	free(tempfile);
 	return (0);
 }
 
@@ -86,7 +82,7 @@ int	heredoc_handeler(t_redirect *current, int *exit_status)
 	heredoc->pid = fork();
 	if (heredoc->pid == 0)
 	{
-		handle_heredoc_child(current, heredoc->tempfile);
+		handle_heredoc_child(current, heredoc);
 		exit(0);
 	}
 	else
@@ -94,6 +90,7 @@ int	heredoc_handeler(t_redirect *current, int *exit_status)
 		waitpid(heredoc->pid, &status, 0);
 		signal(SIGINT, handle_sigint);
 		ret = check_sig(status, heredoc->tempfile, exit_status, current);
+		free(heredoc->tempfile);
 		free(heredoc);
 		return (ret);
 	}

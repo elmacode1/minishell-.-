@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:09 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/06 15:49:58 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/07 17:03:43 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	is_builtin(char *cmd)
 	int		i;
 	char	**builtins;
 
-	builtins = malloc(8 * sizeof(char *));
 	builtins = (char *[]){"echo", "cd", "pwd", "export", "unset", "env", "exit",
 		NULL};
 	i = 0;

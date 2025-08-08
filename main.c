@@ -22,6 +22,8 @@ int main(int ac, char **av, char **envp)
         if(!input)
         {
             printf("exit\n");
+            free_env(shell.env_copy);
+            free_all(global->free_list);
             exit(1);
         }
         if(*input)
@@ -53,7 +55,7 @@ int main(int ac, char **av, char **envp)
         shell.lines++;
         free(input);
     }
+    free_env(shell.env_copy);
     free_all(global->free_list);
-    free(shell.env_copy);
     return 0;
 }

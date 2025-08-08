@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:43:02 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/06 15:12:18 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/06 17:44:29 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	manage_cmd(t_cmd *cmd, t_shell *shell, t_pipes *pipe)
 	if (!cmd->argv || !cmd->argv[0])
 	{
 		shell->exit_status = handle_redirections(shell, cmd);
+		free_pipes(pipe);
 		exit(shell->exit_status);
 	}
 	else
@@ -56,13 +57,17 @@ void	manage_cmd(t_cmd *cmd, t_shell *shell, t_pipes *pipe)
 		if (is_builtin(cmd->argv[0]))
 		{
 			shell->exit_status = execute_builtin(shell, cmd);
+			free_pipes(pipe);
 			exit(shell->exit_status);
 		}
 		else
 		{
 			status = validate_arg(cmd, pipe->tmp, &pipe->path, shell);
 			if (status != -1)
+			{
+				free_pipes(pipe);
 				exit(status);
+			}
 			execve(pipe->path, cmd->argv, shell->env_copy);
 			free(pipe->path);
 			ft_putstr_fd("minishell: execve\n", STDERR_FILENO);
@@ -107,6 +112,6 @@ int	execute_pipes(t_shell *shell, t_cmd *cmd)
 	}
 	close_pipes(pipe->n_cmds, pipe->pipes);
 	waiting_all(pipe->n_cmds, shell, pipe->pids);
-	free_pipes(pipe->pipes, pipe->n_cmds);
+	free_pipes(pipe);
 	return (shell->exit_status);
 }

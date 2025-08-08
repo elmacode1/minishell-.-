@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:43:08 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/06 15:52:27 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/07 15:59:13 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,10 @@ int	handle_redirections(t_shell *shell, t_cmd *cmd)
 	tmp->tmp_in = -1;
 	tmp->tmp_out = -1;
 	if (!current)
+	{
+		free(tmp);
 		return (0);
+	}
 	if (!cmd->argv || !cmd->argv[0])
 	{
 		tmp->tmp_out = dup(STDOUT_FILENO);
@@ -129,7 +132,11 @@ int	handle_redirections(t_shell *shell, t_cmd *cmd)
 	}
 	status = check_current(current, &fd_in, &fd_out);
 	if (status != 0)
+	{
+		free(tmp);
 		return (status);
+	}
 	restore_fds(&fd_in, &fd_out, &tmp->tmp_in, &tmp->tmp_out);
+	free(tmp);
 	return (0);
 }
