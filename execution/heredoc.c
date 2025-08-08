@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:43 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/06 14:43:33 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/08 23:02:55 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@ int	heredoc_handeler(t_redirect *current, int *exit_status)
 	static int	counter;
 	int			ret;
 	t_heredoc	*heredoc;
-
+	t_all *g;
+	g = static_var();
 	heredoc = malloc(sizeof(t_heredoc));
 	heredoc->id = ft_itoa(counter++);
 	heredoc->tempfile = ft_strjoin("/tmp/tempfile", heredoc->id);
@@ -86,7 +87,9 @@ int	heredoc_handeler(t_redirect *current, int *exit_status)
 	heredoc->pid = fork();
 	if (heredoc->pid == 0)
 	{
+
 		handle_heredoc_child(current, heredoc->tempfile);
+		free_all(&g->free_list);
 		exit(0);
 	}
 	else

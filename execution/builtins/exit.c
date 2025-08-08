@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:43:47 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/08 16:58:51 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/08 22:06:46 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	ft_exit(t_shell *shell, char **argv)
 	g = static_var();
 	(void)shell;
 	if (!argv[1]){
-		free_all(g->free_list);
+		free_all(&g->free_list);
 		free_env(shell->env_copy);
 		exit(shell->exit_status);
 	}
@@ -48,12 +48,12 @@ int	ft_exit(t_shell *shell, char **argv)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd("numeric argument required\n", STDERR_FILENO);
 		shell->exit_status = 2;
-		free_all(g->free_list);
+		free_all(&g->free_list);
 		free_env(shell->env_copy);
 		exit(2);
 	}
 	shell->exit_status = atoi(argv[1]) % 256;
-	free_all(g->free_list);
+	free_all(&g->free_list);
 	free_env(shell->env_copy);
 	exit(shell->exit_status);
 }

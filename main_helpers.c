@@ -12,6 +12,12 @@ void	get_input(t_shell *shell)
 	if (!input)
 	{
 		printf("exit\n");
+		free_all(&global->free_list);
+		free_env(shell->env_copy);
+		exit(1);
+	}
+	if(!ft_strcmp(input,"exit")){
+		free_all(&global->free_list);
 		free_env(shell->env_copy);
 		exit(1);
 	}
@@ -20,10 +26,9 @@ void	get_input(t_shell *shell)
 		add_history(input);
 		head = lexer(input);
 		cmd = parsing(head, shell);
+		if(cmd)
 		execute(shell, cmd);
 	}
-	free_all(global->free_list);
-	global->free_list = NULL;
 	shell->lines++;
 	free(input);
 }

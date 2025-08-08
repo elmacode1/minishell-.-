@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 14:40:05 by mael-gho          #+#    #+#             */
-/*   Updated: 2025/08/08 16:47:16 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/08 22:05:45 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,62 +14,75 @@
 
 t_free	*free_lst_new(void *content)
 {
-	t_free	*node;
+	t_free	*new;
 
-	node = malloc(sizeof(t_free));
-	if (!node)
+	if (!content)
 		return (NULL);
-	node->content = content;
-	node->next = NULL;
-	return (node);
+	new = (t_free *)malloc(sizeof(t_free));
+	if (!new)
+		return (NULL);
+	new->content = content;
+	new->next = NULL;
+	return (new);
 }
 
 t_free	*free_lstlast(t_free *node)
 {
-	if (node == NULL)
+	if (!node)
 		return (NULL);
-	while (node->next != NULL)
-	{
+	if (node->next == NULL)
+		return (node);
+	while (node->next)
 		node = node->next;
-	}
 	return (node);
 }
 
 void	free_lstadd_back(t_free **node, t_free *new)
 {
-	t_free	*tmp;
-
-	if (node == NULL || new == NULL)
-		return ;
-	tmp = *node;
-	if (tmp)
+		if (node != NULL && new != NULL)
 	{
-		tmp = free_lstlast(tmp);
-		tmp->next = new;
+		if (*node == NULL)
+		{
+			*node = new;
+			new->next = NULL;
+		}
+		else
+		{
+			free_lstlast(*node);
+			free_lstlast(*node)->next = new;
+		}
 	}
-	else
-		*node = new;
 }
 
-void	free_all(t_free *node)
+void	free_all(t_free **node)
 {
 	t_free	*tmp;
 
-	tmp = node;
-	while (tmp)
+	if (!node || !*node)
+		return ;
+	while (*node)
 	{
-		tmp = tmp->next;
-		if (node->content)
-			free (node->content);
-		free (node);
-		node = tmp;
+		tmp = *node;
+		*node = (*node)->next;
+		free(tmp->content);
+		free(tmp);
 	}
+	*node = NULL;
 }
 
 void	free_helper(void *ptr)
 {
-	t_all	*glob;
+    t_all	*glob;
+    t_free	*new_node;
 
-	glob = static_var();
-	free_lstadd_back(&glob->free_list, free_lst_new(ptr));
+    if (!ptr)
+        return ;
+    glob = static_var();
+    new_node = free_lst_new(ptr);
+    if (!new_node)
+    {
+        free(ptr);
+        return ;
+    }
+    free_lstadd_back(&glob->free_list, new_node);
 }

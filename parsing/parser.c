@@ -2,10 +2,7 @@
 
 void append_token_text(char **tmp, t_token **tokens)
 {
-	char *old = *tmp;
-	*tmp = ft_strjoin(*tmp, (*tokens)->text);
-	if (old)
-		free(old);
+	*tmp = ft_strjoin2(*tmp, (*tokens)->text);
 	(*tokens) = (*tokens)->next;
 }
 void parse_inside_quotes(char **tmp, t_token **tokens, t_tokentype quote)
@@ -38,7 +35,6 @@ int	parse_word_group(t_token **tokens, char **argv)
 	if (tmp)
 	{
 		*argv = ft_strdup2(tmp);
-		free(tmp);
 		count++;
 	}
 	return count;

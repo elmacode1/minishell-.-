@@ -184,7 +184,7 @@ int	check_access_redir(t_redirect *current);
 t_free *free_lst_new(void *content);
 t_free	*free_lstlast(t_free *node);
 void	free_lstadd_back(t_free **node, t_free *new);
-void free_all(t_free *node);
+void free_all(t_free **node);
 void free_helper(void *ptr);
 
 // utils

@@ -16,7 +16,7 @@ char	*parse_quoted_redirect(t_token **tokens)
 	while (*tokens && !((*tokens)->type == quote && (*tokens)->state == GENERAL))
 	{
 		char *old = value;
-		value = ft_strjoin(value, (*tokens)->text);
+		value = ft_strjoin2(value, (*tokens)->text);
 		if (old)
 			free(old);
 		(*tokens) = (*tokens)->next;
@@ -48,6 +48,4 @@ void	parse_redirect(t_token **tokens, t_cmd *cmd)
 	(*tokens) = (*tokens)->next;
 	target = redirect_target(tokens);
 	add_redirection(cmd, target, t);
-	if (target)
-		free(target);
 }

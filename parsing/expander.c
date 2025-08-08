@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 14:30:50 by mael-gho          #+#    #+#             */
-/*   Updated: 2025/08/08 15:58:28 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/08 23:08:00 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	expand_exit_status(t_token *token, t_shell *shell)
 {
-	token->text = ft_strjoin(ft_itoa(shell->exit_status), token->text + 2);
+	token->text = ft_strjoin2(ft_itoa(shell->exit_status), token->text + 2);
 	token->type = WORD;
 }
 
