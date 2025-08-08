@@ -1,6 +1,7 @@
 NAME = parsing.a
 
-SRC = 	lexer.c utils.c token_utils.c syntax_error.c parser.c g_collector.c expander.c
+SRC = 	lexer_utils.c lexing_quotes.c lexing_special_chars.c lexer.c utils.c token_utils.c \
+		syntax_error.c parse_redirections.c parser_utils.c parser.c g_collector.c expander_utils.c expander.c
 		
 OBJ = $(SRC:.c=.o)
 

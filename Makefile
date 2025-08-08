@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRC =	main.c\
+SRC =	main_helpers.c main.c\
 		
 OBJ = $(SRC:.c=.o)
 

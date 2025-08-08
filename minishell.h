@@ -33,7 +33,6 @@ typedef enum e_token_type{
 	NEW_LINE,
 	ENV,
 	EMPTY_STR,
-	EXPND,
 }t_tokentype;
 
 typedef struct s_redirect {
@@ -98,14 +97,11 @@ typedef struct s_heredoc
 }	t_heredoc;
 
 //malak structs
-
-
 typedef	enum s_state{
 	GENERAL,
 	IN_DQUOTE,
 	IN_SQUOTE,
 } t_state;
-
 
 
 typedef struct s_free
@@ -184,36 +180,61 @@ void	free_env(char **env);
 int compose_varname(char **new_var, int len, char *name, char *var);
 int	check_access_redir(t_redirect *current);
 
-// malak s functions
+// free funcs
+t_free *free_lst_new(void *content);
+t_free	*free_lstlast(t_free *node);
+void	free_lstadd_back(t_free **node, t_free *new);
+void free_all(t_free *node);
+void free_helper(void *ptr);
 
-t_token *lexer(char *str);
+// utils
 int is_space(char c);
 int is_special(char c);
+char	*ft_strdup(const char *s1);
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
+size_t	ft_strlen(const char *s);
+t_token *lst_skip_spaces(t_token *token);
+t_all *static_var();
+void	get_input(t_shell *shell);
+
+// errors funcs
+int check_errors(t_token *tokens);
+
+// lexer funcs
 void	ft_lstadd_back_token(t_token **lst, t_token *new);
 t_token	*ft_lstlast_token(t_token *lst);
 t_token	*ft_lstnew_token(char *text,t_state state,t_tokentype  type);
 int count_word(char *s);
 char *ft_getword(char *s);
 char *get_env(char *s);
-int check_errors(t_token *tokens);
-t_token *lst_skip_spaces(t_token *token);
-t_cmd *parse_tokens(t_token *tokens);
+void	quotes_handler(char *c, t_state *state, t_token **head);
+void	lexer_special(char *str, int *i, t_state *state, t_token **head);
+t_token *lexer(char *str);
 
-void	add_arg(char ***argv, int *argc, char *arg);
+// expander funcs
+int	string_search(const char *str1, const char *str2);
+int	get_env_index(char *str, char **env);
+char	*get_value(char *str);
+int	special_char(char *str);
+void	expander(t_token **head, t_shell *shell);
+
+// parser funcs
+int	count_tokens(t_token *tokens);
+t_cmd	*ft_lstlast_cmd(t_cmd *lst);
+void	ft_lstadd_back_cmd(t_cmd **lst, t_cmd *new);
 t_cmd	*new_cmd();
 void	add_redirection(t_cmd *cmd, char *filename, int type);
-t_cmd *parse_tokens(t_token *tokens);
-t_free *free_lst_new(void *content);
-t_free	*free_lstlast(t_free *node);
-void	free_lstadd_back(t_free **node, t_free *new);
-t_all *static_var();
-void free_all(t_free *node);
-char	*ft_strdup(const char *s1);
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
-size_t	ft_strlen(const char *s);
+void append_token_text(char **tmp, t_token **tokens);
+void parse_inside_quotes(char **tmp, t_token **tokens, t_tokentype quote);
+void parse_next_word(char **tmp, t_token **tokens);
+int	parse_word_group(t_token **tokens, char **argv);
+int	is_redirect_token(t_token *t);
+char	*parse_quoted_redirect(t_token **tokens);
+char	*redirect_target(t_token **tokens);
+void	parse_redirect(t_token **tokens, t_cmd *cmd);
+t_cmd	*parse_tokens(t_token *tokens);
 t_cmd	*parsing(t_token *head, t_shell *shell);
-void expander(t_token **head, t_shell *shell);
-void free_helper(void *ptr);
+
 
 #endif
 

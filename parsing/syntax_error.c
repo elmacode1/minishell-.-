@@ -1,13 +1,5 @@
 #include "../minishell.h"
 
-t_token *lst_skip_spaces(t_token *token)
-{
-	while(token && token->type == WHITESPACE)
-	{
-		token = token->next;
-	}
-	return token;
-}
 int check_pipes(t_token *token)
 {
 	t_token *next_token;

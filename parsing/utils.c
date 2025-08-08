@@ -11,47 +11,16 @@ int is_special(char c)
 	return (0);
 }
 
-char	*ft_strdup(const char *s1)
-{
-	int		len;
-	int		i;
-	char	*s2;
-
-	i = 0;
-	len = ft_strlen(s1);
-	s2 = malloc(sizeof(char) * (len + 1));
-	free_helper(s2);
-	if(!s2)
-		return (NULL);
-	while (s1[i])
-	{
-		s2[i] = s1[i];
-		i++;
-	}
-	s2[i] = '\0';
-	return (s2);
+t_all *static_var(){
+	static t_all global;
+	return(&global);
 }
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
-{
-	size_t	i;
 
-	i = 0;
-	if (dstsize == 0)
-		return (ft_strlen(src));
-	while (src[i] && i < dstsize - 1)
+t_token *lst_skip_spaces(t_token *token)
+{
+	while(token && token->type == WHITESPACE)
 	{
-		dst[i] = src[i];
-		i++;
+		token = token->next;
 	}
-	dst[i] = '\0';
-	return (ft_strlen(src));
-}
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
+	return token;
 }

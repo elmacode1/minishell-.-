@@ -1,12 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   g_collector.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/08 14:40:05 by mael-gho          #+#    #+#             */
+/*   Updated: 2025/08/08 14:40:09 by mael-gho         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
-t_all *static_var(){
-	static t_all global;
-
-	return(&global);
-}
-
-t_free *free_lst_new(void *content)
+t_free	*free_lst_new(void *content)
 {
 	t_free *node;
 	node = malloc(sizeof(t_free));
@@ -48,8 +54,8 @@ void free_all(t_free *node){
 	while (tmp)
 	{
 		tmp = tmp->next;
-		if(!node->content)
-		free(node->content);
+		if(node->content)
+			free(node->content);
 		free(node);
 		node = tmp;
 	}

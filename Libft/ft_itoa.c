@@ -3,21 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 05:07:46 by oukadir           #+#    #+#             */
-/*   Updated: 2024/11/13 05:19:36 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/08 14:11:51 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <stdio.h>
+
 #include <stdlib.h>
 #include "libft.h"
+#include "../minishell.h"
 
 static char	*convert_to_string(int n, int len)
 {
 	char	*s;
 
 	s = (char *)malloc(sizeof(char) * (len + 1));
+	free_helper(s);
 	if (s == NULL)
 		return (NULL);
 	s[len] = '\0';

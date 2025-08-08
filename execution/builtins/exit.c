@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:43:47 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/05 13:43:48 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/07 19:37:23 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ int	is_num(char *str)
 
 int	ft_exit(t_shell *shell, char **argv)
 {
+	t_all *g;
+	g = static_var();
 	(void)shell;
 	if (!argv[1])
 		exit(shell->exit_status);
@@ -46,5 +48,6 @@ int	ft_exit(t_shell *shell, char **argv)
 		exit(2);
 	}
 	shell->exit_status = atoi(argv[1]) % 256;
+	free_all(g->free_list);
 	exit(shell->exit_status);
 }
