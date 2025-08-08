@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 14:30:50 by mael-gho          #+#    #+#             */
-/*   Updated: 2025/08/08 14:30:50 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/08 15:58:28 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	expand_env_var(t_token *token, t_shell *shell)
 		token->text = get_value(shell->env_copy
 			[get_env_index(token->text + 1, shell->env_copy)]);
 	else
-		token->text = ft_strdup("");
+		token->text = ft_strdup2("");
 	token->type = WORD;
 }
 

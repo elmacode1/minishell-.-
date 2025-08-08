@@ -16,7 +16,6 @@ int check_pipes(t_token *token)
 		token = token->next;
 	}
 	return 1;
-
 }
 int check_squotes(t_token *token)
 {

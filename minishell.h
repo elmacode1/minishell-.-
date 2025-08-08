@@ -234,8 +234,7 @@ char	*redirect_target(t_token **tokens);
 void	parse_redirect(t_token **tokens, t_cmd *cmd);
 t_cmd	*parse_tokens(t_token *tokens);
 t_cmd	*parsing(t_token *head, t_shell *shell);
-
-
+char	*ft_strdup2(const char *str);
 #endif
 
 

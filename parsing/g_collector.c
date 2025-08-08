@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 14:40:05 by mael-gho          #+#    #+#             */
-/*   Updated: 2025/08/08 14:40:09 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/08 16:47:16 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,16 @@
 
 t_free	*free_lst_new(void *content)
 {
-	t_free *node;
+	t_free	*node;
+
 	node = malloc(sizeof(t_free));
-	if(!node)
-		return NULL;
+	if (!node)
+		return (NULL);
 	node->content = content;
 	node->next = NULL;
 	return (node);
 }
+
 t_free	*free_lstlast(t_free *node)
 {
 	if (node == NULL)
@@ -32,6 +34,7 @@ t_free	*free_lstlast(t_free *node)
 	}
 	return (node);
 }
+
 void	free_lstadd_back(t_free **node, t_free *new)
 {
 	t_free	*tmp;
@@ -47,24 +50,26 @@ void	free_lstadd_back(t_free **node, t_free *new)
 	else
 		*node = new;
 }
-void free_all(t_free *node){
-	t_free *tmp;
+
+void	free_all(t_free *node)
+{
+	t_free	*tmp;
+
 	tmp = node;
-	
 	while (tmp)
 	{
 		tmp = tmp->next;
-		if(node->content)
-			free(node->content);
-		free(node);
+		if (node->content)
+			free (node->content);
+		free (node);
 		node = tmp;
 	}
 }
 
-void free_helper(void *ptr)
+void	free_helper(void *ptr)
 {
-	t_all *glob;
+	t_all	*glob;
 
 	glob = static_var();
-	free_lstadd_back(&glob->free_list,free_lst_new(ptr));
+	free_lstadd_back(&glob->free_list, free_lst_new(ptr));
 }

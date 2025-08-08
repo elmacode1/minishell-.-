@@ -37,7 +37,7 @@ int	parse_word_group(t_token **tokens, char **argv)
 		parse_next_word(&tmp, tokens);
 	if (tmp)
 	{
-		*argv = ft_strdup(tmp);
+		*argv = ft_strdup2(tmp);
 		free(tmp);
 		count++;
 	}
@@ -61,7 +61,7 @@ t_cmd	*parse_tokens(t_token *tokens)
 			else if (tokens->type == WORD || tokens->type == DQUOTE || tokens->type == SQUOTE)
 				i += parse_word_group(&tokens, argv + i);
 			else if (tokens->type == EMPTY_STR)
-				argv[i++] = ft_strdup("");
+				argv[i++] = ft_strdup2("");
 			else if (is_redirect_token(tokens))
 				parse_redirect(&tokens, new);
 			else

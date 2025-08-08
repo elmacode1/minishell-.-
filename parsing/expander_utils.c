@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 14:37:43 by mael-gho          #+#    #+#             */
-/*   Updated: 2025/08/08 14:39:42 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/08 15:58:34 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ char	*get_value(char *str)
 	while (str[i])
 	{
 		if (str[i] == '=')
-			return (ft_strdup(&str[i + 1]));
+			return (ft_strdup2(&str[i + 1]));
 		i++;
 	}
 	return (NULL);

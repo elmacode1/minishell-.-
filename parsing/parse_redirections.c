@@ -34,7 +34,7 @@ char	*redirect_target(t_token **tokens)
 		res = parse_quoted_redirect(tokens);
 	else if (*tokens)
 	{
-		res = ft_strdup((*tokens)->text);
+		res = ft_strdup2((*tokens)->text);
 		(*tokens) = (*tokens)->next;
 	}
 	return res;

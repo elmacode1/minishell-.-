@@ -64,11 +64,11 @@ void	add_redirection(t_cmd *cmd, char *filename, int type)
 	if(type == HEREDOC)
 	{
 		new_redirect->filename =NULL;
-		new_redirect->delimiter =ft_strdup(filename);
+		new_redirect->delimiter =ft_strdup2(filename);
 	}
 	else
 	{
-		new_redirect->filename =ft_strdup(filename);
+		new_redirect->filename =ft_strdup2(filename);
 		new_redirect->delimiter =NULL;
 	}
 	new_redirect->type = type;
