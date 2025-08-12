@@ -35,7 +35,6 @@ int	ft_exit(t_shell *shell, char **argv)
 	(void)shell;
 	if (!argv[1]){
 		free_all(&g->free_list);
-		free_env(shell->env_copy);
 		exit(shell->exit_status);
 	}
 	if (argv[2])
@@ -49,11 +48,9 @@ int	ft_exit(t_shell *shell, char **argv)
 		ft_putstr_fd("numeric argument required\n", STDERR_FILENO);
 		shell->exit_status = 2;
 		free_all(&g->free_list);
-		free_env(shell->env_copy);
 		exit(2);
 	}
 	shell->exit_status = atoi(argv[1]) % 256;
 	free_all(&g->free_list);
-	free_env(shell->env_copy);
 	exit(shell->exit_status);
 }

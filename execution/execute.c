@@ -85,5 +85,5 @@ void	execute(t_shell *shell, t_cmd *cmd)
 		else
 			shell->exit_status = execute_cmd(shell, cmd);
 	}
-	close_heredocs(cmd);
+	// close_heredocs(cmd);
 }

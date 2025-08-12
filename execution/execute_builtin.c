@@ -17,7 +17,6 @@ int	is_builtin(char *cmd)
 	int		i;
 	char	**builtins;
 
-	builtins = malloc(8 * sizeof(char *));
 	builtins = (char *[]){"echo", "cd", "pwd", "export", "unset", "env", "exit",
 		NULL};
 	i = 0;

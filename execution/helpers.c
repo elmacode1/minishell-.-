@@ -65,9 +65,10 @@ void	print_error(char *ms1, char *arg, char *ms2)
 int	compose_varname(char **new_var, int len, char *name, char *var)
 {
 	*new_var = malloc(len);
+	free_helper(*new_var);
 	if (!new_var)
 		return (-1);
-	*new_var = ft_strjoin(name, "=");
-	*new_var = ft_strjoin(*new_var, var);
+	*new_var = ft_strjoin2(name, "=");
+	*new_var = ft_strjoin2(*new_var, var);
 	return (0);
 }

@@ -115,6 +115,7 @@ int	handle_redirections(t_shell *shell, t_cmd *cmd)
 
 	(void)shell;
 	tmp = malloc(sizeof(t_tmp));
+	free_helper(tmp);
 	current = cmd->redirections;
 	fd_in = -1;
 	fd_out = -1;

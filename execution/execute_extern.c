@@ -90,6 +90,7 @@ int	execute_external(t_shell *shell, t_cmd *cmd)
 	t_tmp	*tmp;
 
 	tmp = malloc(sizeof(t_tmp));
+	free_helper(tmp);
 	tmp->tmp_out = dup(STDOUT_FILENO);
 	tmp->tmp_in = dup(STDIN_FILENO);
 	path = NULL;

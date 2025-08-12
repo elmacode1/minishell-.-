@@ -16,6 +16,7 @@
 #include <signal.h>
 #include "Libft/libft.h"
 
+
 typedef struct s_shell t_shell;
 
 typedef int (*func)(struct s_shell *, char **);

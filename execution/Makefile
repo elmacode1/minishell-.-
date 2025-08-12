@@ -24,12 +24,13 @@ SRC =	environ.c\
 OBJ = $(SRC:.c=.o)
 
 FLAGS = -Wall -Werror -Wextra 
+# LDFLAGS = $(READLINE_LIB) -lreadline
 LDFLAGS = -lreadline
-CC	= cc
+CC	= cc	
 
 LIBFT = ../Libft/libft.a
 LIBFT_DIR = ../Libft
-INCLUDES = -I$(LIBFT_DIR)
+INCLUDES = -I$(LIBFT_DIR) $(READLINE_INC)
 
 
 all : $(NAME)
@@ -49,7 +50,3 @@ fclean : clean
 	rm -f $(NAME)
 
 re : fclean all
-
-
-
-

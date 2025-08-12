@@ -13,12 +13,12 @@ void	get_input(t_shell *shell)
 	{
 		printf("exit\n");
 		free_all(&global->free_list);
-		free_env(shell->env_copy);
+		// free_env(shell->env_copy);
 		exit(1);
 	}
 	if(!ft_strcmp(input,"exit")){
 		free_all(&global->free_list);
-		free_env(shell->env_copy);
+		// free_env(shell->env_copy);
 		exit(1);
 	}
 	if (*input)

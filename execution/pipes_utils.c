@@ -19,11 +19,13 @@ int	**create_pipes(int n_cmds)
 
 	j = 0;
 	pipes = malloc(sizeof(int *) * (n_cmds - 1));
+	free_helper(pipes);
 	if (!pipes)
 		return (NULL);
 	while (j < n_cmds - 1)
 	{
 		pipes[j] = malloc(sizeof(int) * 2);
+		free_helper(pipes[j]);
 		if (!pipes[j])
 			return (NULL);
 		if (pipe(pipes[j]) == -1)

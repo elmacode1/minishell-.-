@@ -19,6 +19,7 @@ static char	*convert_to_string(int n, int len)
 	char	*s;
 
 	s = (char *)malloc(sizeof(char) * (len + 1));
+	free_helper(s);
 	if (s == NULL)
 		return (NULL);
 	s[len] = '\0';
@@ -35,11 +36,11 @@ static char	*handle_special_cases(int n)
 {
 	if (n == 0)
 	{
-		return (ft_strdup("0"));
+		return (ft_strdup2("0"));
 	}
 	if (n == -2147483648)
 	{
-		return (ft_strdup("-2147483648"));
+		return (ft_strdup2("-2147483648"));
 	}
 	return (NULL);
 }

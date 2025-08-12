@@ -21,12 +21,13 @@ char	**copy_env(char **env)
 	while (env[i])
 		i++;
 	env_copy = malloc(sizeof(char *) * (i + 1));
+	free_helper(env_copy);
 	if (!env_copy)
 		return (NULL);
 	i = 0;
 	while (env[i])
 	{
-		env_copy[i] = ft_strdup(env[i]);
+		env_copy[i] = ft_strdup2(env[i]);
 		if (!env_copy[i])
 		{
 			while (i > 0)
@@ -66,17 +67,18 @@ int	add_new_var(t_shell *shell, char *var)
 	while (shell->env_copy[i])
 		i++;
 	new_env = malloc((i + 2) * sizeof(char *));
+	free_helper(new_env);
 	if (!new_env)
 		return (-1);
 	i = 0;
 	while (shell->env_copy[i])
 	{
-		new_env[i] = strdup(shell->env_copy[i]);
+		new_env[i] = ft_strdup2(shell->env_copy[i]);
 		i++;
 	}
-	new_env[i] = strdup(var);
+	new_env[i] = ft_strdup2(var);
 	new_env[i + 1] = NULL;
-	free(shell->env_copy);
+	// free(shell->env_copy);
 	shell->env_copy = new_env;
 	return (0);
 }
@@ -99,14 +101,14 @@ int	set_env_var(t_shell *shell, char *name, char *var)
 			&& ((shell->env_copy[i][name_len] == '='
 				|| shell->env_copy[i][name_len] == '\0')))
 		{
-			free(shell->env_copy[i]);
+			// free(shell->env_copy[i]);
 			shell->env_copy[i] = new_var;
 			return (0);
 		}
 		i++;
 	}
 	add_new_var(shell, new_var);
-	free(new_var);
+	// free(new_var);
 	return (0);
 }
 
@@ -122,7 +124,7 @@ void	remove_env_var(t_shell *shell, char *name)
 		if (ft_strncmp(shell->env_copy[i], name, len) == 0
 			&& shell->env_copy[i][len] == '=')
 		{
-			free(shell->env_copy[i]);
+			// free(shell->env_copy[i]);
 			while (shell->env_copy[i + 1])
 			{
 				shell->env_copy[i] = shell->env_copy[i + 1];

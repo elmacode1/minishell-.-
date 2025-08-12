@@ -30,7 +30,7 @@ int	valid_line(char *line, t_redirect *current)
 	return (0);
 }
 
-void	handle_heredoc_child(t_redirect *current, char *tempfile)
+void		handle_heredoc_child(t_redirect *current, char *tempfile)
 {
 	int		fd;
 	char	*line;
@@ -62,12 +62,12 @@ int	check_sig(int status, char *tempfile, int *exit_status, t_redirect *current)
 	{
 		ft_putstr_fd("\n", STDOUT_FILENO);
 		unlink(tempfile);
-		free(tempfile);
+		// free(tempfile);
 		*exit_status = 130;
 		return (130);
 	}
-	current->filename = strdup(tempfile);
-	free(tempfile);
+	current->filename = ft_strdup2(tempfile);
+	// free(tempfile);
 	return (0);
 }
 
@@ -80,9 +80,10 @@ int	heredoc_handeler(t_redirect *current, int *exit_status)
 	t_all *g;
 	g = static_var();
 	heredoc = malloc(sizeof(t_heredoc));
+	free_helper(heredoc);
 	heredoc->id = ft_itoa(counter++);
-	heredoc->tempfile = ft_strjoin("/tmp/tempfile", heredoc->id);
-	free(heredoc->id);
+	heredoc->tempfile = ft_strjoin2("/tmp/tempfile", heredoc->id);
+	// free(heredoc->id);
 	signal(SIGINT, SIG_IGN);
 	heredoc->pid = fork();
 	if (heredoc->pid == 0)
@@ -97,7 +98,7 @@ int	heredoc_handeler(t_redirect *current, int *exit_status)
 		waitpid(heredoc->pid, &status, 0);
 		signal(SIGINT, handle_sigint);
 		ret = check_sig(status, heredoc->tempfile, exit_status, current);
-		free(heredoc);
+		// free(heredoc);
 		return (ret);
 	}
 }
