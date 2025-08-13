@@ -15,10 +15,7 @@ char	*parse_quoted_redirect(t_token **tokens)
 	(*tokens) = (*tokens)->next;
 	while (*tokens && !((*tokens)->type == quote && (*tokens)->state == GENERAL))
 	{
-		char *old = value;
 		value = ft_strjoin2(value, (*tokens)->text);
-		if (old)
-			free(old);
 		(*tokens) = (*tokens)->next;
 	}
 	if (*tokens && (*tokens)->type == quote && (*tokens)->state == GENERAL)

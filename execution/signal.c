@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:43:15 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/05 13:43:16 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/13 23:50:44 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 void	handle_child_sig(int sig)
 {
 	(void)sig;
-	ft_putstr_fd("hey\n", STDOUT_FILENO);
+	t_all *g;
+
+	g = static_var();
+	free_all(&g->free_list);
 	exit(130);
 }
 
