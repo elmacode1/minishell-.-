@@ -23,6 +23,5 @@ int	main(int ac, char **av, char **envp)
 		get_input(&shell);
 		// free_all(&global->free_list);
 	}
-	// free(shell.env_copy);
 	return (0);
 }

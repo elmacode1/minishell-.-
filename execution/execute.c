@@ -75,15 +75,22 @@ void	close_heredocs(t_cmd *cmd)
 
 void	execute(t_shell *shell, t_cmd *cmd)
 {
-	if (cmd)
-		if (open_heredocs(cmd, shell) == 130)
-			return ;
+	// t_all *g;
+
+	// g = static_var();
 	if (cmd)
 	{
-		if (cmd->next)
-			shell->exit_status = execute_pipes(shell, cmd);
-		else
-			shell->exit_status = execute_cmd(shell, cmd);
+		if (open_heredocs(cmd, shell) == 130)
+		{
+			// free_all(&g->free_list);
+			return ;
+		}
+		if(cmd->argv[0])
+		{
+			if (cmd->next)
+				shell->exit_status = execute_pipes(shell, cmd);
+			else
+				shell->exit_status = execute_cmd(shell, cmd);
+		}
 	}
-	// close_heredocs(cmd);
 }
