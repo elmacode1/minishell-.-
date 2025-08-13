@@ -95,7 +95,7 @@ typedef struct s_heredoc
 	pid_t		pid;
 	char		*tempfile;
 	char		*id;
-}	t_heredoc;
+}		t_heredoc;
 
 //malak structs
 typedef	enum s_state{
@@ -170,7 +170,7 @@ int is_directory(char *path);
 int valid_cmd(t_shell *shell, t_cmd *cmd, char **path);
 int is_builtin(char *cmd);
 int **create_pipes(int n_cmds);
-void free_pipes(int  **pipes, int n_cmds);
+void	free_pipes(t_pipes *pipe);
 void waiting_all(int n_cmds, t_shell *shell, int *pids);
 int builtin_exec_pipe(t_shell *shell, char **argv);
 int count_cmds(t_cmd *cmd);

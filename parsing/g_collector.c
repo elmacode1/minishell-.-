@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   g_collector.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 14:40:05 by mael-gho          #+#    #+#             */
-/*   Updated: 2025/08/08 22:05:45 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/13 22:24:34 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_free	*free_lstlast(t_free *node)
 	if (!node)
 		return (NULL);
 	if (node->next == NULL)
-		return (node);
+		return (node); 	
 	while (node->next)
 		node = node->next;
 	return (node);

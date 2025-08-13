@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:43 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/08 23:02:55 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/13 22:22:20 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void		handle_heredoc_child(t_redirect *current, char *tempfile)
 	if (fd < 0)
 	{
 		ft_putstr_fd("minishell: heredoc\n", STDERR_FILENO);
-		free(tempfile);
 		exit(1);
 	}
 	signal(SIGINT, SIG_DFL);

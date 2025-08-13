@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:43:08 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/06 15:52:27 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/13 22:06:52 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,3 +134,4 @@ int	handle_redirections(t_shell *shell, t_cmd *cmd)
 	restore_fds(&fd_in, &fd_out, &tmp->tmp_in, &tmp->tmp_out);
 	return (0);
 }
+

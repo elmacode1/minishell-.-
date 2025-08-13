@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:54 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/06 15:42:16 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/07 16:08:45 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,22 @@ int	**create_pipes(int n_cmds)
 	return (pipes);
 }
 
-void	free_pipes(int **pipes, int n_cmds)
+void	free_pipes(t_pipes *pipe)
 {
 	int	j;
 
 	j = 0;
-	while (j < n_cmds - 1)
+	free(pipe->tmp);
+	free(pipe->pids);
+	while (j < pipe->n_cmds - 1)
 	{
-		free(pipes[j]);
+		free(pipe->pipes[j]);
 		j++;
 	}
-	free(pipes);
+	free(pipe->pipes);
+	if(pipe->path)
+		free(pipe->path);
+	free(pipe);
 }
 
 void	waiting_all(int n_cmds, t_shell *shell, int *pids)
