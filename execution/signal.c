@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:43:15 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/13 23:50:44 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/14 00:36:53 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	handle_child_sig(int sig)
 {
-	(void)sig;
-	t_all *g;
+	t_all	*g;
 
+	(void)sig;
 	g = static_var();
 	free_all(&g->free_list);
 	exit(130);

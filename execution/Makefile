@@ -20,6 +20,7 @@ SRC =	environ.c\
 		execute_extern.c\
 		execute_builtin.c\
 		pipes_utils.c\
+		helpers2.c
 		
 OBJ = $(SRC:.c=.o)
 

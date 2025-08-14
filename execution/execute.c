@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:28 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/13 22:13:06 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/14 00:41:43 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	execute_cmd(t_shell *shell, t_cmd *cmd)
 {
 	if (!cmd->argv || !cmd->argv[0])
-		return (handle_redirections(shell, cmd));
+		return (handle_redirections(cmd));
 	if (is_builtin(cmd->argv[0]))
 		return (execute_builtin(shell, cmd));
 	else
@@ -75,17 +75,11 @@ void	close_heredocs(t_cmd *cmd)
 
 void	execute(t_shell *shell, t_cmd *cmd)
 {
-	// t_all *g;
-
-	// g = static_var();
 	if (cmd)
 	{
 		if (open_heredocs(cmd, shell) == 130)
-		{
-			// free_all(&g->free_list);
 			return ;
-		}
-		if(cmd->argv[0])
+		if (cmd->argv[0])
 		{
 			if (cmd->next)
 				shell->exit_status = execute_pipes(shell, cmd);

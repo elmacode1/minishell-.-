@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:09 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/13 21:55:18 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/14 00:41:32 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	execute_builtin(t_shell *shell, t_cmd *cmd)
 
 	tmp_out = dup(STDOUT_FILENO);
 	tmp_in = dup(STDIN_FILENO);
-	status = handle_redirections(shell, cmd);
+	status = handle_redirections(cmd);
 	if (status != 0)
 	{
 		dup2(tmp_out, STDOUT_FILENO);

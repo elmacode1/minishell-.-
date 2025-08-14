@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:43:08 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/13 22:06:52 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/14 00:41:01 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int	check_current(t_redirect *current, int *fd_in, int *fd_out)
 	return (0);
 }
 
-int	handle_redirections(t_shell *shell, t_cmd *cmd)
+int	handle_redirections(t_cmd *cmd)
 {
 	int			fd_in;
 	int			fd_out;
@@ -113,7 +113,6 @@ int	handle_redirections(t_shell *shell, t_cmd *cmd)
 	t_redirect	*current;
 	int			status;
 
-	(void)shell;
 	tmp = malloc(sizeof(t_tmp));
 	free_helper(tmp);
 	current = cmd->redirections;
@@ -134,4 +133,3 @@ int	handle_redirections(t_shell *shell, t_cmd *cmd)
 	restore_fds(&fd_in, &fd_out, &tmp->tmp_in, &tmp->tmp_out);
 	return (0);
 }
-

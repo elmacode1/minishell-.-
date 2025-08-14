@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:41:40 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/06 14:38:34 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/14 00:38:20 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ int	add_new_var(t_shell *shell, char *var)
 	}
 	new_env[i] = ft_strdup2(var);
 	new_env[i + 1] = NULL;
-	// free(shell->env_copy);
 	shell->env_copy = new_env;
 	return (0);
 }
@@ -101,14 +100,12 @@ int	set_env_var(t_shell *shell, char *name, char *var)
 			&& ((shell->env_copy[i][name_len] == '='
 				|| shell->env_copy[i][name_len] == '\0')))
 		{
-			// free(shell->env_copy[i]);
 			shell->env_copy[i] = new_var;
 			return (0);
 		}
 		i++;
 	}
 	add_new_var(shell, new_var);
-	// free(new_var);
 	return (0);
 }
 
@@ -124,7 +121,6 @@ void	remove_env_var(t_shell *shell, char *name)
 		if (ft_strncmp(shell->env_copy[i], name, len) == 0
 			&& shell->env_copy[i][len] == '=')
 		{
-			// free(shell->env_copy[i]);
 			while (shell->env_copy[i + 1])
 			{
 				shell->env_copy[i] = shell->env_copy[i + 1];

@@ -51,7 +51,7 @@ void	free_pipes(t_pipes *pipe)
 		j++;
 	}
 	free(pipe->pipes);
-	if(pipe->path)
+	if (pipe->path)
 		free(pipe->path);
 	free(pipe);
 }

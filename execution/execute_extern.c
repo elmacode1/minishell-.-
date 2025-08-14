@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_extern.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:21 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/08 17:15:22 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/14 00:41:37 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	validate_arg(t_cmd *cmd, t_tmp *tmp, char **path, t_shell *shell)
 		print_error("minishell: ", cmd->argv[0], ": command not found\n");
 		return (127);
 	}
-	shell->exit_status = handle_redirections(shell, cmd);
+	shell->exit_status = handle_redirections(cmd);
 	if (shell->exit_status != 0)
 	{
 		dup2(tmp->tmp_in, STDIN_FILENO);

@@ -128,7 +128,7 @@ typedef struct s_all
 }t_all;
 
 
-int handle_redirections(t_shell *shell, t_cmd *cmd);
+int handle_redirections(t_cmd *cmd);
 int execute_pipes(t_shell *shell, t_cmd *cmd);
 char **copy_env(char **env);
 void init_builtin(t_shell *shell);
@@ -180,6 +180,8 @@ void	print_env(char **env);
 void	free_env(char **env);
 int compose_varname(char **new_var, int len, char *name, char *var);
 int	check_access_redir(t_redirect *current);
+void	exetern_part(t_cmd *cmd, t_pipes *pipe, t_shell *shell, t_all *g);
+void init_heredoc(t_heredoc *heredoc);
 
 // free funcs
 t_free *free_lst_new(void *content);

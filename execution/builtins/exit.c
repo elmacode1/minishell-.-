@@ -30,10 +30,12 @@ int	is_num(char *str)
 
 int	ft_exit(t_shell *shell, char **argv)
 {
-	t_all *g;
+	t_all	*g;
+
 	g = static_var();
 	(void)shell;
-	if (!argv[1]){
+	if (!argv[1])
+	{
 		free_all(&g->free_list);
 		exit(shell->exit_status);
 	}
