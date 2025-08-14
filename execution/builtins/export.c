@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:43:53 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/05 17:44:04 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/14 17:31:58 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	sort_and_print(char **env)
 	sorted = copy_env(env);
 	bubble_sort(sorted, len);
 	print_env(sorted);
-	free_env(sorted);
 }
 
 char	*get_var(t_shell *shell, char *name)

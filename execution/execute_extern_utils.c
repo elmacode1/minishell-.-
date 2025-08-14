@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:16 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/05 18:10:25 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/14 20:06:56 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,13 @@ char	*path_access(char **paths, char *cmd)
 	char	*slash;
 	char	*cmd_path;
 	int		i;
-
+	
 	i = 0;
+	if(!paths)
+		return NULL;
 	while (paths[i])
 	{
+		printf("im here2222222222\n");
 		slash = ft_strjoin(paths[i], "/");
 		cmd_path = ft_strjoin(slash, cmd);
 		if (access(cmd_path, X_OK) == 0)
@@ -32,6 +35,7 @@ char	*path_access(char **paths, char *cmd)
 		free(cmd_path);
 		i++;
 	}
+
 	return (NULL);
 }
 
@@ -43,6 +47,8 @@ char	*get_cmd_path(t_shell *shell, char *cmd)
 
 	result = NULL;
 	env = get_env_var(shell, "PATH");
+	if(!env)
+		return NULL;
 	paths = ft_split(env, ':');
 	result = path_access(paths, cmd);
 	free_array(paths);
@@ -60,6 +66,7 @@ int	is_directory(char *path)
 
 int	check_access(t_cmd *cmd)
 {
+	printf("im here\n");
 	if (access(cmd->argv[0], F_OK) != 0)
 	{
 		print_error("minishell: ", cmd->argv[0],

@@ -6,7 +6,7 @@
 /*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 14:40:05 by mael-gho          #+#    #+#             */
-/*   Updated: 2025/08/13 22:24:34 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/14 17:11:37 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_free	*free_lstlast(t_free *node)
 	if (!node)
 		return (NULL);
 	if (node->next == NULL)
-		return (node); 	
+		return (node);
 	while (node->next)
 		node = node->next;
 	return (node);
@@ -39,7 +39,7 @@ t_free	*free_lstlast(t_free *node)
 
 void	free_lstadd_back(t_free **node, t_free *new)
 {
-		if (node != NULL && new != NULL)
+	if (node != NULL && new != NULL)
 	{
 		if (*node == NULL)
 		{
@@ -72,17 +72,17 @@ void	free_all(t_free **node)
 
 void	free_helper(void *ptr)
 {
-    t_all	*glob;
-    t_free	*new_node;
+	t_all	*glob;
+	t_free	*new_node;
 
-    if (!ptr)
-        return ;
-    glob = static_var();
-    new_node = free_lst_new(ptr);
-    if (!new_node)
-    {
-        free(ptr);
-        return ;
-    }
-    free_lstadd_back(&glob->free_list, new_node);
+	if (!ptr)
+		return ;
+	glob = static_var();
+	new_node = free_lst_new(ptr);
+	if (!new_node)
+	{
+		free(ptr);
+		return ;
+	}
+	free_lstadd_back(&glob->free_list, new_node);
 }

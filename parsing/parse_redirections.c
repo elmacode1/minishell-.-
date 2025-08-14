@@ -1,41 +1,59 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_redirections.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/14 17:16:10 by oukadir           #+#    #+#             */
+/*   Updated: 2025/08/14 17:16:23 by oukadir          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int	is_redirect_token(t_token *t)
 {
-	return (t->type == RED_IN || t->type == RED_OUT
-		|| t->type == APPEND || t->type == HEREDOC);
+	return (t->type == RED_IN || t->type == RED_OUT || t->type == APPEND
+		|| t->type == HEREDOC);
 }
 
 char	*parse_quoted_redirect(t_token **tokens)
 {
-	char		*value = NULL;
+	char		*value;
 	t_tokentype	quote;
 
+	value = NULL;
 	quote = (*tokens)->type;
 	(*tokens) = (*tokens)->next;
-	while (*tokens && !((*tokens)->type == quote && (*tokens)->state == GENERAL))
+	while (*tokens && !((*tokens)->type == quote
+			&& (*tokens)->state == GENERAL))
 	{
 		value = ft_strjoin2(value, (*tokens)->text);
 		(*tokens) = (*tokens)->next;
 	}
 	if (*tokens && (*tokens)->type == quote && (*tokens)->state == GENERAL)
 		(*tokens) = (*tokens)->next;
-	return value;
+	return (value);
 }
+
 char	*redirect_target(t_token **tokens)
 {
-	char	*res = NULL;
+	char	*res;
 
+	res = NULL;
 	*tokens = lst_skip_spaces(*tokens);
-	if (*tokens && ((*tokens)->type == DQUOTE || (*tokens)->type == SQUOTE) && (*tokens)->state == GENERAL)
+	if (*tokens && ((*tokens)->type == DQUOTE || (*tokens)->type == SQUOTE)
+		&& (*tokens)->state == GENERAL)
 		res = parse_quoted_redirect(tokens);
 	else if (*tokens)
 	{
 		res = ft_strdup2((*tokens)->text);
 		(*tokens) = (*tokens)->next;
 	}
-	return res;
+	return (res);
 }
+
 void	parse_redirect(t_token **tokens, t_cmd *cmd)
 {
 	t_tokentype	t;

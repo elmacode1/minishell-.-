@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 14:30:50 by mael-gho          #+#    #+#             */
-/*   Updated: 2025/08/08 23:08:00 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/14 17:21:49 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ static void	expand_env_var(t_token *token, t_shell *shell)
 {
 	if (get_env_index(token->text + 1, shell->env_copy) >= 0)
 		token->text = get_value(shell->env_copy
-			[get_env_index(token->text + 1, shell->env_copy)]);
+			[get_env_index(token->text + 1,
+					shell->env_copy)]);
 	else
 		token->text = ft_strdup2("");
 	token->type = WORD;

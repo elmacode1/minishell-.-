@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 16:23:30 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/08 23:07:01 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/14 17:35:07 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	ft_strlcat(result, s2, total_len);
 	return (result);
 }
+
 char	*ft_strjoin2(char const *s1, char const *s2)
 {
 	size_t	total_len;

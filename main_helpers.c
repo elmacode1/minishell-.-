@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_helpers.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/14 17:23:40 by oukadir           #+#    #+#             */
+/*   Updated: 2025/08/14 17:24:44 by oukadir          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 void	get_input(t_shell *shell)
@@ -6,7 +18,7 @@ void	get_input(t_shell *shell)
 	t_token	*head;
 	t_cmd	*cmd;
 	t_all	*global;
-	
+
 	global = static_var();
 	input = readline("minishell$ ");
 	if (!input)
@@ -15,18 +27,13 @@ void	get_input(t_shell *shell)
 		free_all(&global->free_list);
 		exit(1);
 	}
-	if(!ft_strcmp(input,"exit")){
-		free_all(&global->free_list);
-		exit(1);
-	}
 	if (*input)
 	{
 		add_history(input);
 		head = lexer(input);
 		cmd = parsing(head, shell);
-		if(cmd)
-		execute(shell, cmd);
-		// free_all(&global->free_list);
+		if (cmd)
+			execute(shell, cmd);
 	}
 	shell->lines++;
 	free(input);
@@ -34,10 +41,11 @@ void	get_input(t_shell *shell)
 
 t_cmd	*parsing(t_token *head, t_shell *shell)
 {
-    t_cmd *cmd;
-    if(!check_errors(head))
-        return NULL;
-    expander(&head,shell);
-    cmd = parse_tokens(head);
-    return (cmd);
+	t_cmd	*cmd;
+
+	if (!check_errors(head))
+		return (NULL);
+	expander(&head, shell);
+	cmd = parse_tokens(head);
+	return (cmd);
 }

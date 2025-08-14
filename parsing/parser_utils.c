@@ -1,22 +1,36 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/14 17:17:05 by oukadir           #+#    #+#             */
+/*   Updated: 2025/08/14 17:17:22 by oukadir          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int	count_tokens(t_token *tokens)
 {
-	int count;
+	int	count;
 
-	count =0;
-	while(tokens)
+	count = 0;
+	while (tokens)
 	{
-		if(tokens->type == PIPE && tokens->state == GENERAL)
-			break;
-		if(!((tokens->type == WHITESPACE || tokens->type == DQUOTE || tokens->type == SQUOTE 
-			|| tokens->type == RED_IN || tokens->type == RED_OUT|| tokens->type == APPEND
-			|| tokens->type == HEREDOC) && tokens->state == GENERAL))
+		if (tokens->type == PIPE && tokens->state == GENERAL)
+			break ;
+		if (!((tokens->type == WHITESPACE || tokens->type == DQUOTE
+					|| tokens->type == SQUOTE || tokens->type == RED_IN
+					|| tokens->type == RED_OUT || tokens->type == APPEND
+					|| tokens->type == HEREDOC) && tokens->state == GENERAL))
 			count++;
-		tokens = tokens->next;		
+		tokens = tokens->next;
 	}
-	return count;
+	return (count);
 }
+
 t_cmd	*ft_lstlast_cmd(t_cmd *lst)
 {
 	if (lst == NULL)
@@ -27,6 +41,7 @@ t_cmd	*ft_lstlast_cmd(t_cmd *lst)
 	}
 	return (lst);
 }
+
 void	ft_lstadd_back_cmd(t_cmd **lst, t_cmd *new)
 {
 	t_cmd	*tmp;
@@ -42,34 +57,37 @@ void	ft_lstadd_back_cmd(t_cmd **lst, t_cmd *new)
 	else
 		*lst = new;
 }
-t_cmd	*new_cmd()
+
+t_cmd	*new_cmd(void)
 {
-    t_cmd *new;
-	
+	t_cmd	*new;
+
 	new = malloc(sizeof(t_cmd));
 	free_helper(new);
-    if (!new)
-		return NULL;
-    new->argv = NULL;
+	if (!new)
+		return (NULL);
+	new->argv = NULL;
 	new->redirections = NULL;
-    new->next = NULL;
-    return new;
+	new->next = NULL;
+	return (new);
 }
+
 void	add_redirection(t_cmd *cmd, char *filename, int type)
 {
-	t_redirect *new_redirect;
-	t_redirect *last;
+	t_redirect	*new_redirect;
+	t_redirect	*last;
+
 	new_redirect = malloc(sizeof(t_redirect));
 	free_helper(new_redirect);
-	if(type == HEREDOC)
+	if (type == HEREDOC)
 	{
-		new_redirect->filename =NULL;
-		new_redirect->delimiter =ft_strdup2(filename);
+		new_redirect->filename = NULL;
+		new_redirect->delimiter = ft_strdup2(filename);
 	}
 	else
 	{
-		new_redirect->filename =ft_strdup2(filename);
-		new_redirect->delimiter =NULL;
+		new_redirect->filename = ft_strdup2(filename);
+		new_redirect->delimiter = NULL;
 	}
 	new_redirect->type = type;
 	new_redirect->next = NULL;

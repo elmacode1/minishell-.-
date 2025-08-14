@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 19:01:57 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/08 23:08:41 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/14 17:35:26 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <stdio.h>
 # include <stdlib.h>
-#include "../minishell.h"
+# include "../minishell.h"
 
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);

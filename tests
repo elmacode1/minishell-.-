@@ -1,0 +1,9 @@
+tabs /t
+/bin/echo "" " " double free
+
+bash-5.2$ exit -444444444444444444444444444
+exit
+bash: exit: -444444444444444444444444444: numeric argument required
+should check if it a long long and treat it as not numeric arg
+
+echo ''

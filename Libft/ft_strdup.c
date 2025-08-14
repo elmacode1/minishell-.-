@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 20:16:43 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/08 23:07:33 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/14 17:34:24 by oukadir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ char	*ft_strdup(const char *str)
 	c[i] = '\0';
 	return (c);
 }
+
 char	*ft_strdup2(const char *str)
 {
 	int		i;

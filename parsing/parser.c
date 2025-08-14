@@ -1,22 +1,40 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/14 17:18:13 by oukadir           #+#    #+#             */
+/*   Updated: 2025/08/14 17:41:07 by oukadir          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
-void append_token_text(char **tmp, t_token **tokens)
+void	append_token_text(char **tmp, t_token **tokens)
 {
 	*tmp = ft_strjoin2(*tmp, (*tokens)->text);
 	(*tokens) = (*tokens)->next;
 }
-void parse_inside_quotes(char **tmp, t_token **tokens, t_tokentype quote)
+
+void	parse_inside_quotes(char **tmp, t_token **tokens, t_tokentype quote)
 {
-	while (*tokens && !((*tokens)->type == quote && (*tokens)->state == GENERAL))
+	while (*tokens && !((*tokens)->type == quote
+			&& (*tokens)->state == GENERAL))
 		append_token_text(tmp, tokens);
 	if (*tokens && (*tokens)->type == quote && (*tokens)->state == GENERAL)
 		(*tokens) = (*tokens)->next;
 }
-void parse_next_word(char **tmp, t_token **tokens)
+
+void	parse_next_word(char **tmp, t_token **tokens)
 {
-	if (((*tokens)->type == DQUOTE || (*tokens)->type == SQUOTE) && (*tokens)->state == GENERAL)
+	t_tokentype	quote;
+
+	if (((*tokens)->type == DQUOTE || (*tokens)->type == SQUOTE)
+		&& (*tokens)->state == GENERAL)
 	{
-		t_tokentype quote = (*tokens)->type;
+		quote = (*tokens)->type;
 		(*tokens) = (*tokens)->next;
 		parse_inside_quotes(tmp, tokens, quote);
 	}
@@ -26,35 +44,46 @@ void parse_next_word(char **tmp, t_token **tokens)
 
 int	parse_word_group(t_token **tokens, char **argv)
 {
-	char	*tmp = NULL;
-	int		count = 0;
-	while (*tokens && !(((*tokens)->type == WHITESPACE || (*tokens)->type == RED_IN
-		|| (*tokens)->type == RED_OUT || (*tokens)->type == APPEND
-		|| (*tokens)->type == HEREDOC) && (*tokens)->state == GENERAL))
+	char	*tmp;
+	int		count;
+
+	tmp = NULL;
+	count = 0;
+	while (*tokens && !(((*tokens)->type == WHITESPACE
+				|| (*tokens)->type == RED_IN || (*tokens)->type == RED_OUT
+				|| (*tokens)->type == APPEND || (*tokens)->type == HEREDOC)
+			&& (*tokens)->state == GENERAL))
 		parse_next_word(&tmp, tokens);
 	if (tmp)
 	{
 		*argv = ft_strdup2(tmp);
 		count++;
 	}
-	return count;
+	return (count);
 }
 
 t_cmd	*parse_tokens(t_token *tokens)
 {
-	t_cmd	*cmd = NULL;
+	t_cmd	*cmd;
+	t_cmd	*new;
+	int		max_args;
+	char	**argv;
+	int		i;
+
+	cmd = NULL;
 	while (tokens)
 	{
-		t_cmd	*new = new_cmd();
-		int		max_args = count_tokens(tokens);
-		char	**argv = malloc(sizeof(char *) * (max_args + 1));
+		new = new_cmd();
+		max_args = count_tokens(tokens);
+		argv = malloc(sizeof(char *) * (max_args + 1));
 		free_helper(argv);
-		int		i = 0;
+		i = 0;
 		while (tokens && !(tokens->type == PIPE && tokens->state == GENERAL))
 		{
 			if (tokens->type == WORD && !ft_strcmp(tokens->text, ""))
 				tokens = tokens->next;
-			else if (tokens->type == WORD || tokens->type == DQUOTE || tokens->type == SQUOTE)
+			else if (tokens->type == WORD || tokens->type == DQUOTE
+				|| tokens->type == SQUOTE)
 				i += parse_word_group(&tokens, argv + i);
 			else if (tokens->type == EMPTY_STR)
 				argv[i++] = ft_strdup2("");
@@ -69,5 +98,5 @@ t_cmd	*parse_tokens(t_token *tokens)
 		if (tokens && tokens->type == PIPE)
 			tokens = tokens->next;
 	}
-	return cmd;
+	return (cmd);
 }
