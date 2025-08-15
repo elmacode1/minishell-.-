@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environ.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:41:40 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/14 00:38:20 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/16 00:54:37 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,8 +118,9 @@ void	remove_env_var(t_shell *shell, char *name)
 	len = ft_strlen(name);
 	while (shell->env_copy[i])
 	{
-		if (ft_strncmp(shell->env_copy[i], name, len) == 0
-			&& shell->env_copy[i][len] == '=')
+		if (ft_strcmp(shell->env_copy[i], name) == 0
+			|| (ft_strncmp(shell->env_copy[i], name, len) == 0
+				&& shell->env_copy[i][len] == '='))
 		{
 			while (shell->env_copy[i + 1])
 			{

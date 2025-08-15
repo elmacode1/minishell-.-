@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:43:15 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/14 00:36:53 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/15 22:57:32 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,11 @@ void	handle_child_sig(int sig)
 
 void	handle_sigint(int sig)
 {
+	t_all	*g;
+
 	(void)sig;
+	g = static_var();
+	g->shell->exit_status = 130;
 	ft_putstr_fd("\n", STDOUT_FILENO);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -38,8 +42,12 @@ void	handle_sigquit(int sig)
 	exit(131);
 }
 
-void	init_signals(void)
+void	init_signals(t_shell *shell)
 {
+	t_all	*g;
+
+	g = static_var();
+	g->shell = shell;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 }

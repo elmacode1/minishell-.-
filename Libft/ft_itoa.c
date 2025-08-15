@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 05:07:46 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/08 22:57:53 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/15 23:11:06 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ static char	*convert_to_string(int n, int len)
 	char	*s;
 
 	s = (char *)malloc(sizeof(char) * (len + 1));
-	free_helper(s);
 	if (s == NULL)
 		return (NULL);
+	free_helper(s);
 	s[len] = '\0';
 	while (n > 0)
 	{

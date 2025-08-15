@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:43:28 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/05 17:54:53 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/16 00:54:57 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,17 @@ int	chdir_error(char *path)
 	return (0);
 }
 
+char	*check_args(char **argv, t_shell *shell)
+{
+	char	*path;
+
+	if (!argv[1])
+		path = check_first_arg(NULL, shell);
+	else
+		path = check_first_arg(argv[1], shell);
+	return (path);
+}
+
 int	ft_cd(t_shell *shell, char **argv)
 {
 	char	cwd[1024];
@@ -61,7 +72,7 @@ int	ft_cd(t_shell *shell, char **argv)
 		ft_putstr_fd("minishell: cd: too many arguments\n", STDERR_FILENO);
 		return (1);
 	}
-	path = check_first_arg(argv[1], shell);
+	path = check_args(argv, shell);
 	if (!path)
 		return (1);
 	if (!getcwd(cwd, sizeof(cwd)))

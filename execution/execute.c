@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:28 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/14 00:41:43 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/15 20:30:16 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,9 @@ void	execute(t_shell *shell, t_cmd *cmd)
 	{
 		if (open_heredocs(cmd, shell) == 130)
 			return ;
-		if (cmd->argv[0])
-		{
-			if (cmd->next)
-				shell->exit_status = execute_pipes(shell, cmd);
-			else
-				shell->exit_status = execute_cmd(shell, cmd);
-		}
+		if (cmd->next)
+			shell->exit_status = execute_pipes(shell, cmd);
+		else
+			shell->exit_status = execute_cmd(shell, cmd);
 	}
 }

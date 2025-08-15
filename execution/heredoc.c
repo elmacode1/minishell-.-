@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:43 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/14 01:12:19 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/16 00:27:08 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,43 @@ int	valid_line(char *line, t_redirect *current)
 		return (1);
 	}
 	else if (strcmp(line, current->delimiter) == 0)
-	{
-		free(line);
 		return (1);
-	}
 	return (0);
 }
 
-void	handle_heredoc_child(t_redirect *current, char *tempfile)
+void	read_heredoc(t_shell *shell, t_redirect *current, int fd)
 {
-	int		fd;
 	char	*line;
+
+	while (1)
+	{
+		signal(SIGINT, handle_child_sig);
+		line = readline("> ");
+		if (!ft_strncmp(line, "$", 1))
+		{
+			if (get_env_index(line + 1, shell->env_copy) >= 0)
+				line = get_value(shell->env_copy[get_env_index(line + 1,
+							shell->env_copy)]);
+			else
+				line = ft_strdup2("");
+			if (valid_line(line, current) == 1)
+				break ;
+			write(fd, line, strlen(line));
+			write(fd, "\n", 1);
+			continue ;
+		}
+		if (valid_line(line, current) == 1)
+			break ;
+		write(fd, line, strlen(line));
+		write(fd, "\n", 1);
+		free(line);
+	}
+}
+
+void	handle_heredoc_child(t_shell *shell, t_redirect *current,
+		char *tempfile)
+{
+	int	fd;
 
 	fd = open(tempfile, O_CREAT | O_WRONLY | O_TRUNC, 0600);
 	if (fd < 0)
@@ -43,16 +69,7 @@ void	handle_heredoc_child(t_redirect *current, char *tempfile)
 	}
 	signal(SIGINT, handle_child_sig);
 	signal(SIGQUIT, SIG_IGN);
-	while (1)
-	{
-		signal(SIGINT, handle_child_sig);
-		line = readline("> ");
-		if (valid_line(line, current) == 1)
-			break ;
-		write(fd, line, strlen(line));
-		write(fd, "\n", 1);
-		free(line);
-	}
+	read_heredoc(shell, current, fd);
 	close(fd);
 }
 
@@ -83,7 +100,7 @@ int	heredoc_handeler(t_redirect *current, int *exit_status)
 	heredoc->pid = fork();
 	if (heredoc->pid == 0)
 	{
-		handle_heredoc_child(current, heredoc->tempfile);
+		handle_heredoc_child(g->shell, current, heredoc->tempfile);
 		free_all(&g->free_list);
 		exit(0);
 	}

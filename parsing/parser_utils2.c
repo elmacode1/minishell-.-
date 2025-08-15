@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 21:35:07 by mael-gho          #+#    #+#             */
-/*   Updated: 2025/08/15 01:07:34 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/15 19:04:58 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	fill_argv(t_token **tokens, char **argv, t_cmd *new)
 		}
 	}
 	argv[i] = NULL;
+	argv[i + 1] = NULL;
 }
 
 t_redirect	*create_redirect(char *filename, int type)

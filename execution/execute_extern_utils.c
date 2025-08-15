@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:42:16 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/15 01:09:16 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/15 19:19:44 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	check_access(t_cmd *cmd)
 	{
 		print_error("minishell: ", cmd->argv[0],
 			": No such file or directory\n");
-		return (1);
+		return (127);
 	}
 	if (is_directory(cmd->argv[0]))
 	{

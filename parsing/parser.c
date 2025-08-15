@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 17:18:13 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/15 00:37:00 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/15 19:04:42 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ t_cmd	*parse_tokens(t_token *tokens)
 	{
 		new = new_cmd();
 		max_args = count_tokens(tokens);
-		argv = malloc(sizeof(char *) * (max_args + 1));
+		argv = malloc(sizeof(char *) * (max_args + 2));
 		if (!argv)
 			return (NULL);
 		free_helper(argv);

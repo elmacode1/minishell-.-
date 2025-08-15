@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 17:23:40 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/15 01:08:16 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/15 23:04:10 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,7 @@ void	get_input(t_shell *shell)
 		add_history(input);
 		head = lexer(input);
 		cmd = parsing(head, shell);
-		if (cmd)
-			execute(shell, cmd);
+		execute(shell, cmd);
 	}
 	shell->lines++;
 	free(input);
@@ -44,7 +43,10 @@ t_cmd	*parsing(t_token *head, t_shell *shell)
 	t_cmd	*cmd;
 
 	if (!check_errors(head))
+	{
+		shell->exit_status = 2;
 		return (NULL);
+	}
 	expander(&head, shell);
 	cmd = parse_tokens(head);
 	return (cmd);

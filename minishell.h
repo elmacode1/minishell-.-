@@ -6,7 +6,7 @@
 /*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 17:26:42 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/14 21:47:02 by mael-gho         ###   ########.fr       */
+/*   Updated: 2025/08/15 23:25:01 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,8 +133,7 @@ typedef struct s_token
 
 typedef struct s_all
 {
-	t_token				*token;
-	t_cmd				*cmd;
+	t_shell				*shell;
 	t_free				*free_list;
 }						t_all;
 
@@ -163,7 +162,7 @@ int						ft_strcmp(const char *s1, const char *s2);
 void					free_array(char **arr);
 int						builtin_func(t_shell *shell, t_cmd *cmd);
 void					execute(t_shell *shell, t_cmd *cmd);
-void					init_signals(void);
+void					init_signals(t_shell *shell);
 void					handle_child_sig(int sig);
 void					handle_sigint(int sig);
 void					handle_sigquit(int sig);
