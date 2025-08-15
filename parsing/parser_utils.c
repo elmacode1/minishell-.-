@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 17:17:05 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/14 17:17:22 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/14 21:44:32 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,20 +77,7 @@ void	add_redirection(t_cmd *cmd, char *filename, int type)
 	t_redirect	*new_redirect;
 	t_redirect	*last;
 
-	new_redirect = malloc(sizeof(t_redirect));
-	free_helper(new_redirect);
-	if (type == HEREDOC)
-	{
-		new_redirect->filename = NULL;
-		new_redirect->delimiter = ft_strdup2(filename);
-	}
-	else
-	{
-		new_redirect->filename = ft_strdup2(filename);
-		new_redirect->delimiter = NULL;
-	}
-	new_redirect->type = type;
-	new_redirect->next = NULL;
+	new_redirect = create_redirect(filename, type);
 	if (!cmd->redirections)
 		cmd->redirections = new_redirect;
 	else

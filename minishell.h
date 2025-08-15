@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 17:26:42 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/14 17:28:57 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/14 21:47:02 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,4 +254,7 @@ void					parse_redirect(t_token **tokens, t_cmd *cmd);
 t_cmd					*parse_tokens(t_token *tokens);
 t_cmd					*parsing(t_token *head, t_shell *shell);
 char					*ft_strdup2(const char *str);
+void					fill_argv(t_token **tokens, char **argv, t_cmd *new);
+t_redirect				*create_redirect(char *filename, int type);
+
 #endif

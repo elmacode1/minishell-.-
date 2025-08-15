@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oukadir <oukadir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mael-gho <mael-gho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 17:18:13 by oukadir           #+#    #+#             */
-/*   Updated: 2025/08/14 17:41:07 by oukadir          ###   ########.fr       */
+/*   Updated: 2025/08/15 00:37:00 by mael-gho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ t_cmd	*parse_tokens(t_token *tokens)
 	t_cmd	*new;
 	int		max_args;
 	char	**argv;
-	int		i;
 
 	cmd = NULL;
 	while (tokens)
@@ -76,23 +75,10 @@ t_cmd	*parse_tokens(t_token *tokens)
 		new = new_cmd();
 		max_args = count_tokens(tokens);
 		argv = malloc(sizeof(char *) * (max_args + 1));
+		if (!argv)
+			return (NULL);
 		free_helper(argv);
-		i = 0;
-		while (tokens && !(tokens->type == PIPE && tokens->state == GENERAL))
-		{
-			if (tokens->type == WORD && !ft_strcmp(tokens->text, ""))
-				tokens = tokens->next;
-			else if (tokens->type == WORD || tokens->type == DQUOTE
-				|| tokens->type == SQUOTE)
-				i += parse_word_group(&tokens, argv + i);
-			else if (tokens->type == EMPTY_STR)
-				argv[i++] = ft_strdup2("");
-			else if (is_redirect_token(tokens))
-				parse_redirect(&tokens, new);
-			else
-				tokens = tokens->next;
-		}
-		argv[i] = NULL;
+		fill_argv(&tokens, argv, new);
 		new->argv = argv;
 		ft_lstadd_back_cmd(&cmd, new);
 		if (tokens && tokens->type == PIPE)
